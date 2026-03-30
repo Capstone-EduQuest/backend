@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: backend
+  flyway:
+    baseline-on-migrate: true
+  profiles:
+    active:
+      - dev
+
