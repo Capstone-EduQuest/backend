@@ -36,6 +36,7 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-mysql")
 	implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+	implementation("io.hypersistence:hypersistence-utils-hibernate-71:3.15.2")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 	compileOnly("org.projectlombok:lombok")
