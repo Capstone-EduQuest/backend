@@ -11,6 +11,19 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
+  garage:
+    image: dxflrs/garage:v2.2.0
+    container_name: garage
+    restart: unless-stopped
+    ports:
+      - "3900:3900"   # S3 API
+      - "3901:3901"   # RPC (클러스터용)
+      - "3902:3902"   # Dashboard
+      - "3903:3903"   # Metrics
+    volumes:
+      - ./garage-data:/var/lib/garage/data
+      - ./garage-meta:/var/lib/garage/meta
+      - ./garage.toml:/etc/garage.toml
 
 volumes:
   mariadb_data:
