@@ -1,8 +1,15 @@
 spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_S3_ACCESS_KEY:aaa}
+        secret-key: ${AWS_S3_SECRET_KEY:aaa}
+      s3:
+        endpoint: http://localhost:3900
+        path-style-access: true
+        bucket: ${AWS_S3_BUCKET:aaa}
+        presigned-url-expiration: ${AWS_S3_PRESIGNED_URL_EXPIRATION:PT10H}
   datasource:
-    # 환경변수가 설정되어 있으면 그것을 사용하고, 없으면 기본값을 사용합니다.
-    # JDBC URL에 useGSSAPI=false 와 restrictedAuth=mysql_native_password 를 명시해
-    # MariaDB 드라이버가 GSSAPI(Kerberos)로 폴백하지 않고 username/password로 인증하도록 강제합니다.
     url: ${SPRING_DATASOURCE_URL:jdbc:mariadb://localhost:3306/test?useSSL=false&serverTimezone=UTC&useGSSAPI=false&restrictedAuth=mysql_native_password}
     username: ${SPRING_DATASOURCE_USERNAME:test}
     password: ${SPRING_DATASOURCE_PASSWORD:test}
