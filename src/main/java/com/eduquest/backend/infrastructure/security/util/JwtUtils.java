@@ -14,7 +14,7 @@ import java.security.Key;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret_key}")
     private String jwtSecret;
 
     @Value("${jwt.access_key_expiration}")
