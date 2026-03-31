@@ -1,4 +1,4 @@
-package com.eduquest.backend.infrastructure.persistence.common.config;
+package com.eduquest.backend.infrastructure.persistence.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

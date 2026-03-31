@@ -1,4 +1,4 @@
-package com.eduquest.backend.infrastructure.persistence.common.config;
+package com.eduquest.backend.infrastructure.persistence.common.entity;
 
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
