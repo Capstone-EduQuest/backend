@@ -87,6 +87,17 @@ public class JwtUtils {
     }
 
     /**
+     * Token에서 role 추출
+     *
+     * @param token JWT Token
+     * @return role
+     */
+    public String getRoleFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("role", String.class);
+    }
+
+    /**
      * Token의 만료 시간 추출
      *
      * @param token JWT Token
