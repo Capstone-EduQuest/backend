@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EduQuestException.class)
-    public ResponseEntity<ErrorResponse> handleMoplException(EduQuestException ex) {
+    public ResponseEntity<ErrorResponse> handleCustomException(EduQuestException ex) {
         log.error("커스텀 예외 발생: code={}, message={}", ex.getErrorCode(), ex.getMessage(), ex);
         HttpStatus httpStatus = ex.getErrorCode().getHttpStatus();
         ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), ex.getErrorCode().name(), ex.getDetails());
