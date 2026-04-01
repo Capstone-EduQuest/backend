@@ -1,0 +1,24 @@
+package com.eduquest.backend.infrastructure.persistence.file.repository.implement;
+
+import com.eduquest.backend.infrastructure.persistence.file.entity.QFileEntity;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
+// Querydsl Repository 구현체
+@RequiredArgsConstructor
+public class BasicFileQRepository implements FileQRepository{
+
+    private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Optional<Long> findIdByStoredName(String storedName) {
+
+        return Optional.ofNullable(queryFactory.selectFrom(QFileEntity.fileEntity)
+                .where(QFileEntity.fileEntity.storedName.eq(storedName))
+                .select(QFileEntity.fileEntity.id)
+                .fetchOne());
+
+    }
+}

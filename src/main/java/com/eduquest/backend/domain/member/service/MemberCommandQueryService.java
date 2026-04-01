@@ -4,6 +4,6 @@ import com.eduquest.backend.domain.member.model.Member;
 
 public interface MemberCommandQueryService {
 
-    void saveMember(Member member, String role);
+    Long saveMember(Member member, String role);
 
 }

@@ -28,7 +28,7 @@ public class JpaMemberCommandQueryService implements MemberCommandQueryService {
 
     @Transactional
     @Override
-    public void saveMember(Member member, String role) {
+    public Long saveMember(Member member, String role) {
 
         if (memberJpaRepository.existsByEmail(member.getEmail()) || memberJpaRepository.existsByUserId(member.getUserId())) {
             throw new EduQuestException(DataBaseErrorCode.ALREADY_EXIST_MEMBER);
@@ -43,7 +43,7 @@ public class JpaMemberCommandQueryService implements MemberCommandQueryService {
 
         UserRoleEntity userRoleEntity = UserRoleEntity.of(memberEntity, roleEntity);
 
-        userRoleRepository.save(userRoleEntity);
+        return userRoleRepository.save(userRoleEntity).getId();
 
     }
 }

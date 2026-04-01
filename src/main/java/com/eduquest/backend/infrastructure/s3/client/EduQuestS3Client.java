@@ -1,6 +1,7 @@
 package com.eduquest.backend.infrastructure.s3.client;
 
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.file.client.CustomS3Client;
 import com.eduquest.backend.infrastructure.s3.dto.S3FileDto;
 import com.eduquest.backend.infrastructure.s3.exception.S3ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EduQuestS3Client {
+public class EduQuestS3Client implements CustomS3Client {
 
     @Value("${spring.cloud.aws.s3.presigned-url-expiration}")
     private String presignedUrlExpiration;
