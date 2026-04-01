@@ -24,4 +24,14 @@ public class JpaFileQueryService implements FileQueryService {
                         }}
                 ));
     }
+
+    @Override
+    public String findStoredNameByFileId(Long fileId) {
+        return fileQueryRepository.findStoredNameById(fileId)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                        new HashMap<>(){{
+                            put("존재하지 않는 파일입니다.", fileId);
+                        }}
+                ));
+    }
 }

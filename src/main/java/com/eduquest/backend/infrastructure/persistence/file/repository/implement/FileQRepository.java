@@ -7,4 +7,6 @@ public interface FileQRepository {
 
     Optional<Long> findIdByStoredName(String storedName);
 
+    Optional<String> findStoredNameById(Long id);
+
 }

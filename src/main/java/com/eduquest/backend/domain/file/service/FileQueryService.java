@@ -4,4 +4,6 @@ public interface FileQueryService {
 
     Long findFileIdByStoredName(String storedName);
 
+    String findStoredNameByFileId(Long fileId);
+
 }

@@ -23,4 +23,12 @@ public class BasicFileQRepository implements FileQRepository{
                 .fetchOne());
 
     }
+
+    @Override
+    public Optional<String> findStoredNameById(Long id) {
+        return Optional.ofNullable(queryFactory.selectFrom(QFileEntity.fileEntity)
+                .where(QFileEntity.fileEntity.id.eq(id))
+                .select(QFileEntity.fileEntity.storedName)
+                .fetchOne());
+    }
 }
