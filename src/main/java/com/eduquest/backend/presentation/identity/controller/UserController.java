@@ -26,7 +26,7 @@ public class UserController {
     )
     public ResponseEntity<String> signUp(
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            @Valid @RequestPart(value = "profile", required = true)ProfileRequest profileRequest
+            @Valid @RequestPart(value = "profile")ProfileRequest profileRequest
             ) {
 
         signUpService.signUp(
