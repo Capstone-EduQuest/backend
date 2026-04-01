@@ -32,6 +32,7 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-validation")
 	implementation ("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1")
+	implementation ("org.springframework.boot:spring-boot-starter-aop")
 	implementation("org.springframework.boot:spring-boot-flyway:4.0.5")
 	// spring boot 4부터 flyway-core 필수 요구
 	implementation("org.flywaydb:flyway-core")
