@@ -1,4 +1,4 @@
-package com.eduquest.backend.domain.file.client;
+package com.eduquest.backend.domain.file.component;
 
 import com.eduquest.backend.infrastructure.s3.dto.S3FileDto;
 

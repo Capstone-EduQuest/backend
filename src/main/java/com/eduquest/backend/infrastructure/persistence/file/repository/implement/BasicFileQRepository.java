@@ -3,10 +3,12 @@ package com.eduquest.backend.infrastructure.persistence.file.repository.implemen
 import com.eduquest.backend.infrastructure.persistence.file.entity.QFileEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 // Querydsl Repository 구현체
+@Repository
 @RequiredArgsConstructor
 public class BasicFileQRepository implements FileQRepository{
 
