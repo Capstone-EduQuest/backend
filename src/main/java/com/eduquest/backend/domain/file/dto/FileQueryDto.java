@@ -1,4 +1,4 @@
-package com.eduquest.backend.infrastructure.persistence.file.dto;
+package com.eduquest.backend.domain.file.dto;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

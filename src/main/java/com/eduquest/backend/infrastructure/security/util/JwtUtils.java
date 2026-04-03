@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.security.Key;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -22,6 +22,14 @@ public class JwtUtils {
 
     @Value("${jwt.refresh_key_expiration}")
     private long refreshKeyExpiration;
+
+    public long getAccessTokenExpiration() {
+        return accessKeyExpiration;
+    }
+
+    public long getRefreshTokenExpiration() {
+        return refreshKeyExpiration;
+    }
 
     /**
      * 서명 키 생성
@@ -39,7 +47,7 @@ public class JwtUtils {
      * @param role   사용자 역할
      * @return 생성된 Access Token
      */
-    public String generateAccessToken(Long userId, String role) {
+    public String generateAccessToken(String userId, String role) {
         return generateToken(userId, role, accessKeyExpiration);
     }
 
@@ -50,7 +58,7 @@ public class JwtUtils {
      * @param role   사용자 역할
      * @return 생성된 Refresh Token
      */
-    public String generateRefreshToken(Long userId, String role) {
+    public String generateRefreshToken(String userId, String role) {
         return generateToken(userId, role, refreshKeyExpiration);
     }
 
@@ -62,7 +70,7 @@ public class JwtUtils {
      * @param expiration 토큰 만료 시간(밀리초)
      * @return 생성된 Token
      */
-    private String generateToken(Long userId, String role, long expiration) {
+    private String generateToken(String userId, String role, long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 

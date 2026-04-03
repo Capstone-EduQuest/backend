@@ -1,7 +1,7 @@
 package com.eduquest.backend.presentation.identity.dto.request;
 
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.presentation.identity.exception.SecurityErrorCode;
+import com.eduquest.backend.presentation.identity.exception.IdentityApiErrorCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
@@ -31,7 +31,7 @@ public record ProfileRequest(
 
         public ProfileRequest {
                 if (!password.equals(passwordValid)) {
-                        throw new EduQuestException(SecurityErrorCode.PASSWORD_VALID_NOT_SAME);
+                        throw new EduQuestException(IdentityApiErrorCode.PASSWORD_VALID_NOT_SAME);
                 }
         }
 

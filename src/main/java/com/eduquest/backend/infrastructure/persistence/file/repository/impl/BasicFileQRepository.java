@@ -1,4 +1,4 @@
-package com.eduquest.backend.infrastructure.persistence.file.repository.implement;
+package com.eduquest.backend.infrastructure.persistence.file.repository.impl;
 
 import com.eduquest.backend.infrastructure.persistence.file.entity.QFileEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;

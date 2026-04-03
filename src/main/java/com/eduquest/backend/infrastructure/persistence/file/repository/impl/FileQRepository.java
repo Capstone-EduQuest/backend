@@ -1,4 +1,4 @@
-package com.eduquest.backend.infrastructure.persistence.file.repository.implement;
+package com.eduquest.backend.infrastructure.persistence.file.repository.impl;
 
 import java.util.Optional;
 
