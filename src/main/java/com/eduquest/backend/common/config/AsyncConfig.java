@@ -17,4 +17,10 @@ public class AsyncConfig {
         return new VirtualThreadTaskExecutor();
     }
 
+    // 메일 이벤트도 I/O 작업이 많기 때문에 가상 스레드를 활용하여 효율적으로 처리할 수 있음
+    @Bean(name = "mailEventTaskExecutor")
+    public TaskExecutor mailEventTaskExecutor() {
+        return new VirtualThreadTaskExecutor();
+    }
+
 }

@@ -10,7 +10,7 @@ import com.eduquest.backend.domain.file.service.FileQueryService;
 import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.model.enums.RoleType;
-import com.eduquest.backend.domain.member.service.MemberCommandQueryService;
+import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
 import com.eduquest.backend.infrastructure.s3.dto.S3FileDto;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SignUpService {
 
-    private final MemberCommandQueryService memberCommandQueryService;
+    private final MemberCommandService memberCommandService;
     private final FileCommandService fileCommandService;
     private final FileQueryService fileQueryService;
     private final EduQuestS3Client s3Client;
@@ -51,7 +51,7 @@ public class SignUpService {
         );
 
         try {
-            memberCommandQueryService.saveMember(member, RoleType.USER.toString());
+            memberCommandService.saveMember(member, RoleType.USER.toString());
         } catch (Exception e) {
 
             log.error("회원 저장 실패: {}", command.email());

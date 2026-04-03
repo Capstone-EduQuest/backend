@@ -1,5 +1,6 @@
 package com.eduquest.backend.infrastructure.persistence.identity.repository.impl;
 
+import com.eduquest.backend.domain.member.dto.MemberQuery;
 import com.eduquest.backend.domain.member.dto.UserDetailsData;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QRoleEntity;
@@ -19,6 +20,14 @@ public class BasicMemberQRepository implements MemberQRepository {
 
 
     @Override
+    public boolean existsByEmail(String email) {
+        return queryFactory.selectOne()
+                .from(QMemberEntity.memberEntity)
+                .where(QMemberEntity.memberEntity.email.eq(email))
+                .fetchFirst() != null;
+    }
+
+    @Override
     public Optional<UserDetailsData> findUserDetailsByUserId(String userId) {
         return Optional.ofNullable(queryFactory.select(
                         Projections.constructor(
@@ -36,5 +45,21 @@ public class BasicMemberQRepository implements MemberQRepository {
                 .fetchJoin()
                 .where(QMemberEntity.memberEntity.userId.eq(userId))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<MemberQuery.EmailAndUserId> findEmailAndUserIdByEmail(String email) {
+        return Optional.ofNullable(
+                queryFactory.select(
+                                Projections.constructor(
+                                        MemberQuery.EmailAndUserId.class,
+                                        QMemberEntity.memberEntity.email,
+                                        QMemberEntity.memberEntity.userId
+                                )
+                        )
+                        .from(QMemberEntity.memberEntity)
+                        .where(QMemberEntity.memberEntity.email.eq(email))
+                        .fetchOne()
+        );
     }
 }
