@@ -15,7 +15,7 @@ public class StoredToken implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String token;
-    private Long userId;
+    private String userId;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
 

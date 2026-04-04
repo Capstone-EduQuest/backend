@@ -1,12 +1,11 @@
 package com.eduquest.backend.infrastructure.security.dto;
 
 public record JwtToken(
-        String accessToken,
-        String refreshToken
+        String accessToken
 ) {
 
-    public static JwtToken of(String accessToken, String refreshToken) {
-        return new JwtToken(accessToken, refreshToken);
+    public static JwtToken of(String accessToken) {
+        return new JwtToken(accessToken);
     }
 
 }

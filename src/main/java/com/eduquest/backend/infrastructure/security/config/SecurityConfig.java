@@ -2,6 +2,8 @@ package com.eduquest.backend.infrastructure.security.config;
 
 import com.eduquest.backend.infrastructure.security.filter.JwtAuthenticationFilter;
 import com.eduquest.backend.infrastructure.security.filter.JwtSingInFilter;
+import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
+import com.eduquest.backend.infrastructure.security.handler.JwtLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,15 +25,30 @@ public class SecurityConfig {
 
     private final JwtSingInFilter jwtSingInFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtLogoutHandler jwtLogoutHandler;
+    private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(AbstractHttpConfigurer::disable)
+                .logout(logout -> {
+                    logout.addLogoutHandler(jwtLogoutHandler);
+                    logout.logoutSuccessHandler(jwtLogoutSuccessHandler);
+                })
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/sign-up", "/api/v1/sign-in").permitAll()
-                .anyRequest().permitAll()
+                .requestMatchers(
+                        "/api/v1/sign-up",
+                        "/api/v1/auth/sign-in",
+                        "/api/v1/auth/find-id",
+                        "/api/v1/auth/find-password",
+                        "/api/v1/auth/reset-password",
+                        "/api/v1/auth/refresh"
+
+                )
+                    .permitAll()
+                .anyRequest().authenticated()
             )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtSingInFilter, UsernamePasswordAuthenticationFilter.class);

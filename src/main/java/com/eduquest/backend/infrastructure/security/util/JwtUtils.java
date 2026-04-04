@@ -89,9 +89,9 @@ public class JwtUtils {
      * @param token JWT Token
      * @return userId
      */
-    public Long getUserIdFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
     }
 
     /**

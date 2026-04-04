@@ -91,7 +91,8 @@ public class InMemoryJwtRepository implements JwtRepository {
      * @param userId   사용자 ID
      * @param expiresAt 토큰 만료 시간
      */
-    public void save(String token, Long userId, LocalDateTime expiresAt) {
+    @Override
+    public void save(String token, String userId, LocalDateTime expiresAt) {
         StoredToken storedToken = new StoredToken(
             token,
             userId,

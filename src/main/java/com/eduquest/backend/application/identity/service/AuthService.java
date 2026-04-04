@@ -4,11 +4,13 @@ import com.eduquest.backend.application.identity.exception.AuthErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
 import com.eduquest.backend.domain.member.event.FindIdMailEvent;
+import com.eduquest.backend.domain.member.event.RotateTokenEvent;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MailService;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.presentation.identity.dto.request.FindPasswordRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -59,6 +61,14 @@ public class AuthService {
         memberCommandService.updateMember(member);
 
         mailService.deleteToken(token);
+
+    }
+
+    public void rotateRefreshToken(String refreshToken, HttpServletResponse response) {
+
+        eventPublisher.publishEvent(
+                RotateTokenEvent.of(refreshToken, response)
+        );
 
     }
 

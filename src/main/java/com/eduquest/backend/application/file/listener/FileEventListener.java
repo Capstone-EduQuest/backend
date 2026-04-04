@@ -1,4 +1,4 @@
-package com.eduquest.backend.application.file.event;
+package com.eduquest.backend.application.file.listener;
 
 import com.eduquest.backend.domain.file.component.CustomS3Client;
 import com.eduquest.backend.domain.file.event.FileDataDeleteEvent;

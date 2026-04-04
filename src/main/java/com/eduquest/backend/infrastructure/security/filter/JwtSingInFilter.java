@@ -1,16 +1,17 @@
 package com.eduquest.backend.infrastructure.security.filter;
 
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.infrastructure.security.dto.JwtToken;
 import com.eduquest.backend.infrastructure.security.dto.SignInData;
 import com.eduquest.backend.infrastructure.security.exception.SecurityErrorCode;
 import com.eduquest.backend.infrastructure.security.repository.JwtRepository;
 import com.eduquest.backend.infrastructure.security.util.JwtUtils;
+import com.eduquest.backend.infrastructure.security.util.TokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,7 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +32,8 @@ import java.io.IOException;
 public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtUtils jwtUtils;
+    private final TokenUtils tokenUtils;
+    private final ObjectMapper objectMapper;
     private final JwtRepository jwtRepository;
     private final AuthenticationManager authenticationManager;
 
@@ -40,7 +44,7 @@ public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
         try {
             SignInData signInData = null;
             try {
-                signInData = new ObjectMapper().readValue(request.getInputStream(), SignInData.class);
+                signInData = objectMapper.readValue(request.getInputStream(), SignInData.class);
             } catch (JacksonException e) {
                 throw new EduQuestException(SecurityErrorCode.USER_NOT_FOUND);
             } catch (IOException e) {
@@ -65,9 +69,6 @@ public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) {
-        // 인증 성공 시, JWT 토큰을 생성하여 응답 헤더에 추가하는 로직을 구현
-        // 예시에서는 JWT 토큰 생성 로직이 생략되어 있습니다.
-        // 실제 구현에서는 JWT 토큰을 생성하여 response.addHeader("Authorization", "Bearer " + token) 형태로 추가해야 합니다.
         UserDetails userDetails = (UserDetails) authResult.getPrincipal();
 
         String username = userDetails.getUsername();
@@ -79,22 +80,21 @@ public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtUtils.generateRefreshToken(username, role);
 
         // JWT refresh 토큰 저장소에 저장
-        jwtRepository.save(refreshToken);
+        jwtRepository.save(refreshToken, username, LocalDateTime.now().plusSeconds(jwtUtils.getRefreshTokenExpiration()));
+
+        // accessToken을 Json 형태로 응답 본문에 작성
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            // accessToken(key) : token(value)
+            objectMapper.writeValue(response.getWriter(), JwtToken.of(accessToken));
+        } catch (IOException e) {
+            log.error("Failed to write access token to response body", e);
+            throw new RuntimeException(e);
+        }
 
         // HttpOnly, Secure, SameSite 설정이 적용된 쿠키 생성
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
-                .path("/")
-                .maxAge(jwtUtils.getRefreshTokenExpiration())
-                .build();
-
-        // 쿠키를 응답 헤더에 추가
-        response.addHeader("Authorization", "Bearer " + accessToken);
-        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
-
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.addCookie(tokenUtils.createRefreshTokenCookie(refreshToken, jwtUtils.getRefreshTokenExpiration()));
 
     }
 

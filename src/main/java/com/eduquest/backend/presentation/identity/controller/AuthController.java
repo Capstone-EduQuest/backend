@@ -4,13 +4,11 @@ import com.eduquest.backend.application.identity.service.AuthService;
 import com.eduquest.backend.presentation.identity.dto.request.FindIdRequest;
 import com.eduquest.backend.presentation.identity.dto.request.FindPasswordRequest;
 import com.eduquest.backend.presentation.identity.dto.request.ResetPasswordRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,6 +44,11 @@ public class AuthController {
         authService.resetPassword(request.token(), request.newPassword());
 
         return ResponseEntity.status(204).build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response) {
+        return ResponseEntity.ok("Refresh Token");
     }
 
 }

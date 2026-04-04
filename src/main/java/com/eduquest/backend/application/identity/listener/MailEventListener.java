@@ -1,4 +1,4 @@
-package com.eduquest.backend.application.identity.event;
+package com.eduquest.backend.application.identity.listener;
 
 import com.eduquest.backend.domain.member.event.FindIdMailEvent;
 import com.eduquest.backend.domain.member.event.ResetPasswordMailEvent;
