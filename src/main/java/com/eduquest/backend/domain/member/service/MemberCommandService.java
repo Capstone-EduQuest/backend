@@ -6,4 +6,6 @@ public interface MemberCommandService {
 
     Long saveMember(Member member, String role);
 
+    Long updateMember(Member member);
+
 }

@@ -10,4 +10,6 @@ public interface PasswordResetTokenRepository {
 
     void deleteByToken(String token);
 
+    String findEmailByToken(String token);
+
 }

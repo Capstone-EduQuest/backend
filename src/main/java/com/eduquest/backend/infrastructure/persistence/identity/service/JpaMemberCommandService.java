@@ -46,4 +46,17 @@ public class JpaMemberCommandService implements MemberCommandService {
         return userRoleRepository.save(userRoleEntity).getId();
 
     }
+
+    @Override
+    public Long updateMember(Member member) {
+
+        if (!memberJpaRepository.existsById(member.getId())) {
+            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+        }
+
+        MemberEntity memberEntity = memberMapper.toEntity(member);
+
+        return memberJpaRepository.save(memberEntity).getId();
+
+    }
 }

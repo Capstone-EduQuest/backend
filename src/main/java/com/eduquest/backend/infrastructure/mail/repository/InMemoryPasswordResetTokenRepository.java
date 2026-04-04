@@ -30,6 +30,11 @@ public class InMemoryPasswordResetTokenRepository implements PasswordResetTokenR
     }
 
     @Override
+    public String findEmailByToken(String token) {
+        return PASSWORD_RESET_TOKEN_STORE.get(token).email();
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return PASSWORD_RESET_TOKEN_STORE.values().stream()
                 .anyMatch(storedToken -> storedToken.email().equals(email));

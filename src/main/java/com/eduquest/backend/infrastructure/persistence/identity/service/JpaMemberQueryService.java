@@ -2,8 +2,10 @@ package com.eduquest.backend.infrastructure.persistence.identity.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.member.dto.MemberQuery;
+import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.identity.mapper.MemberMapper;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,20 @@ import java.util.HashMap;
 public class JpaMemberQueryService implements MemberQueryService {
 
     private final MemberQueryRepository memberQueryRepository;
+    private final MemberMapper memberMapper;
 
     @Override
     public boolean isExistByEmail(String email) {
         return memberQueryRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Member findMemberByEmail(String email) {
+        return memberMapper.toDomain(memberQueryRepository.findByEmail(email)
+        .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                        new HashMap<>() {{
+                            put("email", "이메일을 찾을 수 없습니다.");
+                        }})));
     }
 
     @Override

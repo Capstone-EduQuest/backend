@@ -6,4 +6,10 @@ public interface MailService {
 
     void sendResetPasswordEmail(String recipientEmail);
 
+    boolean isValidToken(String token);
+
+    String findEmailByToken(String token);
+
+    void deleteToken(String token);
+
 }

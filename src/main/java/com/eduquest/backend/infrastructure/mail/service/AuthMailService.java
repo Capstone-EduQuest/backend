@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MailSenderService implements MailService {
+public class AuthMailService implements MailService {
 
     private final JavaMailSender javaMailSender;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
@@ -70,6 +70,21 @@ public class MailSenderService implements MailService {
         mailMessage.setFrom(senderEmailAddress);
         javaMailSender.send(mailMessage);
 
+    }
+
+    @Override
+    public boolean isValidToken(String token) {
+        return passwordResetTokenRepository.existsByToken(token);
+    }
+
+    @Override
+    public String findEmailByToken(String token) {
+        return passwordResetTokenRepository.findEmailByToken(token);
+    }
+
+    @Override
+    public void deleteToken(String token) {
+        passwordResetTokenRepository.deleteByToken(token);
     }
 
 }
