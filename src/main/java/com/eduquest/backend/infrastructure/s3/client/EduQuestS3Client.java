@@ -44,7 +44,7 @@ public class EduQuestS3Client implements CustomS3Client {
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.fileData()));
 
-        log.info("Success to put object to S3 with id: {}", file.fileName());
+        log.info("Success to put object to S3 with userId: {}", file.fileName());
 
         return id;
 
@@ -62,10 +62,10 @@ public class EduQuestS3Client implements CustomS3Client {
                     .build();
 
             s3Client.deleteObject(deleteObjectRequest);
-            log.info("Success to delete object from S3 with id: {}", id);
+            log.info("Success to delete object from S3 with userId: {}", id);
 
         } catch (Exception e) {
-            log.error("Failed to delete object from S3 with id: {}", id, e);
+            log.error("Failed to delete object from S3 with userId: {}", id, e);
 
             throw new EduQuestException(S3ErrorCode.S3_DELETE_FAILED);
         }

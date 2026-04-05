@@ -3,7 +3,9 @@ package com.eduquest.backend.infrastructure.persistence.identity.repository.impl
 import com.eduquest.backend.domain.member.dto.MemberQuery;
 import com.eduquest.backend.domain.member.dto.UserDetailsData;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface MemberQRepository {
 
@@ -12,5 +14,11 @@ public interface MemberQRepository {
     Optional<UserDetailsData> findUserDetailsByUserId(String userId);
 
     Optional<MemberQuery.EmailAndUserId> findEmailAndUserIdByEmail(String email);
+
+    Optional<UUID> findUuidByUserId(String userId);
+
+    Optional<MemberQuery.UserProfile> findUserProfileByUuid(UUID uuid);
+
+    List<MemberQuery.UserListResult> findAllMembersByPagination(int page, int size, String sortBy, String sortDirection);
 
 }

@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,29 @@ public class JpaMemberQueryService implements MemberQueryService {
                         new HashMap<>() {{
                             put("email", "이메일을 찾을 수 없습니다.");
                         }}));
+    }
+
+    @Override
+    public UUID findUuidByUserId(String userId) {
+        return memberQueryRepository.findUuidByUserId(userId)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                        new HashMap<>() {{
+                            put("userId", "유저 아이디를 찾을 수 없습니다.");
+                        }}));
+    }
+
+    @Override
+    public MemberQuery.UserProfile findUserProfileByUuid(UUID uuid) {
+        return memberQueryRepository.findUserProfileByUuid(uuid)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                        new HashMap<>() {{
+                            put("uuid", "유저를 찾을 수 없습니다.");
+                        }}));
+    }
+
+    @Override
+    public List<MemberQuery.UserListResult> findAllMembersByPagination(int page, int size, String sortBy, String sortDirection) {
+        return memberQueryRepository.findAllMembersByPagination(page, size, sortBy, sortDirection);
     }
 
 }

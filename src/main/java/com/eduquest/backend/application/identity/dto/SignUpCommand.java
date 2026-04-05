@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
-public record ProfileCommand(
+public record SignUpCommand(
         String id,
         String email,
         String password,

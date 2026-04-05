@@ -10,7 +10,7 @@ import java.util.Optional;
 // Querydsl Repository 구현체
 @Repository
 @RequiredArgsConstructor
-public class BasicFileQRepository implements FileQRepository{
+public class FileQRepositoryImpl implements FileQRepository{
 
     private final JPAQueryFactory queryFactory;
 

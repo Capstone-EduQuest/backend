@@ -1,6 +1,6 @@
 package com.eduquest.backend.application.identity.service;
 
-import com.eduquest.backend.application.identity.dto.ProfileCommand;
+import com.eduquest.backend.application.identity.dto.SignUpCommand;
 import com.eduquest.backend.domain.file.event.FileDataDeleteEvent;
 import com.eduquest.backend.domain.file.event.S3FileDeleteEvent;
 import com.eduquest.backend.domain.file.model.File;
@@ -35,7 +35,7 @@ public class SignUpService {
     public final ApplicationEventPublisher eventPublisher;
 
     // 회원 가입 처리
-    public void signUp(ProfileCommand command) {
+    public void signUp(SignUpCommand command) {
 
         Long fileId = command.profileImage() != null ? handleProfileImage(command) : null;
 
@@ -70,7 +70,7 @@ public class SignUpService {
     }
 
     // 프로필 이미지 처리
-    private Long handleProfileImage(ProfileCommand command) {
+    private Long handleProfileImage(SignUpCommand command) {
         String fileName = UUID.randomUUID().toString(); // 고유한 파일 이름 생성
 
         try (InputStream is = command.profileImage().getInputStream()) {
