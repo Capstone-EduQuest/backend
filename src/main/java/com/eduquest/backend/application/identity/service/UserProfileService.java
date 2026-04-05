@@ -1,6 +1,5 @@
 package com.eduquest.backend.application.identity.service;
 
-import com.eduquest.backend.application.identity.dto.SignUpCommand;
 import com.eduquest.backend.application.identity.dto.UserProfileCommand;
 import com.eduquest.backend.domain.file.component.CustomS3Client;
 import com.eduquest.backend.domain.file.event.FileDataDeleteEvent;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;

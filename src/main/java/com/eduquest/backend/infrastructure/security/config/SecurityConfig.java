@@ -1,7 +1,6 @@
 package com.eduquest.backend.infrastructure.security.config;
 
 import com.eduquest.backend.infrastructure.security.filter.JwtAuthenticationFilter;
-import com.eduquest.backend.infrastructure.security.filter.JwtSingInFilter;
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginFailureHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginSuccessHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
@@ -25,7 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtSingInFilter jwtSingInFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtLoginSuccessHandler jwtLoginSuccessHandler;
     private final JwtLoginFailureHandler jwtLoginFailureHandler;
@@ -59,8 +57,7 @@ public class SecurityConfig {
                         .successHandler(jwtLoginSuccessHandler)
                         .failureHandler(jwtLoginFailureHandler)
                         .permitAll())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(jwtSingInFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

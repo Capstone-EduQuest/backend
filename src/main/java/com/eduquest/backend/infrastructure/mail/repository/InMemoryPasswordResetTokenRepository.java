@@ -2,10 +2,12 @@ package com.eduquest.backend.infrastructure.mail.repository;
 
 import com.eduquest.backend.infrastructure.mail.dto.PasswordStoredToken;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Repository
 public class InMemoryPasswordResetTokenRepository implements PasswordResetTokenRepository {
 
     private static final ConcurrentHashMap<String, PasswordStoredToken> PASSWORD_RESET_TOKEN_STORE = new ConcurrentHashMap<>();
