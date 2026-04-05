@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class JpaMemberCommandService implements MemberCommandService {
@@ -47,6 +49,7 @@ public class JpaMemberCommandService implements MemberCommandService {
 
     }
 
+    @Transactional
     @Override
     public Long updateMember(Member member) {
 
@@ -58,5 +61,35 @@ public class JpaMemberCommandService implements MemberCommandService {
 
         return memberJpaRepository.save(memberEntity).getId();
 
+    }
+
+    @Transactional
+    @Override
+    public Long updateUserRole(Long id, Long roleId) {
+
+        if (!roleJpaRepository.existsById(roleId)) {
+            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+        }
+
+        UserRoleEntity userRoleEntity = userRoleRepository.findByMemberId(id)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+
+        RoleEntity roleEntity = roleJpaRepository.findById(roleId)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+
+        userRoleEntity.updateRole(roleEntity);
+
+        return userRoleRepository.save(userRoleEntity).getId();
+    }
+
+    @Transactional
+    @Override
+    public void deleteMember(UUID uuid) {
+
+        if (!memberJpaRepository.existsByUuid(uuid)) {
+            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+        }
+
+        memberJpaRepository.deleteByUuid(uuid);
     }
 }

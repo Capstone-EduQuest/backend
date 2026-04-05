@@ -2,6 +2,8 @@ package com.eduquest.backend.infrastructure.security.config;
 
 import com.eduquest.backend.infrastructure.security.filter.JwtAuthenticationFilter;
 import com.eduquest.backend.infrastructure.security.filter.JwtSingInFilter;
+import com.eduquest.backend.infrastructure.security.handler.JwtLoginFailureHandler;
+import com.eduquest.backend.infrastructure.security.handler.JwtLoginSuccessHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,8 @@ public class SecurityConfig {
 
     private final JwtSingInFilter jwtSingInFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtLoginSuccessHandler jwtLoginSuccessHandler;
+    private final JwtLoginFailureHandler jwtLoginFailureHandler;
     private final JwtLogoutHandler jwtLogoutHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
@@ -50,6 +54,11 @@ public class SecurityConfig {
                     .permitAll()
                 .anyRequest().authenticated()
             )
+                .formLogin(x -> x
+                        .loginProcessingUrl("/api/v1/auth/sign-in")
+                        .successHandler(jwtLoginSuccessHandler)
+                        .failureHandler(jwtLoginFailureHandler)
+                        .permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtSingInFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

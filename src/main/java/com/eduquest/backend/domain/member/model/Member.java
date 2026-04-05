@@ -48,8 +48,26 @@ public class Member {
                 .build();
     }
 
-    public  void updatePassword(String newPassword) {
+    public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void updateProfile(String email, String password, String nickname) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+    }
+
+    public void updateProfileId(Long profileId) {
+        this.profileId = profileId;
+    }
+
+    public void lock() {
+        this.isLocked = true;
+    }
+
+    public void unlock() {
+        this.isLocked = false;
     }
 
 }

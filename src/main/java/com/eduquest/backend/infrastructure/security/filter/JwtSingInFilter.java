@@ -35,7 +35,6 @@ public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
     private final TokenUtils tokenUtils;
     private final ObjectMapper objectMapper;
     private final JwtRepository jwtRepository;
-    private final AuthenticationManager authenticationManager;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -64,48 +63,6 @@ public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
             throw new EduQuestException(SecurityErrorCode.USER_NOT_FOUND);
         }
 
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain chain, Authentication authResult) {
-        UserDetails userDetails = (UserDetails) authResult.getPrincipal();
-
-        String username = userDetails.getUsername();
-        String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("USER");
-        String accessToken = jwtUtils.generateAccessToken(username, role);
-        String refreshToken = jwtUtils.generateRefreshToken(username, role);
-
-        // JWT refresh 토큰 저장소에 저장
-        jwtRepository.save(refreshToken, username, LocalDateTime.now().plusSeconds(jwtUtils.getRefreshTokenExpiration()));
-
-        // accessToken을 Json 형태로 응답 본문에 작성
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        try {
-            // accessToken(key) : token(value)
-            objectMapper.writeValue(response.getWriter(), JwtToken.of(accessToken));
-        } catch (IOException e) {
-            log.error("Failed to write access token to response body", e);
-            throw new RuntimeException(e);
-        }
-
-        // HttpOnly, Secure, SameSite 설정이 적용된 쿠키 생성
-        response.addCookie(tokenUtils.createRefreshTokenCookie(refreshToken, jwtUtils.getRefreshTokenExpiration()));
-
-    }
-
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                              AuthenticationException failed) {
-        // 인증 실패 시, 적절한 에러 응답을 반환하는 로직을 구현
-        // 예시에서는 인증 실패 시 401 Unauthorized 상태 코드를 반환하도록 설정되어 있습니다.
-        log.error("Authentication failed: {}", failed.getMessage());
-
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
 }

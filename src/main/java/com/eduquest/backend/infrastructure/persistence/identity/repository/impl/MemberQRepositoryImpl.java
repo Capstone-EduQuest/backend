@@ -76,6 +76,16 @@ public class MemberQRepositoryImpl implements MemberQRepository {
         );
     }
 
+    @Override
+    public Optional<Long> findIdByUuid(UUID uuid) {
+        return Optional.ofNullable(
+                queryFactory.select(QMemberEntity.memberEntity.id)
+                        .from(QMemberEntity.memberEntity)
+                        .where(QMemberEntity.memberEntity.uuid.eq(uuid))
+                        .fetchOne()
+        );
+    }
+
     // Todo : point 도메인 구현 후 추가
     @Override
     public Optional<MemberQuery.UserProfile> findUserProfileByUuid(UUID uuid) {

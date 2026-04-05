@@ -17,6 +17,8 @@ public interface MemberQRepository {
 
     Optional<UUID> findUuidByUserId(String userId);
 
+    Optional<Long> findIdByUuid(UUID uuid);
+
     Optional<MemberQuery.UserProfile> findUserProfileByUuid(UUID uuid);
 
     List<MemberQuery.UserListResult> findAllMembersByPagination(int page, int size, String sortBy, String sortDirection);

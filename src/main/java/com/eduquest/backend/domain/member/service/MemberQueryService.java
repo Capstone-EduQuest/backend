@@ -10,14 +10,22 @@ public interface MemberQueryService {
 
     boolean isExistByEmail(String email);
 
+    Member findMemberByUuid(UUID uuid);
+
     Member findMemberByEmail(String email);
 
     MemberQuery.EmailAndUserId findEmailAndUserIdByEmail(String email);
 
-    UUID findUuidByUserId(String userId);
+    UUID findMemberUuidByUserId(String userId);
+
+    Long findMemberIdByUuid(UUID uuid);
+
+    Long findRoleIdByUuid(UUID uuid);
 
     MemberQuery.UserProfile findUserProfileByUuid(UUID uuid);
 
     List<MemberQuery.UserListResult> findAllMembersByPagination(int page, int size, String sortBy, String sortDirection);
+
+    List<MemberQuery.Role> findAllRoles();
 
 }

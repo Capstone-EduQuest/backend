@@ -3,6 +3,7 @@ package com.eduquest.backend.application.identity.dto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +11,26 @@ import java.util.UUID;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserProfileCommand {
+
+    public record ProfileChangeRequest(
+            UUID uuid,
+            String email,
+            String password,
+            String nickname,
+            MultipartFile profileImage
+    ) {
+
+        public static ProfileChangeRequest of(
+                UUID uuid,
+                String email,
+                String password,
+                String nickname,
+                MultipartFile profileImage
+        ) {
+            return new ProfileChangeRequest(uuid, email, password, nickname, profileImage);
+        }
+
+    }
 
     public record UserListRequest(
             int page,

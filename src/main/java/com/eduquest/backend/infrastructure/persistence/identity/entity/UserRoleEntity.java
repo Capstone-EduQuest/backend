@@ -46,4 +46,8 @@ public class UserRoleEntity {
                 .build();
     }
 
+    public void updateRole(RoleEntity role) {
+        this.role = role;
+    }
+
 }

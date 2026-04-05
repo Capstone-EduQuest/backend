@@ -61,4 +61,13 @@ public class MemberQuery {
 
     }
 
+    public record Role(
+            UUID uuid,
+            String name
+    ) {
+        public static Role of(UUID uuid, String name) {
+            return new Role(uuid, name);
+        }
+    }
+
 }
