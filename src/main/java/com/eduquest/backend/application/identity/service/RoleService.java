@@ -26,7 +26,7 @@ public class RoleService {
     public void updateRole(RoleCommand.RoleUpdateRequest request) {
 
         Long memberId = memberQueryService.findMemberIdByUuid(request.userUuid());
-        Long roleId = memberQueryService.findRoleIdByUuid(request.userUuid());
+        Long roleId = memberQueryService.findRoleIdByUuid(request.roleUuid());
 
         memberCommandService.updateUserRole(memberId, roleId);
 
