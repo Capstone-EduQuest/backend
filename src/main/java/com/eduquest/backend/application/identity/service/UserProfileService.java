@@ -106,7 +106,7 @@ public class UserProfileService {
 
         // 회원 저장 시 예외가 발생하면 업로드된 파일을 삭제
         try {
-            memberCommandService.saveMember(member, RoleType.USER.toString());
+            memberCommandService.updateMember(member);
         } catch (Exception e) {
 
             log.error("회원 저장 실패: {}", request.email());
