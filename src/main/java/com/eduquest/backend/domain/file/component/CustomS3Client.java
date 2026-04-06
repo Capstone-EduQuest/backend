@@ -1,6 +1,6 @@
 package com.eduquest.backend.domain.file.component;
 
-import com.eduquest.backend.infrastructure.s3.dto.S3FileDto;
+import com.eduquest.backend.domain.file.dto.S3FileDto;
 
 import java.util.Optional;
 

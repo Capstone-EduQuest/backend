@@ -1,4 +1,4 @@
-package com.eduquest.backend.infrastructure.s3.dto;
+package com.eduquest.backend.domain.file.dto;
 
 public record S3FileDto(
         String fileName,

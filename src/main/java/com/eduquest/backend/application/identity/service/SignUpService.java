@@ -12,7 +12,7 @@ import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.model.enums.RoleType;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
-import com.eduquest.backend.infrastructure.s3.dto.S3FileDto;
+import com.eduquest.backend.domain.file.dto.S3FileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
