@@ -2,6 +2,7 @@ package com.eduquest.backend.application.identity.service;
 
 import com.eduquest.backend.application.identity.dto.UserProfileCommand;
 import com.eduquest.backend.domain.file.component.CustomS3Client;
+import com.eduquest.backend.domain.file.dto.S3FileDto;
 import com.eduquest.backend.domain.file.event.FileDataDeleteEvent;
 import com.eduquest.backend.domain.file.event.S3FileDeleteEvent;
 import com.eduquest.backend.domain.file.model.File;
@@ -14,8 +15,6 @@ import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.model.enums.RoleType;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
-import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
-import com.eduquest.backend.domain.file.dto.S3FileDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,7 +37,6 @@ public class UserProfileService {
     private final CustomS3Client customS3Client;
     private final ApplicationEventPublisher eventPublisher;
     private final CustomPasswordEncoder passwordEncoder;
-    private final EduQuestS3Client s3Client;
 
     public UUID getUuidByUserId(String userId) {
         return memberQueryService.findMemberUuidByUserId(userId);
@@ -132,7 +130,7 @@ public class UserProfileService {
         String fileName = UUID.randomUUID().toString(); // 고유한 파일 이름 생성
 
         try (InputStream is = command.profileImage().getInputStream()) {
-            s3Client.putObject(
+            customS3Client.putObject(
                     fileName,
                     S3FileDto.of(
                             command.profileImage().getOriginalFilename(),
