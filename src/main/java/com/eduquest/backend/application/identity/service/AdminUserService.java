@@ -25,6 +25,8 @@ public class AdminUserService {
             member.lock();
         }
 
+        memberCommandService.updateMember(member);
+
     }
 
 }
