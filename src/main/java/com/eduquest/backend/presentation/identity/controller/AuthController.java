@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/find-userId")
-    public ResponseEntity<String> findId(@Valid FindIdRequest request) {
+    public ResponseEntity<String> findId(@Valid @RequestBody FindIdRequest request) {
 
         authService.sendFindIdEmail(request.email());
 
@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/find-password")
-    public ResponseEntity<String> findPassword(@Valid FindPasswordRequest request) {
+    public ResponseEntity<String> findPassword(@Valid @RequestBody FindPasswordRequest request) {
 
         authService.sendPasswordRestEmail(request.email(), request.userId());
 
@@ -39,7 +39,7 @@ public class AuthController {
     }
 
     @PutMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@Valid ResetPasswordRequest request) {
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
 
         authService.resetPassword(request.token(), request.newPassword());
 
@@ -48,6 +48,9 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response) {
+
+        authService.rotateRefreshToken(refreshToken, response);
+
         return ResponseEntity.ok("Refresh Token");
     }
 
