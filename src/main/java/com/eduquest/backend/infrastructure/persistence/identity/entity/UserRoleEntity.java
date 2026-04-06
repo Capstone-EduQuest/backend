@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "role")
+@Table(name = "user_role")
 public class UserRoleEntity {
 
     @Id

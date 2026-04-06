@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,6 +80,7 @@ public class UserProfileService {
                 .toList();
     }
 
+    @Transactional
     public void changeProfile(UserProfileCommand.ProfileChangeRequest request) {
 
         Long fileId = request.profileImage() != null ? handleProfileImage(request) : null;

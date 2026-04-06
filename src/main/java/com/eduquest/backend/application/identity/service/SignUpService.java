@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ public class SignUpService {
     private final ApplicationEventPublisher eventPublisher;
 
     // 회원 가입 처리
+    @Transactional
     public void signUp(SignUpCommand command) {
 
         Long fileId = command.profileImage() != null ? handleProfileImage(command) : null;
