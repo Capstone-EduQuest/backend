@@ -30,7 +30,7 @@ public record ProfileRequest(
 ) {
 
         public ProfileRequest {
-                if (!password.equals(passwordValid)) {
+                if (password.isBlank() || !password.equals(passwordValid)) {
                         throw new EduQuestException(IdentityApiErrorCode.PASSWORD_VALID_NOT_SAME);
                 }
         }
