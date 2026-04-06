@@ -11,7 +11,8 @@ import com.eduquest.backend.presentation.identity.dto.request.ProfileRequest;
 import com.eduquest.backend.presentation.identity.dto.request.ProfileUpdateRequest;
 import com.eduquest.backend.presentation.identity.dto.request.RoleUpdateRequest;
 import com.eduquest.backend.presentation.identity.dto.request.UserListRequest;
-import com.eduquest.backend.presentation.identity.dto.response.RoleResponse;
+import com.eduquest.backend.presentation.identity.dto.response.RoleListResponse;
+import com.eduquest.backend.presentation.identity.dto.response.UserIdToUuidResponse;
 import com.eduquest.backend.presentation.identity.dto.response.UserListResponse;
 import com.eduquest.backend.presentation.identity.dto.response.UserProfileResponse;
 import jakarta.validation.Valid;
@@ -59,8 +60,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/uuid")
-    public ResponseEntity<String> getUuidByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(userProfileService.getUuidByUserId(userId).toString());
+    public ResponseEntity<UserIdToUuidResponse> getUuidByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(UserIdToUuidResponse.of(userProfileService.getUuidByUserId(userId)));
     }
 
     @GetMapping("/users/{uuid}")
@@ -105,14 +106,14 @@ public class UserController {
     }
 
     @GetMapping("/users/roles")
-    public ResponseEntity<List<RoleResponse>> getRoleList() {
+    public ResponseEntity<RoleListResponse.RoleList> getRoleList() {
 
-        List<RoleResponse> results = roleService.getRoles().stream().map(role -> RoleResponse.of(
-                role.uuid(),
-                role.name()
-        )).toList();
-
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok(RoleListResponse.RoleList.of(
+                roleService.getRoles().stream().map(roleResponse    -> RoleListResponse.Role.of(
+                        roleResponse.uuid(),
+                        roleResponse.name()
+                )).toList()
+        ));
     }
 
     @PutMapping("/users/{uuid}")

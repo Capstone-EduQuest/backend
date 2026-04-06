@@ -22,7 +22,7 @@ public class AuthController {
         return ResponseEntity.ok("Sign In");
     }
 
-    @PostMapping("/find-userId")
+    @PostMapping("/find-id")
     public ResponseEntity<String> findId(@Valid @RequestBody FindIdRequest request) {
 
         authService.sendFindIdEmail(request.email());

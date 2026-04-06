@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(AbstractHttpConfigurer::disable)
                 .logout(logout -> {
+                    logout.logoutUrl("/api/v1/auth/logout");
                     logout.addLogoutHandler(jwtLogoutHandler);
                     logout.logoutSuccessHandler(jwtLogoutSuccessHandler);
                 })
