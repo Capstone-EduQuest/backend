@@ -32,7 +32,7 @@ public class SignUpService {
     private final FileQueryService fileQueryService;
     private final EduQuestS3Client s3Client;
     private final CustomPasswordEncoder passwordEncoder;
-    public final ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     // 회원 가입 처리
     public void signUp(SignUpCommand command) {
