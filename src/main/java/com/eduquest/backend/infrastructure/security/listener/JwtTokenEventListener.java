@@ -45,7 +45,9 @@ public class JwtTokenEventListener {
 
         // 토큰 갱신
         // JWT refresh 토큰 저장소에 저장
-        jwtRepository.save(newRefreshToken, username, LocalDateTime.now().plusSeconds(jwtUtils.getRefreshTokenExpiration()));
+        // JwtUtils.getRefreshTokenExpiration() returns milliseconds; convert to seconds for LocalDateTime.plusSeconds
+        long refreshExpiryMillis = jwtUtils.getRefreshTokenExpiration();
+        jwtRepository.save(newRefreshToken, username, LocalDateTime.now().plusSeconds(refreshExpiryMillis / 1000));
 
         // accessToken을 Json 형태로 응답 본문에 작성
         event.response().setContentType("application/json");

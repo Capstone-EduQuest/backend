@@ -43,7 +43,9 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtUtils.generateRefreshToken(username, role);
 
         // JWT refresh 토큰 저장소에 저장
-        jwtRepository.save(refreshToken, username, LocalDateTime.now().plusSeconds(jwtUtils.getRefreshTokenExpiration()));
+        // JwtUtils.getRefreshTokenExpiration() returns milliseconds; convert to seconds for LocalDateTime.plusSeconds
+        long refreshExpiryMillis = jwtUtils.getRefreshTokenExpiration();
+        jwtRepository.save(refreshToken, username, LocalDateTime.now().plusSeconds(refreshExpiryMillis / 1000));
 
         // accessToken을 Json 형태로 응답 본문에 작성
         response.setContentType("application/json");

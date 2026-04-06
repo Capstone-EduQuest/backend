@@ -47,11 +47,16 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refreshToken(@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<String> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
+
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return ResponseEntity.status(401).body("Refresh token missing");
+        }
 
         authService.rotateRefreshToken(refreshToken, response);
 
-        return ResponseEntity.ok("Refresh Token");
+        return ResponseEntity.ok().build();
+
     }
 
 }
