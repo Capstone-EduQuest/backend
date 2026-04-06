@@ -58,11 +58,17 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(
-                        new JwtSingInFilter(objectMapper, authenticationManager),
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // UsernamePasswordAuthenticationFilter 위치에 로그인 처리용 필터 추가
+        JwtSingInFilter jwtSingInFilter = new JwtSingInFilter(objectMapper, authenticationManager);
+        // 컨트롤러의 로그인 엔드포인트와 일치시킴
+        jwtSingInFilter.setFilterProcessesUrl("/api/v1/auth/sign-in");
+        // 성공/실패 핸들러 연결
+        jwtSingInFilter.setAuthenticationSuccessHandler(jwtLoginSuccessHandler);
+        jwtSingInFilter.setAuthenticationFailureHandler(jwtLoginFailureHandler);
+
+        http.addFilterAt(jwtSingInFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
