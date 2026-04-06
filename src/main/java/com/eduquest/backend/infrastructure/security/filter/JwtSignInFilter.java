@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtSingInFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtSignInFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
     private final AuthenticationManager authenticationManager;

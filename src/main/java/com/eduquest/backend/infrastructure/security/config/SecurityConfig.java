@@ -1,7 +1,7 @@
 package com.eduquest.backend.infrastructure.security.config;
 
 import com.eduquest.backend.infrastructure.security.filter.JwtAuthenticationFilter;
-import com.eduquest.backend.infrastructure.security.filter.JwtSingInFilter;
+import com.eduquest.backend.infrastructure.security.filter.JwtSignInFilter;
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginFailureHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginSuccessHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
@@ -61,14 +61,14 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         // UsernamePasswordAuthenticationFilter 위치에 로그인 처리용 필터 추가
-        JwtSingInFilter jwtSingInFilter = new JwtSingInFilter(objectMapper, authenticationManager);
+        JwtSignInFilter jwtSignInFilter = new JwtSignInFilter(objectMapper, authenticationManager);
         // 컨트롤러의 로그인 엔드포인트와 일치시킴
-        jwtSingInFilter.setFilterProcessesUrl("/api/v1/auth/sign-in");
+        jwtSignInFilter.setFilterProcessesUrl("/api/v1/auth/sign-in");
         // 성공/실패 핸들러 연결
-        jwtSingInFilter.setAuthenticationSuccessHandler(jwtLoginSuccessHandler);
-        jwtSingInFilter.setAuthenticationFailureHandler(jwtLoginFailureHandler);
+        jwtSignInFilter.setAuthenticationSuccessHandler(jwtLoginSuccessHandler);
+        jwtSignInFilter.setAuthenticationFailureHandler(jwtLoginFailureHandler);
 
-        http.addFilterAt(jwtSingInFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(jwtSignInFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
