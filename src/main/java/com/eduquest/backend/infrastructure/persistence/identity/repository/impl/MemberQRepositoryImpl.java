@@ -45,7 +45,6 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                 .join(QUserRoleEntity.userRoleEntity)
                 .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
                 .join(QUserRoleEntity.userRoleEntity.role)
-                .fetchJoin()
                 .where(QMemberEntity.memberEntity.userId.eq(userId))
                 .fetchOne());
     }
@@ -107,7 +106,6 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                         .join(QUserRoleEntity.userRoleEntity)
                         .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
                         .join(QUserRoleEntity.userRoleEntity.role)
-                        .fetchJoin()
                         .where(QMemberEntity.memberEntity.uuid.eq(uuid))
                         .fetchOne()
         );
@@ -128,7 +126,6 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                 .join(QUserRoleEntity.userRoleEntity)
                 .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
                 .join(QUserRoleEntity.userRoleEntity.role)
-                .fetchJoin()
                 .orderBy(buildOrderBy(sortBy, sortDirection).toArray(new OrderSpecifier[0]))
                 .offset((long) page * size)
                 .limit(size)
