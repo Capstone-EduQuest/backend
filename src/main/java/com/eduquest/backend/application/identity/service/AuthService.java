@@ -4,12 +4,12 @@ import com.eduquest.backend.application.identity.exception.AuthErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
 import com.eduquest.backend.domain.member.event.FindIdMailEvent;
+import com.eduquest.backend.domain.member.event.ResetPasswordMailEvent;
 import com.eduquest.backend.domain.member.event.RotateTokenEvent;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MailService;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
-import com.eduquest.backend.presentation.identity.dto.request.FindPasswordRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +29,10 @@ public class AuthService {
 
     public void sendFindIdEmail(String email) {
 
+        if (!memberQueryService.isExistByEmail(email)) {
+            return;
+        }
+
         eventPublisher.publishEvent(
                 FindIdMailEvent.of(email)
         );
@@ -37,10 +41,14 @@ public class AuthService {
 
     public void sendPasswordRestEmail(String email, String userId) {
 
+        if (!memberQueryService.isExistByEmail(email)) {
+            return;
+        }
+
         eventPublisher.publishEvent(
-                FindPasswordRequest.of(
-                        email,
-                        userId
+                ResetPasswordMailEvent.of(
+                        userId,
+                        email
                 )
         );
 

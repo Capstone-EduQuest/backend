@@ -1,7 +1,6 @@
 package com.eduquest.backend.infrastructure.mail.service;
 
 import com.eduquest.backend.domain.member.service.MailService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.infrastructure.mail.repository.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,20 +19,12 @@ public class AuthMailService implements MailService {
 
     private final JavaMailSender javaMailSender;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final MemberQueryService memberQueryService;
 
     @Value("${spring.mail.username}")
     private String senderEmailAddress;
 
     @Async("mailEventTaskExecutor")
     public void sendFindIdEmail(String recipientEmail) {
-
-        boolean isExist = memberQueryService.isExistByEmail(recipientEmail);
-        if (!isExist) {
-            // 이메일이 존재하지 않는 경우 예외 처리
-            log.warn("No member found with email: {}", recipientEmail);
-            return;
-        }
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(recipientEmail);
@@ -46,12 +37,6 @@ public class AuthMailService implements MailService {
 
     @Async("mailEventTaskExecutor")
     public void sendResetPasswordEmail(String recipientEmail) {
-
-        if (!memberQueryService.isExistByEmail(recipientEmail)) {
-            // 이메일이 존재하지 않는 경우 예외 처리
-            log.warn("No member found with email: {}", recipientEmail);
-            return;
-        }
 
         if (passwordResetTokenRepository.existsByEmail(recipientEmail)) {
             // 이미 토큰이 존재하는 경우 예외 처리
