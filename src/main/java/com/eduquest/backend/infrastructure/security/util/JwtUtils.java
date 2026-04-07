@@ -76,7 +76,7 @@ public class JwtUtils {
         Date expiryDate = new Date(now.getTime() + expiration);
 
         JwtBuilder builder = Jwts.builder()
-                .subject(userId.toString())
+                .subject(userId)
                 .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiryDate)

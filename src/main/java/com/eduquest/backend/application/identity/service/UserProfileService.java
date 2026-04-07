@@ -12,7 +12,6 @@ import com.eduquest.backend.domain.file.service.FileQueryService;
 import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
 import com.eduquest.backend.domain.member.dto.MemberQuery;
 import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.model.enums.RoleType;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
