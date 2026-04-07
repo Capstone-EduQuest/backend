@@ -49,6 +49,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
+                    String uuidStr = null;
+
+                    // uuid를 authentication에 추가
+                    try {
+                        uuidStr = jwtUtils.getUuidFromToken(token);
+                    } catch (Exception e) {
+                        if (uuidStr == null && !uuidStr.isBlank()) {
+                            authentication.setDetails(uuidStr);
+                        }
+                    }
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 } else if (isExpired) {

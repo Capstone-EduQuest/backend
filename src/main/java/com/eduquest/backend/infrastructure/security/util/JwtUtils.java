@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -47,8 +48,8 @@ public class JwtUtils {
      * @param role   사용자 역할
      * @return 생성된 Access Token
      */
-    public String generateAccessToken(String userId, String role) {
-        return generateToken(userId, role, accessKeyExpiration);
+    public String generateAccessToken(String userId, String role, UUID uuid) {
+        return generateToken(userId, role, uuid, accessKeyExpiration);
     }
 
     /**
@@ -59,7 +60,7 @@ public class JwtUtils {
      * @return 생성된 Refresh Token
      */
     public String generateRefreshToken(String userId, String role) {
-        return generateToken(userId, role, refreshKeyExpiration);
+        return generateToken(userId, role, null, refreshKeyExpiration);
     }
 
     /**
@@ -70,17 +71,22 @@ public class JwtUtils {
      * @param expiration 토큰 만료 시간(밀리초)
      * @return 생성된 Token
      */
-    private String generateToken(String userId, String role, long expiration) {
+    private String generateToken(String userId, String role, UUID uuid, long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
-        return Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 .subject(userId.toString())
                 .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSecretKey())
-                .compact();
+                .signWith(getSecretKey());
+
+        if (uuid != null) {
+            builder.claim("uuid", uuid.toString());
+        }
+
+        return builder.compact();
     }
 
     /**
@@ -92,6 +98,17 @@ public class JwtUtils {
     public String getUserIdFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         return claims.getSubject();
+    }
+
+    /**
+     * Token에서 uuid 추출
+     *
+     * @param token JWT Token
+     * @return uuid
+     */
+    public String getUuidFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims != null ? claims.get("uuid").toString() : null;
     }
 
     /**

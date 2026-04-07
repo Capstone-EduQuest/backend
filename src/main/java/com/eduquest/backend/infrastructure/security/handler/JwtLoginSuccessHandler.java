@@ -1,5 +1,8 @@
 package com.eduquest.backend.infrastructure.security.handler;
 
+import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;
 import com.eduquest.backend.infrastructure.security.dto.JwtToken;
 import com.eduquest.backend.infrastructure.security.repository.JwtRepository;
 import com.eduquest.backend.infrastructure.security.util.JwtUtils;
@@ -18,6 +21,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -28,6 +32,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     private final TokenUtils tokenUtils;
     private final ObjectMapper objectMapper;
     private final JwtRepository jwtRepository;
+    private final MemberQueryRepository memberQueryRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -39,7 +44,12 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("USER");
-        String accessToken = jwtUtils.generateAccessToken(username, role);
+
+        // uuid를 조회
+        UUID uuid = memberQueryRepository.findUuidByUserId(username)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+
+        String accessToken = jwtUtils.generateAccessToken(username, role, uuid);
         String refreshToken = jwtUtils.generateRefreshToken(username, role);
 
         // JWT refresh 토큰 저장소에 저장
