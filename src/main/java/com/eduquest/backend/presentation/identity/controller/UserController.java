@@ -81,6 +81,7 @@ public class UserController {
         ));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<UserListResponse.UserList> getUserList(@Valid @ModelAttribute UserListRequest request) {
         return ResponseEntity.ok(UserListResponse.UserList.of(
@@ -105,6 +106,7 @@ public class UserController {
         ));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users/roles")
     public ResponseEntity<RoleListResponse.RoleList> getRoleList() {
 
