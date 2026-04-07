@@ -58,11 +58,13 @@ public class UserController {
         return ResponseEntity.status(201).body("회원가입 성공");
     }
 
+    @PreAuthorize("@authz.isSelfByUserId(authentication, #userId)")
     @GetMapping("/users/{userId}/uuid")
     public ResponseEntity<UserIdToUuidResponse> getUuidByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(UserIdToUuidResponse.of(userProfileService.getUuidByUserId(userId)));
     }
 
+    @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
     @GetMapping("/users/{uuid}")
     public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable UUID uuid) {
 
@@ -117,6 +119,7 @@ public class UserController {
         ));
     }
 
+    @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
     @PutMapping("/users/{uuid}")
     public ResponseEntity<String> updateProfile(
             @PathVariable UUID uuid,
@@ -163,6 +166,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
     @DeleteMapping("/users/{uuid}")
     public ResponseEntity<String> deleteUser(
             @PathVariable UUID uuid
