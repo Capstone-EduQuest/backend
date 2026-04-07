@@ -64,6 +64,8 @@ CREATE TABLE member (
   id BIGINT NOT NULL,
   uuid CHAR(36) NOT NULL,
   user_id VARCHAR(64) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   birth DATE NOT NULL,
   nickname VARCHAR(64) NOT NULL,
   is_locked BOOLEAN NOT NULL DEFAULT false,
