@@ -55,9 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     try {
                         uuidStr = jwtUtils.getUuidFromToken(token);
                     } catch (Exception e) {
-                        if (uuidStr == null && !uuidStr.isBlank()) {
-                            authentication.setDetails(uuidStr);
-                        }
+                        log.debug(e.getMessage());
+                    }
+
+                    if (uuidStr != null && !uuidStr.isBlank()) {
+                        authentication.setDetails(uuidStr);
                     }
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
