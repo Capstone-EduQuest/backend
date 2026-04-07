@@ -32,10 +32,14 @@ public class AuthorizationService {
         Object details = authentication.getDetails();
 
         if (details instanceof String) {
-            UUID userUuid = UUID.fromString((String) details);
+            try {
+                UUID userUuid = UUID.fromString((String) details);
 
-            if (userUuid.equals(uuid)) {
-                return true;
+                if (userUuid.equals(uuid)) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // details가 UUID로 변환할 수 없는 경우, 계속해서 DB 조회로 넘어감
             }
         }
 
