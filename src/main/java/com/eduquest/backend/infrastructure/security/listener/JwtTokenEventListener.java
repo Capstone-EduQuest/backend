@@ -15,6 +15,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -40,7 +41,8 @@ public class JwtTokenEventListener {
         // token 재발급
         String username = jwtUtils.getUserIdFromToken(event.refreshToken());
         String role = jwtUtils.getRoleFromToken(event.refreshToken());
-        String newAccessToken = jwtUtils.generateAccessToken(username, role);
+        UUID uuid = UUID.fromString(jwtUtils.getUuidFromToken(event.refreshToken()));
+        String newAccessToken = jwtUtils.generateAccessToken(username, role, uuid);
         String newRefreshToken = jwtUtils.generateRefreshToken(username, role);
 
         // 토큰 갱신

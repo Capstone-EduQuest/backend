@@ -16,13 +16,29 @@ public class AuthorizationService {
 
     // userId 경로를 사용할 때 (GET /users/{userId}/uuid)
     public boolean isSelfByUserId(Authentication authentication, String userId) {
-        if (authentication == null || !authentication.isAuthenticated()) return false;
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
         return authentication.getName().equals(userId);
     }
 
     // uuid 경로를 사용할 때 (GET/PUT/DELETE /users/{uuid})
     public boolean isSelfByUuid(Authentication authentication, UUID uuid) {
-        if (authentication == null || !authentication.isAuthenticated()) return false;
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        Object details = authentication.getDetails();
+
+        if (details instanceof String) {
+            UUID userUuid = UUID.fromString((String) details);
+
+            if (userUuid.equals(uuid)) {
+                return true;
+            }
+        }
+
         String authUserId = authentication.getName();
         return memberQueryRepository.findUserProfileByUuid(uuid)
                 .map(MemberQuery.UserProfile::userId)
