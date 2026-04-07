@@ -23,7 +23,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -65,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{uuid}")
-    public ResponseEntity<UserProfileResponse> getUser(@PathVariable UUID uuid) {
+    public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable UUID uuid) {
 
         UserProfileCommand.ProfileResponse profileResponse = userProfileService.getUserProfile(uuid);
 
