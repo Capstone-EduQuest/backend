@@ -1,6 +1,7 @@
 package com.eduquest.backend.infrastructure.security.listener;
 
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.member.event.AccountLockEvent;
 import com.eduquest.backend.domain.member.event.RotateTokenEvent;
 import com.eduquest.backend.infrastructure.security.dto.JwtToken;
 import com.eduquest.backend.infrastructure.security.exception.SecurityErrorCode;
@@ -64,6 +65,16 @@ public class JwtTokenEventListener {
 
         // HttpOnly, Secure, SameSite 설정이 적용된 쿠키 생성
         event.response().addCookie(tokenUtils.createRefreshTokenCookie(newRefreshToken, jwtUtils.getRefreshTokenExpiration()));
+
+    }
+
+    @EventListener
+    public void handleAccountLockEvent(AccountLockEvent event) {
+
+        log.info("Remove refresh token for userId: {}", event.userId());
+
+        // 토큰 저장소에서 refresh token 삭제
+        jwtRepository.deleteByUserId(event.userId());
 
     }
 

@@ -1,10 +1,12 @@
 package com.eduquest.backend.application.identity.service;
 
+import com.eduquest.backend.domain.member.event.AccountLockEvent;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,6 +18,7 @@ public class AdminUserService {
 
     private final MemberCommandService memberCommandService;
     private final MemberQueryService memberQueryService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public void lockMember(UUID uuid) {
 
@@ -26,6 +29,10 @@ public class AdminUserService {
         }
 
         memberCommandService.updateMember(member);
+
+        eventPublisher.publishEvent(
+                AccountLockEvent.of(member.getUserId())
+        );
 
     }
 

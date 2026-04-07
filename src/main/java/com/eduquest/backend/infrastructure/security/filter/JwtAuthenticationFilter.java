@@ -46,6 +46,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // CustomUserDetailsService는 userId 문자열로 조회하도록 구현되어 있으므로 String.valueOf 사용
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
+                    if (!userDetails.isAccountNonExpired()) {
+                        
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json;charset=UTF-8");
+                        response.setCharacterEncoding("UTF-8");
+                        response.getWriter().write("{\"error\": \"User account is locked\"}");
+                        return;
+                    }
+
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

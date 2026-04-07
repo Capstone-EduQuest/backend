@@ -15,4 +15,6 @@ public interface JwtRepository {
 
     void deleteByToken(String token);
 
+    void deleteByUserId(String userId);
+
 }

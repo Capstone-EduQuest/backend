@@ -114,6 +114,15 @@ public class InMemoryJwtRepository implements JwtRepository {
         log.debug("토큰 삭제: {}", token);
     }
 
+    @Override
+    public void deleteByUserId(String userId) {
+        TOKEN_STORE.entrySet().removeIf(entry ->
+            entry.getValue().getUserId() != null &&
+            entry.getValue().getUserId().equals(userId)
+        );
+        log.debug("사용자의 모든 토큰 삭제 - userId: {}", userId);
+    }
+
     /**
      * 특정 사용자의 모든 토큰 삭제 (강제 로그아웃)
      *
