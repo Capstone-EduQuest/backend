@@ -24,8 +24,19 @@ public class JpaMemberQueryService implements MemberQueryService {
     private final RoleQueryRepository roleQueryRepository;
 
     @Override
+    public boolean isExistById(Long id) {
+        return memberQueryRepository.existsById(id);
+    }
+
+    @Override
     public boolean isExistByEmail(String email) {
         return memberQueryRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Member findMemberById(Long id) {
+        return memberMapper.toDomain(memberQueryRepository.findById(id)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA)));
     }
 
     @Override

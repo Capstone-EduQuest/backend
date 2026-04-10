@@ -5,6 +5,7 @@ import com.eduquest.backend.domain.member.dto.UserDetailsData;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QRoleEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QUserRoleEntity;
+import com.eduquest.backend.infrastructure.persistence.reward.entity.QWalletEntity;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -85,7 +86,6 @@ public class MemberQRepositoryImpl implements MemberQRepository {
         );
     }
 
-    // Todo : point 도메인 구현 후 추가
     @Override
     public Optional<MemberQuery.UserProfile> findUserProfileByUuid(UUID uuid) {
         return Optional.ofNullable(
@@ -96,7 +96,7 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                                         QMemberEntity.memberEntity.userId,
                                         QMemberEntity.memberEntity.birth,
                                         QMemberEntity.memberEntity.nickname,
-                                        Expressions.constant(0L),
+                                        QWalletEntity.walletEntity.balance,
                                         QRoleEntity.roleEntity.name,
                                         QMemberEntity.memberEntity.isLocked,
                                         QMemberEntity.memberEntity.profileId
@@ -106,6 +106,8 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                         .join(QUserRoleEntity.userRoleEntity)
                         .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
                         .join(QUserRoleEntity.userRoleEntity.role)
+                        .join(QWalletEntity.walletEntity)
+                        .on(QWalletEntity.walletEntity.userId.eq(QMemberEntity.memberEntity.id))
                         .where(QMemberEntity.memberEntity.uuid.eq(uuid))
                         .fetchOne()
         );
@@ -132,19 +134,18 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                 .fetch();
     }
 
-    // Todo : point 도메인 구현 후 switch에 balance로 정렬 추가
     private List<OrderSpecifier<?>> buildOrderBy(String sortBy, String sortDirection) {
 
         if (sortDirection == null || sortDirection.equals("asc")) {
-            switch (sortBy) {
-                default:
-                    return List.of(QMemberEntity.memberEntity.userId.asc());
-            }
+            return switch (sortBy) {
+                case "balance" -> List.of(Expressions.numberPath(Long.class, "balance").asc());
+                default -> List.of(QMemberEntity.memberEntity.userId.asc());
+            };
         } else if (sortDirection.equals("desc")) {
-            switch (sortBy) {
-                default:
-                    return List.of(QMemberEntity.memberEntity.userId.desc());
-            }
+            return switch (sortBy) {
+                case "balance" -> List.of(Expressions.numberPath(Long.class, "balance").desc());
+                default -> List.of(QMemberEntity.memberEntity.userId.desc());
+            };
         } else {
             throw new IllegalArgumentException("Invalid sort direction: " + sortDirection);
         }

@@ -23,5 +23,12 @@ public class JpaStageQueryService implements StageQueryService {
                 .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
     }
 
+    @Override
+    public Long findRewardById(Long stageId) {
+        return stageJpaRepository.findById(stageId)
+                .map(StageEntity::getReward)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+    }
+
 }
 
