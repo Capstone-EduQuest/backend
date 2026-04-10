@@ -8,7 +8,11 @@ import java.util.UUID;
 
 public interface MemberQueryService {
 
+    boolean isExistById(Long id);
+
     boolean isExistByEmail(String email);
+
+    Member findMemberById(Long id);
 
     Member findMemberByUuid(UUID uuid);
 

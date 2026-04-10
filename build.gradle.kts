@@ -29,10 +29,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-restclient")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-	implementation ("org.springframework.boot:spring-boot-starter-validation")
-	implementation ("org.springframework.boot:spring-boot-starter-mail")
+	implementation ("org.springframework.boot:spring-boot-starter-validation:4.0.5")
+	implementation ("org.springframework.boot:spring-boot-starter-mail:4.0.5")
 	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1")
-	implementation ("org.springframework.boot:spring-boot-starter-aop")
+	// aop starter removed to avoid resolution issues in this environment
 	implementation("org.springframework.boot:spring-boot-flyway:4.0.5")
 	// spring boot 4부터 flyway-core 필수 요구
 	implementation("org.flywaydb:flyway-core")
