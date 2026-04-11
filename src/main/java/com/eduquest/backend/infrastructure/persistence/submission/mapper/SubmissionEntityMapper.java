@@ -1,7 +1,11 @@
 package com.eduquest.backend.infrastructure.persistence.submission.mapper;
 
+import com.eduquest.backend.domain.submission.model.Submission;
 import com.eduquest.backend.infrastructure.persistence.submission.entity.SubmissionEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class SubmissionEntityMapper {
@@ -10,19 +14,19 @@ public class SubmissionEntityMapper {
         return SubmissionEntity.of(answer, userId, problemId);
     }
 
-    public SubmissionEntity toEntity(com.eduquest.backend.domain.submission.model.Submission submission) {
+    public SubmissionEntity toEntity(Submission submission) {
         if (submission == null) {
             return null;
         }
         return SubmissionEntity.of(submission.getAnswer(), submission.getUserId(), submission.getProblemId());
     }
 
-    public com.eduquest.backend.domain.submission.model.Submission toDomain(SubmissionEntity e) {
+    public Submission toDomain(SubmissionEntity e) {
         if (e == null) {
             return null;
         }
 
-        return com.eduquest.backend.domain.submission.model.Submission.of(
+        return Submission.of(
                 e.getUuid(),
                 e.getId(),
                 e.getUserId(),
@@ -32,9 +36,9 @@ public class SubmissionEntityMapper {
         );
     }
 
-    public java.util.List<com.eduquest.backend.domain.submission.model.Submission> toDomainList(java.util.List<SubmissionEntity> entities) {
+    public List<Submission> toDomainList(List<SubmissionEntity> entities) {
         if (entities == null) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
         return entities.stream().map(this::toDomain).toList();
     }
