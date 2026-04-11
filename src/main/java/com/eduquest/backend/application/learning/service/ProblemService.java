@@ -115,6 +115,8 @@ public class ProblemService {
     }
 
     public HintDto findHint(UUID problemUuid, Integer level) {
+
+        // ToDo : 이미 본 힌트가 아니라면 포인트 차감 이벤트 발생시키기
         ProblemQuery.Detail detail = problemQueryService.findProblemByUuid(problemUuid);
 
         if (detail.hints() == null) {
