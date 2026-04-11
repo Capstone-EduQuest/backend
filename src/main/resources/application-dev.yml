@@ -34,6 +34,10 @@ spring:
     locations: classpath:db/migration
     encoding: UTF-8
 
+coderunner:
+  piston:
+    url: http://localhost:2000
+
 logging:
   level:
     org.hibernate.SQL: debug

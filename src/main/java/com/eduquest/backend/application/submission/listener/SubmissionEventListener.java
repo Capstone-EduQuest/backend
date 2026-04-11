@@ -4,17 +4,17 @@ import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;
-import com.eduquest.backend.infrastructure.persistence.submission.entity.SubmissionEntity;
-import com.eduquest.backend.infrastructure.persistence.submission.entity.WrongNoteEntity;
-import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionJpaRepository;
-import com.eduquest.backend.infrastructure.persistence.submission.repository.WrongNoteJpaRepository;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
+import com.eduquest.backend.domain.submission.model.Submission;
+import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
+import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.UUID;
 
@@ -24,13 +24,13 @@ public class SubmissionEventListener {
 
     private final ApplicationEventPublisher eventPublisher;
     private final StageQueryService stageQueryService;
-    private final WrongNoteJpaRepository wrongNoteJpaRepository;
+    private final WrongNoteCommandService wrongNoteCommandService;
     private final MemberQueryService memberQueryService;
-    private final SubmissionJpaRepository submissionJpaRepository;
+    private final SubmissionQueryService submissionQueryService;
 
     @Async
     @Transactional
-    @EventListener
+    @TransactionalEventListener
     public void handleSubmissionEvaluated(SubmissionEvaluatedEvent event) {
 
         if (Boolean.TRUE.equals(event.isCorrect())) {
@@ -40,13 +40,12 @@ public class SubmissionEventListener {
 
             Member member = memberQueryService.findMemberById(event.memberId());
 
-            eventPublisher.publishEvent(new GrantPointEvent(member.getId(), amount, "submission:" + event.submissionId()));
+            eventPublisher.publishEvent(GrantPointEvent.of(member.getId(), amount, "submission:" + event.submissionId()));
         } else {
-            SubmissionEntity submissionEntity = submissionJpaRepository.findById(event.submissionId()).orElse(null);
-            String answer = submissionEntity != null ? submissionEntity.getAnswer() : null;
+            Submission submission = submissionQueryService.findById(event.submissionId());
+            String answer = submission != null ? submission.getAnswer() : null;
 
-            WrongNoteEntity wrongNote = WrongNoteEntity.of(answer, null, Boolean.FALSE, null, event.memberId());
-            wrongNoteJpaRepository.save(wrongNote);
+            wrongNoteCommandService.createWrongNote(answer, event.memberId());
         }
     }
 

@@ -1,5 +1,6 @@
 package com.eduquest.backend.presentation.submission.controller;
 
+import com.eduquest.backend.application.submission.service.SubmissionService;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.presentation.submission.dto.request.SubmissionRequest;
 import com.eduquest.backend.presentation.submission.dto.response.SubmissionResponse;

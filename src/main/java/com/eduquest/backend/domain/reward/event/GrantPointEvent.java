@@ -5,4 +5,9 @@ public record GrantPointEvent(
         Long point,
         String reason
 ) {
+
+    public static GrantPointEvent of(Long memberId, Long point, String reason) {
+        return new GrantPointEvent(memberId, point, reason);
+    }
+
 }

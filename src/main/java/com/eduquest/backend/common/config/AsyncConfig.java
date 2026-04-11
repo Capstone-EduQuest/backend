@@ -23,4 +23,10 @@ public class AsyncConfig {
         return new VirtualThreadTaskExecutor();
     }
 
+    // evaluation 이벤트 전용 가상 스레드 TaskExecutor
+    @Bean(name = "evaluationTaskExecutor")
+    public TaskExecutor evaluationTaskExecutor() {
+        return new VirtualThreadTaskExecutor();
+    }
+
 }
