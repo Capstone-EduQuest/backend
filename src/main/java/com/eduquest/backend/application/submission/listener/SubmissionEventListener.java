@@ -1,10 +1,10 @@
 package com.eduquest.backend.application.submission.listener;
 
+import com.eduquest.backend.domain.learning.service.StageQueryService;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;
-import com.eduquest.backend.domain.learning.service.StageQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;

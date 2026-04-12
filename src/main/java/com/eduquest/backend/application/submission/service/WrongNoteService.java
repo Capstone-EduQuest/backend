@@ -4,8 +4,7 @@ import com.eduquest.backend.application.submission.exception.WrongNoteErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
-import com.eduquest.backend.domain.submission.dto.WrongNoteDto;
-import com.eduquest.backend.domain.submission.model.WrongNote;
+import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
@@ -31,7 +30,7 @@ public class WrongNoteService {
         Long userId = memberQueryService.findMemberIdByUuid(userUuid);
 
         String sort = sortBy == null ? "updatedAt" : sortBy;
-        List<WrongNoteDto.Detail> details = wrongNoteQueryService.findWrongNotesByUserId(userId, page, size, sort, isAsc);
+        List<WrongNoteQuery.Detail> details = wrongNoteQueryService.findWrongNotesByUserId(userId, page, size, sort, isAsc);
         long total = wrongNoteQueryService.countWrongNotesByUserId(userId);
 
         List<WrongNoteResponse> results = details.stream()
@@ -53,7 +52,7 @@ public class WrongNoteService {
 
     @Transactional(readOnly = true)
     public WrongNoteResponse findWrongNoteByUuid(UUID wrongNoteUuid) {
-        WrongNoteDto.Detail detail = wrongNoteQueryService.findWrongNoteByUuid(wrongNoteUuid);
+        WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongNoteByUuid(wrongNoteUuid);
         if (detail == null) {
             throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
         }
@@ -78,7 +77,7 @@ public class WrongNoteService {
     @Transactional(readOnly = true)
     public WrongNoteListResponse.WrongNoteList findWrongNotes(int page, int size, String sortBy, boolean isAsc) {
         String sort = sortBy == null ? "updatedAt" : sortBy;
-        List<WrongNoteDto.Detail> details = wrongNoteQueryService.findWrongNotes(page, size, sort, isAsc);
+        List<WrongNoteQuery.Detail> details = wrongNoteQueryService.findWrongNotes(page, size, sort, isAsc);
         long total = wrongNoteQueryService.countWrongNotes();
 
         List<WrongNoteResponse> results = details.stream()

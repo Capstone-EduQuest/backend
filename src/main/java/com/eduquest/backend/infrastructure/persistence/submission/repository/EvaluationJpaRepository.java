@@ -4,8 +4,6 @@ import com.eduquest.backend.infrastructure.persistence.submission.entity.Evaluat
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface EvaluationJpaRepository extends JpaRepository<EvaluationEntity, Long> {
 

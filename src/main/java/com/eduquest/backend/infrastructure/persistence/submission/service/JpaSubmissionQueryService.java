@@ -5,7 +5,6 @@ import com.eduquest.backend.domain.submission.model.Submission;
 import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.SubmissionEntityMapper;
-import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionJpaRepository;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

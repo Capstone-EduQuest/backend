@@ -1,22 +1,21 @@
 package com.eduquest.backend.domain.submission.service;
 
-import com.eduquest.backend.domain.submission.dto.WrongNoteDto;
+import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface WrongNoteQueryService {
 
-    WrongNoteDto.Detail findWrongNoteByUserIdAndProblemId(Long userId, Long problemId);
+    WrongNoteQuery.Detail findWrongNoteByUserIdAndProblemId(Long userId, Long problemId);
 
-    List<WrongNoteDto.Detail> findWrongNotesByUserId(Long userId, int page, int size, String sortBy, boolean isAsc);
+    List<WrongNoteQuery.Detail> findWrongNotesByUserId(Long userId, int page, int size, String sortBy, boolean isAsc);
+
+    WrongNoteQuery.Detail findWrongNoteByUuid(UUID wrongNoteUuid);
+
+    List<WrongNoteQuery.Detail> findWrongNotes(int page, int size, String sortBy, boolean isAsc);
 
     long countWrongNotesByUserId(Long userId);
-
-    // UUID 기반 조회
-    WrongNoteDto.Detail findWrongNoteByUuid(java.util.UUID wrongNoteUuid);
-
-    // 전체(글로벌) 목록 및 카운트
-    List<WrongNoteDto.Detail> findWrongNotes(int page, int size, String sortBy, boolean isAsc);
 
     long countWrongNotes();
 
