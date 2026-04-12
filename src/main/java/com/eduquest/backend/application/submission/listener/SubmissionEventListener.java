@@ -28,12 +28,15 @@ public class SubmissionEventListener {
     private final MemberQueryService memberQueryService;
     private final SubmissionQueryService submissionQueryService;
 
-    @Async
-    @Transactional
+    @Async("evaluationTaskExecutor")
     @TransactionalEventListener
     public void handleSubmissionEvaluated(SubmissionEvaluatedEvent event) {
 
-        if (Boolean.TRUE.equals(event.isCorrect())) {
+        if (Boolean.TRUE.equals(event.isCorrect()) && event.problemType().equals("basic")) {
+            // 기본 문제의 경우, 정답이 맞더라도 포인트를 지급하지 않음
+            return;
+        } else if (Boolean.TRUE.equals(event.isCorrect())) {
+            // 최종 문제인 경우 스테이지 클리어 보상을 지급함
             UUID stageUuid = event.stageUuid();
             Long stageId = stageQueryService.findIdByUuid(stageUuid);
             Long amount = stageQueryService.findRewardById(stageId);
