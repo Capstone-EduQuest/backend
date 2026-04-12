@@ -26,7 +26,7 @@ public class JpaWrongNoteQueryService implements WrongNoteQueryService {
         return wrongNoteJpaRepository.findByUserIdAndProblemId(userId, problemId)
                 .map(e -> {
                     WrongNote wn = mapper.toDomain(e);
-                    return WrongNoteDto.Detail.of(wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
+                    return WrongNoteDto.Detail.of(wn.getUuid(), wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
                 })
                 .orElse(null);
     }
@@ -40,9 +40,38 @@ public class JpaWrongNoteQueryService implements WrongNoteQueryService {
                 .stream()
                 .map(e -> {
                     WrongNote wn = mapper.toDomain(e);
-                    return WrongNoteDto.Detail.of(wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
+                    return WrongNoteDto.Detail.of(wn.getUuid(), wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public WrongNoteDto.Detail findWrongNoteByUuid(java.util.UUID wrongNoteUuid) {
+        return wrongNoteJpaRepository.findByUuid(wrongNoteUuid)
+                .map(e -> {
+                    WrongNote wn = mapper.toDomain(e);
+                    return WrongNoteDto.Detail.of(wn.getUuid(), wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
+                })
+                .orElse(null);
+    }
+
+    @Override
+    public List<WrongNoteDto.Detail> findWrongNotes(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction dir = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size), Sort.by(dir, sortBy));
+
+        return wrongNoteJpaRepository.findAll(pageable)
+                .stream()
+                .map(e -> {
+                    WrongNote wn = mapper.toDomain(e);
+                    return WrongNoteDto.Detail.of(wn.getUuid(), wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countWrongNotes() {
+        return wrongNoteJpaRepository.count();
     }
 
     @Override

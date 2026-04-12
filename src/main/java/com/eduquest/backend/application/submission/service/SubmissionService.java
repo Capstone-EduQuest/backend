@@ -1,13 +1,12 @@
 package com.eduquest.backend.application.submission.service;
 
 import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;
+import com.eduquest.backend.domain.submission.event.WrongNoteCreateRequestedEvent;
 import com.eduquest.backend.domain.submission.service.CodeRunnerService;
 import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
 import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
-import com.eduquest.backend.infrastructure.persistence.submission.entity.SubmissionEntity;
-import com.eduquest.backend.infrastructure.persistence.submission.mapper.SubmissionEntityMapper;
-import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionJpaRepository;
-import com.eduquest.backend.infrastructure.persistence.submission.repository.WrongNoteJpaRepository;
+import com.eduquest.backend.domain.submission.model.Submission;
+import com.eduquest.backend.domain.submission.service.SubmissionCommandService;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
@@ -37,9 +36,7 @@ public class SubmissionService {
 	private final ProblemQueryService problemQueryService;
 	private final MemberQueryService memberQueryService;
 	private final StageQueryService stageQueryService;
-	private final SubmissionJpaRepository submissionJpaRepository;
-	private final WrongNoteJpaRepository wrongNoteJpaRepository;
-	private final SubmissionEntityMapper submissionEntityMapper;
+	private final SubmissionCommandService submissionCommandService;
 	private final ApplicationEventPublisher eventPublisher;
 	private final CodeRunnerService codeRunnerService;
 
@@ -54,8 +51,9 @@ public class SubmissionService {
 		UUID userUuid = memberQueryService.findMemberUuidByUserId(userId);
 		Long memberId = memberQueryService.findMemberIdByUuid(userUuid);
 
-		SubmissionEntity submission = submissionEntityMapper.toEntity(memberId, problemId, answer);
-		submission = submissionJpaRepository.save(submission);
+		// domain 모델 생성 후 도메인 포트로 저장 (infrastructure 의존 제거)
+		Submission submissionDomain = Submission.of(memberId, problemId, answer);
+		Long submissionId = submissionCommandService.saveSubmission(submissionDomain);
 
 		boolean isCorrect;
 
@@ -65,10 +63,10 @@ public class SubmissionService {
 			isCorrect = evaluateCodeProblem(detail, answer);
 		}
 
-		log.info("Evaluated submission: submissionId={}, memberId={}, isCorrect={}", submission.getId(), memberId, isCorrect);
+		log.info("Evaluated submission: submissionId={}, memberId={}, isCorrect={}", submissionId, memberId, isCorrect);
 
 		SubmissionEvaluatedEvent event = SubmissionEvaluatedEvent.of(
-				submission.getId(),
+				submissionId,
 				memberId,
 				isCorrect,
 				detail.stageUuid(),
@@ -76,6 +74,12 @@ public class SubmissionService {
 		);
 
 		eventPublisher.publishEvent(event);
+
+		// 틀렸을 경우에만 오답노트 생성 요청 이벤트 발행(비동기 처리)
+		if (!isCorrect) {
+			WrongNoteCreateRequestedEvent wrongNoteEvent = WrongNoteCreateRequestedEvent.of(submissionId, memberId, problemId, answer);
+			eventPublisher.publishEvent(wrongNoteEvent);
+		}
 
 		return isCorrect;
 	}

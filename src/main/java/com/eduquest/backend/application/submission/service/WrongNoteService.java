@@ -2,6 +2,7 @@ package com.eduquest.backend.application.submission.service;
 
 import com.eduquest.backend.application.submission.exception.WrongNoteErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.domain.submission.dto.WrongNoteDto;
 import com.eduquest.backend.domain.submission.model.WrongNote;
@@ -34,16 +35,16 @@ public class WrongNoteService {
         long total = wrongNoteQueryService.countWrongNotesByUserId(userId);
 
         List<WrongNoteResponse> results = details.stream()
-                .map(d -> WrongNoteResponse.of(
-                        d.id(),
-                        d.problemId(),
+                .map(detail -> WrongNoteResponse.of(
+                        detail.id(),
+                        detail.problemId(),
                         userUuid,
-                        d.wrongAnswer(),
-                        d.aiExplanation(),
-                        d.isReviewed(),
-                        d.updatedAt(), // lastSubmittedAt
-                        d.createdAt(),
-                        d.updatedAt()
+                        detail.wrongAnswer(),
+                        detail.aiExplanation(),
+                        detail.isReviewed(),
+                        detail.updatedAt(), // lastSubmittedAt
+                        detail.createdAt(),
+                        detail.updatedAt()
                 ))
                 .collect(Collectors.toList());
 
@@ -51,12 +52,15 @@ public class WrongNoteService {
     }
 
     @Transactional(readOnly = true)
-    public WrongNoteResponse findWrongNoteByUserUuidAndProblemId(UUID userUuid, Long problemId) {
-        Long userId = memberQueryService.findMemberIdByUuid(userUuid);
-        WrongNoteDto.Detail detail = wrongNoteQueryService.findWrongNoteByUserIdAndProblemId(userId, problemId);
+    public WrongNoteResponse findWrongNoteByUuid(UUID wrongNoteUuid) {
+        WrongNoteDto.Detail detail = wrongNoteQueryService.findWrongNoteByUuid(wrongNoteUuid);
         if (detail == null) {
             throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
         }
+
+        // memberQueryService를 사용해 userId -> userUuid 변환
+        Member member = memberQueryService.findMemberById(detail.userId());
+        java.util.UUID userUuid = member.getUuid();
 
         return WrongNoteResponse.of(
                 detail.id(),
@@ -71,28 +75,36 @@ public class WrongNoteService {
         );
     }
 
-    @Transactional
-    public Long createOrUpdateWrongNote(UUID userUuid, Long problemId, String wrongAnswer, String feedback) {
-        Long userId = memberQueryService.findMemberIdByUuid(userUuid);
+    @Transactional(readOnly = true)
+    public WrongNoteListResponse.WrongNoteList findWrongNotes(int page, int size, String sortBy, boolean isAsc) {
+        String sort = sortBy == null ? "updatedAt" : sortBy;
+        List<WrongNoteDto.Detail> details = wrongNoteQueryService.findWrongNotes(page, size, sort, isAsc);
+        long total = wrongNoteQueryService.countWrongNotes();
 
-        WrongNote wn = WrongNote.of(userId, problemId, wrongAnswer, feedback);
-        return wrongNoteCommandService.saveOrUpdateWrongNote(wn);
+        List<WrongNoteResponse> results = details.stream()
+                .map(detail -> {
+                    com.eduquest.backend.domain.member.model.Member member = memberQueryService.findMemberById(detail.userId());
+                    java.util.UUID userUuid = member.getUuid();
+                    return WrongNoteResponse.of(
+                            detail.id(),
+                            detail.problemId(),
+                            userUuid,
+                            detail.wrongAnswer(),
+                            detail.aiExplanation(),
+                            detail.isReviewed(),
+                            detail.updatedAt(),
+                            detail.createdAt(),
+                            detail.updatedAt()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return WrongNoteListResponse.WrongNoteList.of(page, size, sort, isAsc, total, results);
     }
 
     @Transactional
-    public void markReviewed(UUID userUuid, Long problemId, Boolean isReviewed) {
-        Long userId = memberQueryService.findMemberIdByUuid(userUuid);
-        WrongNoteDto.Detail detail = wrongNoteQueryService.findWrongNoteByUserIdAndProblemId(userId, problemId);
-        if (detail == null) {
-            throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
-        }
-        wrongNoteCommandService.markReviewed(userId, problemId, Boolean.TRUE.equals(isReviewed));
-    }
-
-    @Transactional
-    public void deleteWrongNote(UUID userUuid, Long problemId) {
-        Long userId = memberQueryService.findMemberIdByUuid(userUuid);
-        wrongNoteCommandService.deleteByUserIdAndProblemId(userId, problemId);
+    public void deleteWrongNoteByUuid(UUID wrongNoteUuid) {
+        wrongNoteCommandService.deleteByUuid(wrongNoteUuid);
     }
 
 }

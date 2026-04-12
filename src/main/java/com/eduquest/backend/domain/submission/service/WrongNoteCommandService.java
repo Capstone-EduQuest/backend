@@ -28,5 +28,10 @@ public interface WrongNoteCommandService {
      */
     void markReviewed(Long userId, Long problemId, boolean isReviewed);
 
+    /**
+     * UUID 기반 삭제
+     */
+    void deleteByUuid(java.util.UUID wrongNoteUuid);
+
 }
 

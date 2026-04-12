@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface WrongNoteJpaRepository extends JpaRepository<WrongNoteEntity, Long> {
@@ -20,6 +21,11 @@ public interface WrongNoteJpaRepository extends JpaRepository<WrongNoteEntity, L
     Page<WrongNoteEntity> findAllByUserId(Long userId, Pageable pageable);
 
     long countByUserId(Long userId);
+
+    // UUID 기반 조회 및 삭제
+    Optional<WrongNoteEntity> findByUuid(UUID uuid);
+
+    void deleteByUuid(java.util.UUID uuid);
 
 }
 

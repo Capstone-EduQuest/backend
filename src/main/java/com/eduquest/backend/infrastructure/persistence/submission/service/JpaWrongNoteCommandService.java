@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +75,11 @@ public class JpaWrongNoteCommandService implements WrongNoteCommandService {
             }
             wrongNoteJpaRepository.save(entity);
         }
+    }
+
+    @Override
+    public void deleteByUuid(UUID wrongNoteUuid) {
+        wrongNoteJpaRepository.deleteByUuid(wrongNoteUuid);
     }
 }
 
