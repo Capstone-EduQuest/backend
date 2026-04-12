@@ -10,10 +10,8 @@ import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.UUID;
@@ -46,9 +44,14 @@ public class SubmissionEventListener {
             eventPublisher.publishEvent(GrantPointEvent.of(member.getId(), amount, "submission:" + event.submissionId()));
         } else {
             Submission submission = submissionQueryService.findById(event.submissionId());
-            String answer = submission != null ? submission.getAnswer() : null;
-
-            wrongNoteCommandService.createWrongNote(answer, event.memberId());
+            if (submission != null) {
+                String answer = submission.getAnswer();
+                Long problemId = submission.getProblemId();
+                wrongNoteCommandService.createWrongNote(answer, event.memberId(), problemId);
+            } else {
+                // submission이 없을 경우 로깅(선택)
+                // log.warn("Submission not found for id {}", event.submissionId());
+            }
         }
     }
 

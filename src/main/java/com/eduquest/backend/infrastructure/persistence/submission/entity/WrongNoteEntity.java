@@ -32,28 +32,41 @@ public class WrongNoteEntity extends BasicUpdateEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "problem_id", nullable = false)
+    private Long problemId;
+
     @Builder(access = AccessLevel.PROTECTED)
-    public WrongNoteEntity(String wrongAnswer, String aiExplanation, Boolean isReviewed, LocalDateTime nextReviewAt, Long userId) {
+    public WrongNoteEntity(String wrongAnswer, String aiExplanation, Boolean isReviewed, LocalDateTime nextReviewAt, Long userId, Long problemId) {
         this.wrongAnswer = wrongAnswer;
         this.aiExplanation = aiExplanation;
         this.isReviewed = isReviewed;
         this.nextReviewAt = nextReviewAt;
         this.userId = userId;
+        this.problemId = problemId;
     }
 
-    public static WrongNoteEntity of(String wrongAnswer, String aiExplanation, Boolean isReviewed, LocalDateTime nextReviewAt, Long userId) {
+    public static WrongNoteEntity of(String wrongAnswer, String aiExplanation, Boolean isReviewed, LocalDateTime nextReviewAt, Long userId, Long problemId) {
         return WrongNoteEntity.builder()
                 .wrongAnswer(wrongAnswer)
                 .aiExplanation(aiExplanation)
                 .isReviewed(isReviewed)
                 .nextReviewAt(nextReviewAt)
                 .userId(userId)
+                .problemId(problemId)
                 .build();
     }
 
     public void markReviewed() {
         this.isReviewed = Boolean.TRUE;
         this.nextReviewAt = null;
+    }
+
+    // 오답 내용 업데이트 및 isReviewed=false로 리셋
+    public void updateWrongAnswer(String wrongAnswer, String aiExplanation, LocalDateTime nextReviewAt) {
+        this.wrongAnswer = wrongAnswer;
+        this.aiExplanation = aiExplanation;
+        this.nextReviewAt = nextReviewAt;
+        this.isReviewed = Boolean.FALSE;
     }
 
     public void scheduleNextReview(LocalDateTime when) {
