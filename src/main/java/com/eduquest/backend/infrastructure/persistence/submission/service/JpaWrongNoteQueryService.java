@@ -3,6 +3,7 @@ package com.eduquest.backend.infrastructure.persistence.submission.service;
 import com.eduquest.backend.domain.submission.dto.WrongNoteDto;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.WrongNoteEntityMapper;
+import com.eduquest.backend.domain.submission.model.WrongNote;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.WrongNoteJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +25,7 @@ public class JpaWrongNoteQueryService implements WrongNoteQueryService {
     public WrongNoteDto.Detail findWrongNoteByUserIdAndProblemId(Long userId, Long problemId) {
         return wrongNoteJpaRepository.findByUserIdAndProblemId(userId, problemId)
                 .map(e -> {
-                    var wn = mapper.toDomain(e);
+                    WrongNote wn = mapper.toDomain(e);
                     return WrongNoteDto.Detail.of(wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
                 })
                 .orElse(null);
@@ -38,7 +39,7 @@ public class JpaWrongNoteQueryService implements WrongNoteQueryService {
         return wrongNoteJpaRepository.findAllByUserId(userId, pageable)
                 .stream()
                 .map(e -> {
-                    var wn = mapper.toDomain(e);
+                    WrongNote wn = mapper.toDomain(e);
                     return WrongNoteDto.Detail.of(wn.getId(), wn.getUserId(), wn.getProblemId(), wn.getWrongAnswer(), wn.getAiExplanation(), wn.getIsReviewed(), wn.getNextReviewAt(), wn.getCreatedAt(), wn.getUpdatedAt());
                 })
                 .collect(Collectors.toList());
