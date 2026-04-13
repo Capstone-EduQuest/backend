@@ -10,5 +10,7 @@ public interface SubmissionQueryService {
 
     List<Submission> findByProblemId(Long problemId);
 
+    List<Submission> findByUserId(Long userId);
+
 }
 

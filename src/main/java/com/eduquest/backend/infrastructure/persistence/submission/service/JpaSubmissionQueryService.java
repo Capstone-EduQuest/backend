@@ -30,6 +30,11 @@ public class JpaSubmissionQueryService implements SubmissionQueryService {
 		return mapper.toDomainList(submissionQueryRepository.findByProblemId(problemId));
 	}
 
+	@Override
+	public List<Submission> findByUserId(Long userId) {
+		return mapper.toDomainList(submissionQueryRepository.findByUserId(userId));
+	}
+
 }
 
 
