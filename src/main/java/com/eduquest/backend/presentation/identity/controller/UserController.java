@@ -144,7 +144,7 @@ public class UserController {
     @PutMapping("/users/{uuid}/role")
     public ResponseEntity<String> updateRole(
             @PathVariable UUID uuid,
-            @Valid RoleUpdateRequest request
+            @Valid @RequestBody RoleUpdateRequest request
     ) {
 
         roleService.updateRole(RoleCommand.RoleUpdateRequest.of(
