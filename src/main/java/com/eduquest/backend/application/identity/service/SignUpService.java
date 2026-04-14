@@ -16,6 +16,7 @@ import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +68,8 @@ public class SignUpService {
             throw e;
         }
 
-        // Todo : 회원 가입 성공 이벤트 발행(이벤트 기반) - 기본 포인트 지급
+        // 회원 가입 성공 이벤트 발행(이벤트 기반) - 기본 포인트 지급(최소 변경: 하드코드 1000포인트)
+        eventPublisher.publishEvent(GrantPointEvent.of(member.getId(), 1000L, "sign-up"));
 
     }
 
