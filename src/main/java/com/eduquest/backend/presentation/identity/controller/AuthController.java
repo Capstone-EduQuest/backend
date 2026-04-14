@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/sign-in")
+    @PostMapping("/auth/sign-in")
     public ResponseEntity<String> signIn() {
         return ResponseEntity.ok("Sign In");
     }
 
-    @PostMapping("/find-id")
+    @PostMapping("/auth/find-id")
     public ResponseEntity<String> findId(@Valid @RequestBody FindIdRequest request) {
 
         authService.sendFindIdEmail(request.email());
@@ -30,7 +30,7 @@ public class AuthController {
         return ResponseEntity.status(204).build();
     }
 
-    @PostMapping("/find-password")
+    @PostMapping("/auth/find-password")
     public ResponseEntity<String> findPassword(@Valid @RequestBody FindPasswordRequest request) {
 
         authService.sendPasswordRestEmail(request.email(), request.userId());
@@ -38,7 +38,7 @@ public class AuthController {
         return ResponseEntity.status(204).build();
     }
 
-    @PutMapping("/reset-password")
+    @PutMapping("/auth/reset-password")
     public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
 
         authService.resetPassword(request.token(), request.newPassword());
@@ -46,7 +46,7 @@ public class AuthController {
         return ResponseEntity.status(204).build();
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/auth/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
 
         if (refreshToken == null || refreshToken.isBlank()) {

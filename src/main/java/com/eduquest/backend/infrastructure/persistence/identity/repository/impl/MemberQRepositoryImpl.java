@@ -45,7 +45,7 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                 .from(QMemberEntity.memberEntity)
                 .join(QUserRoleEntity.userRoleEntity)
                 .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
-                .join(QUserRoleEntity.userRoleEntity.role)
+                .join(QUserRoleEntity.userRoleEntity.role, QRoleEntity.roleEntity)
                 .where(QMemberEntity.memberEntity.userId.eq(userId))
                 .fetchOne());
     }
@@ -105,7 +105,7 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                         .from(QMemberEntity.memberEntity)
                         .join(QUserRoleEntity.userRoleEntity)
                         .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
-                        .join(QUserRoleEntity.userRoleEntity.role)
+                        .join(QUserRoleEntity.userRoleEntity.role, QRoleEntity.roleEntity)
                         .join(QWalletEntity.walletEntity)
                         .on(QWalletEntity.walletEntity.userId.eq(QMemberEntity.memberEntity.id))
                         .where(QMemberEntity.memberEntity.uuid.eq(uuid))
@@ -127,7 +127,7 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                 .from(QMemberEntity.memberEntity)
                 .join(QUserRoleEntity.userRoleEntity)
                 .on(QUserRoleEntity.userRoleEntity.member.id.eq(QMemberEntity.memberEntity.id))
-                .join(QUserRoleEntity.userRoleEntity.role)
+                .join(QUserRoleEntity.userRoleEntity.role, QRoleEntity.roleEntity)
                 .orderBy(buildOrderBy(sortBy, sortDirection).toArray(new OrderSpecifier[0]))
                 .offset((long) page * size)
                 .limit(size)

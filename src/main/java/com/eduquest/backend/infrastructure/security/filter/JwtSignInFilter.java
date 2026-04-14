@@ -52,4 +52,13 @@ public class JwtSignInFilter extends UsernamePasswordAuthenticationFilter {
 
     }
 
+    @Override
+    protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        // Ignore preflight requests
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return false;
+        }
+        return super.requiresAuthentication(request, response);
+    }
+
 }
