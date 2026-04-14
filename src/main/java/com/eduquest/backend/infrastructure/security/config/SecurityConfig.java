@@ -7,6 +7,7 @@ import com.eduquest.backend.infrastructure.security.handler.JwtLoginSuccessHandl
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,6 +35,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtLoginSuccessHandler jwtLoginSuccessHandler;
     private final JwtLoginFailureHandler jwtLoginFailureHandler;
@@ -95,7 +98,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of(frontendUrl));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
