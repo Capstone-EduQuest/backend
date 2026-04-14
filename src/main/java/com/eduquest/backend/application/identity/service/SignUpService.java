@@ -39,7 +39,7 @@ public class SignUpService {
     @Transactional
     public void signUp(SignUpCommand command) {
 
-        Long fileId = command.profileImage() != null ? handleProfileImage(command) : null;
+        Long fileId = command.profileImage() != null ? handleProfileImage(command) : 0L;
 
         // 회원 정보 저장
         Member member = Member.of(
