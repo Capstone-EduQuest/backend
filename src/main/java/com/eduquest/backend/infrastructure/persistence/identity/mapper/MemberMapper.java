@@ -18,7 +18,9 @@ public class MemberMapper {
                 member.getEmail(),
                 member.getPassword(),
                 member.getBirth(),
-                member.getNickname()
+                member.getNickname(),
+                member.getIsLocked(),
+                member.getProfileId()
         );
     }
 

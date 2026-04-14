@@ -23,3 +23,8 @@ jwt:
   access_key_expiration: 600000
   refresh_key_expiration: 1209600000
 
+admin:
+  id: ${ADMIN_ID}
+  email: ${ADMIN_EMAIL}
+  password: ${ADMIN_PASSWORD}
+
