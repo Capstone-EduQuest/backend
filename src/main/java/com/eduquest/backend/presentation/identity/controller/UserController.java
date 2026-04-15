@@ -17,6 +17,7 @@ import com.eduquest.backend.presentation.identity.dto.response.UserListResponse;
 import com.eduquest.backend.presentation.identity.dto.response.UserProfileResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -40,7 +42,7 @@ public class UserController {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}
     )
     public ResponseEntity<String> signUp(
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @RequestPart(value = "profileImage") MultipartFile profileImage,
             @Valid @RequestPart(value = "profile")ProfileRequest profileRequest
             ) {
 
