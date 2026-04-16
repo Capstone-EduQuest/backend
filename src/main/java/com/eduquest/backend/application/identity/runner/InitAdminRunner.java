@@ -7,6 +7,7 @@ import com.eduquest.backend.domain.member.model.Role;
 import com.eduquest.backend.domain.member.model.enums.RoleType;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +29,7 @@ public class InitAdminRunner implements ApplicationRunner {
     private final MemberCommandService memberCommandService;
     private final MemberQueryService memberQueryService;
     private final CustomPasswordEncoder passwordEncoder;
+    private final WalletCommandService walletCommandService;
 
     @Value("${admin.id}")
     private String adminId;
@@ -62,6 +65,12 @@ public class InitAdminRunner implements ApplicationRunner {
                     0L      // profileId
             );
             memberCommandService.saveMember(admin, RoleType.ADMIN.name());
+
+            // Admin 계정에 대한 wallet 초기화
+            UUID savedUuid = memberQueryService.findMemberUuidByUserId(admin.getUserId());
+            Long savedMemberId = memberQueryService.findMemberIdByUuid(savedUuid);
+            walletCommandService.changeBalance(savedMemberId, 0L, "init-wallet");
+
             log.info("Admin account has been created successfully");
         } else {
             log.info("Admin account already exists, skipping creation");

@@ -65,6 +65,10 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// Mockito for unit testing
+	testImplementation("org.mockito:mockito-core:5.5.0")
+	testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
 }
 
 tasks.withType<Test> {
