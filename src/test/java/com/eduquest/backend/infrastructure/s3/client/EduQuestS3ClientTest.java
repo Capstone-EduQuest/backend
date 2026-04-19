@@ -1,6 +1,7 @@
 package com.eduquest.backend.infrastructure.s3.client;
 
 import com.eduquest.backend.domain.file.dto.S3FileDto;
+import com.eduquest.backend.infrastructure.s3.config.S3Config;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = {EduQuestS3Client.class, com.eduquest.backend.infrastructure.s3.config.S3Config.class})
+@SpringBootTest
 @ActiveProfiles("dev")
 class EduQuestS3ClientTest {
 

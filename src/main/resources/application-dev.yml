@@ -36,7 +36,7 @@ spring:
 
 coderunner:
   piston:
-    url: http://localhost:2000
+    url: ${PISTON_EXECUTE_URL}
 
 logging:
   level:
