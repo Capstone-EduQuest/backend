@@ -2,6 +2,8 @@ package com.eduquest.backend.infrastructure.persistence.identity.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.member.model.Member;
+import com.eduquest.backend.domain.member.model.Role;
+import com.eduquest.backend.domain.member.model.enums.RoleType;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.MemberEntity;
@@ -47,6 +49,11 @@ public class JpaMemberCommandService implements MemberCommandService {
 
         return userRoleRepository.save(userRoleEntity).getId();
 
+    }
+
+    @Override
+    public Long saveRole(Role role) {
+        return roleJpaRepository.save(roleMapper.toEntity(role)).getId();
     }
 
     @Transactional

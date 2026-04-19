@@ -41,14 +41,15 @@ public class MemberEntity extends BasicUpdateEntity {
         this.profileId = profileId;
     }
 
-    public static MemberEntity of(String userId, String email, String password, LocalDate birth, String nickname) {
+    public static MemberEntity of(String userId, String email, String password, LocalDate birth, String nickname, Boolean isLocked, Long profileId) {
         return MemberEntity.builder()
                 .userId(userId)
                 .email(email)
                 .password(password)
                 .birth(birth)
                 .nickname(nickname)
-                .isLocked(false) // 기본적으로 계정은 잠금 해제 상태로 생성
+                .isLocked(isLocked != null ? isLocked : false)
+                .profileId(profileId)
                 .build();
     }
 

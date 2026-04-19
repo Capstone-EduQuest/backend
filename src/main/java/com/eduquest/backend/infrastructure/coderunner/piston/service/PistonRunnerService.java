@@ -48,14 +48,15 @@ public class PistonRunnerService implements CodeRunnerService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             String bodyJson = mapper.writeValueAsString(body);
 
-            String resp = RestClient.builder().build().post()
+            String response = RestClient.builder().build().post()
                     .uri(baseUrl)
                     .headers(h -> h.setContentType(MediaType.APPLICATION_JSON))
                     .body(bodyJson, new ParameterizedTypeReference<>() {})
                     .retrieve()
                     .toEntity(String.class)
                     .getBody();
-            JsonNode root = mapper.readTree(resp == null ? "{}" : resp);
+
+            JsonNode root = mapper.readTree(response == null ? "{}" : response);
 
             String language = root.path("language").asText(null);
             String version = root.path("version").asText(null);

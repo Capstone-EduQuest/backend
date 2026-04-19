@@ -16,6 +16,9 @@ import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import com.eduquest.backend.domain.reward.event.GrantPointEvent;
+import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,11 +38,14 @@ public class SignUpService {
     private final CustomPasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
+    private final MemberQueryService memberQueryService;
+    private final WalletCommandService walletCommandService;
+
     // 회원 가입 처리
     @Transactional
     public void signUp(SignUpCommand command) {
 
-        Long fileId = command.profileImage() != null ? handleProfileImage(command) : null;
+        Long fileId = command.profileImage() != null ? handleProfileImage(command) : 0L;
 
         // 회원 정보 저장
         Member member = Member.of(
@@ -54,6 +60,17 @@ public class SignUpService {
 
         try {
             memberCommandService.saveMember(member, RoleType.USER.toString());
+
+            // 저장된 멤버의 PK(memberId)를 조회
+            UUID savedUuid = memberQueryService.findMemberUuidByUserId(member.getUserId());
+            Long savedMemberId = memberQueryService.findMemberIdByUuid(savedUuid);
+
+            // 회원의 wallet 초기화 (wallet이 없으면 생성하도록 WalletCommandService 이용)
+            walletCommandService.changeBalance(savedMemberId, 0L, "init-wallet");
+
+            // 회원 가입 성공 이벤트 발행(이벤트 기반) - 기본 포인트 지급
+            eventPublisher.publishEvent(GrantPointEvent.of(savedMemberId, 1000L, "sign-up"));
+
         } catch (Exception e) {
 
             log.error("회원 저장 실패: {}", command.email());
@@ -67,7 +84,6 @@ public class SignUpService {
             throw e;
         }
 
-        // Todo : 회원 가입 성공 이벤트 발행(이벤트 기반) - 기본 포인트 지급
 
     }
 
@@ -87,6 +103,8 @@ public class SignUpService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        log.info("프로필 이미지 S3 업로드 성공: {}", fileName);
 
         // 업로드된 파일 정보를 DB에 저장
         return fileCommandService.saveFile(

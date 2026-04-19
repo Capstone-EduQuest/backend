@@ -31,11 +31,13 @@ public final class ProblemMapper {
     }
 
     public static ProblemCommand toCommand(ProblemCreateRequest req) {
-        return ProblemCommand.of(req.stageUuid(), req.type(), req.number(), req.summary(), req.example(), req.expectedOutput(), req.block(), HintMapper.toDtoList(req.hints()));
+        String block = req.block() == null ? null : req.block().toString();
+        return ProblemCommand.of(req.stageUuid(), req.type(), req.number(), req.summary(), req.example(), req.expectedOutput(), block, HintMapper.toDtoList(req.hints()));
     }
 
     public static ProblemCommand toCommand(ProblemUpdateRequest req) {
-        return ProblemCommand.of(req.stageUuid(), req.type(), req.number(), req.summary(), req.example(), req.expectedOutput(), req.block(), HintMapper.toDtoList(req.hints()));
+        String block = req.block() == null ? null : req.block().toString();
+        return ProblemCommand.of(req.stageUuid(), req.type(), req.number(), req.summary(), req.example(), req.expectedOutput(), block, HintMapper.toDtoList(req.hints()));
     }
 }
 
