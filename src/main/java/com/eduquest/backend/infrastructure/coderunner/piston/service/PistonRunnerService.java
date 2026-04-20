@@ -30,6 +30,10 @@ public class PistonRunnerService implements CodeRunnerService {
     private String baseUrl;
     @Value("${coderunner.piston.scheme}")
     private String scheme;
+    @Value("${coderunner.config.language.python.version}")
+    private String languageVersion;
+    @Value("${coderunner.config.language.python.file}")
+    private String fileName;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -39,8 +43,8 @@ public class PistonRunnerService implements CodeRunnerService {
             PistonRequest pistonRequest = PistonRequest.builder()
                     .stdin("")
                     .language(evaluateRequest.language())
-                    .version("3.12.0")
-                    .files(List.of(Map.of("name", "main.py", "content", evaluateRequest.source())))
+                    .version(languageVersion)
+                    .files(List.of(Map.of("name", fileName, "content", evaluateRequest.source())))
                     .compile_memory_limit(-1)
                     .compile_timeout(10000)
                     .build();
@@ -53,12 +57,10 @@ public class PistonRunnerService implements CodeRunnerService {
                     .body(pistonRequest)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                        log.info(request.getURI().toString());
-                        log.info(response.getStatusText());
+                        log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
                     })
                     .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
-                        log.info(request.getURI().toString());
-                        log.info(response.getStatusText());
+                        log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
                     }).toEntity(String.class);
 
             log.info(results.getBody());
