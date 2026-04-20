@@ -46,6 +46,7 @@ public class SubmissionService {
 	private final SubmissionCommandService submissionCommandService;
 	private final ApplicationEventPublisher eventPublisher;
 	private final CodeRunnerService codeRunnerService;
+	private final ObjectMapper objectMapper;
 
 	@Transactional
 	public boolean submit(UUID problemUuid, String userId, String answer) {
@@ -103,12 +104,14 @@ public class SubmissionService {
 		Long memoryLimitKb = DEFAULT_MEMORY_LIMIT_KB;
 		Boolean compileOnly = false;
 
-		CodeEvaluateRequest request = new CodeEvaluateRequest(
+		CodeEvaluateRequest request = CodeEvaluateRequest.of(
 				source,
 				language,
 				languageVersion,
 				fileName,
 				input,
+				null, // compile time limit (optional)
+				null, // compile memory limit (optional)
 				timeLimitMs,
 				memoryLimitKb,
 				compileOnly

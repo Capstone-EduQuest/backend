@@ -36,6 +36,13 @@ spring:
 
 coderunner:
   config:
+    limit:
+      compilation:
+        memory: 256MB
+        time: 10s
+      runtime:
+        memory: 256MB
+        time: 10s
     language:
       python:
         version: 3.12.0

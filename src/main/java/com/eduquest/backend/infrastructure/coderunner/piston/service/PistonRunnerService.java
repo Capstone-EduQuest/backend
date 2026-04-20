@@ -33,7 +33,7 @@ public class PistonRunnerService implements CodeRunnerService {
     @Value("${coderunner.piston.scheme}")
     private String scheme;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @Override
     public CodeEvaluateResponse evaluate(CodeEvaluateRequest evaluateRequest) {
@@ -44,8 +44,10 @@ public class PistonRunnerService implements CodeRunnerService {
                     .language(evaluateRequest.language())
                     .version(evaluateRequest.version())
                     .files(List.of(Map.of("name", evaluateRequest.fileName(), "content", evaluateRequest.source())))
-                    .compileMemoryLimit(evaluateRequest.memoryLimitKb())
-                    .compileTimeout(evaluateRequest.timeLimitMs())
+                    .runTimeout(evaluateRequest.runTimeLimitMs())
+                    .runMemoryLimit(evaluateRequest.runtTimeMemoryLimitKb())
+                    .compileMemoryLimit(null)
+                    .compileTimeout(null)
                     .build();
 
             RestClient restClient = createRestClient();
@@ -111,7 +113,7 @@ public class PistonRunnerService implements CodeRunnerService {
 
         JsonNode root = null;
         try {
-            root = mapper.readTree(results.getBody() == null ? "{}" : results.getBody());
+            root = objectMapper.readTree(results.getBody() == null ? "{}" : results.getBody());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
