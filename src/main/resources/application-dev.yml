@@ -37,6 +37,7 @@ spring:
 coderunner:
   piston:
     url: ${PISTON_EXECUTE_URL}
+    scheme: ${PISTON_EXECUTE_SCHEME:http}
 
 logging:
   level:

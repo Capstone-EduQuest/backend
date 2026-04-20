@@ -26,8 +26,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PistonRunnerService implements CodeRunnerService {
 
-    @Value("${coderunner.piston.url:#{null}}")
+    @Value("${coderunner.piston.url}")
     private String baseUrl;
+    @Value("${coderunner.piston.scheme}")
+    private String scheme;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -43,20 +45,9 @@ public class PistonRunnerService implements CodeRunnerService {
                     .compile_timeout(10000)
                     .build();
 
-            // piston에서 HTTP/2를 지원하지 않으므로 HTTP/2 cleartext(h2c) 업그레이드 비활성화
-            // https:// (TLS/암호화 연결)에서는 ALPN을 통해 HTTP/2 협상이 일어나고, 서버가 HTTP/2를 지원하지 않으면 자동으로 HTTP/1.1로 fallback됨
-            // 하지만 piston은 http로 연결하므로 HTTP/2 미지원 하면 바로 Bad Request 반환
-            // 따라서 자바 표준 HTTP Client(JdkClientHttpRequestFactory)에서 HTTP/1.1을 강제
-            RestClient restClient = RestClient.builder().baseUrl("http://localhost:2000")
-                    .requestFactory(new JdkClientHttpRequestFactory(
-                            HttpClient.newBuilder()
-                                    .version(HttpClient.Version.HTTP_1_1)
-                                    .build()
-                    ))
-                    .build();
+            RestClient restClient = createRestClient();
 
             ResponseEntity<String> results = restClient.post()
-                    .uri(baseUrl)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .accept(MediaType.APPLICATION_JSON)
                     .body(pistonRequest)
@@ -107,6 +98,26 @@ public class PistonRunnerService implements CodeRunnerService {
             Integer run_timeout,
             Integer run_memory_limit
     ) {
+
+    }
+
+    private RestClient createRestClient() {
+
+        /* piston에서 HTTP/2를 지원하지 않으므로 HTTP/2 cleartext(h2c) 업그레이드 비활성화
+        https:// (TLS/암호화 연결)에서는 ALPN을 통해 HTTP/2 협상이 일어나고, 서버가 HTTP/2를 지원하지 않으면 자동으로 HTTP/1.1로 fallback됨
+        하지만 piston은 http로 연결하므로 HTTP/2 미지원 하면 바로 Bad Request 반환
+        따라서 자바 표준 HTTP Client(JdkClientHttpRequestFactory)에서 HTTP/1.1을 강제하도록 설정 */
+        if (scheme.equals("http")) {
+            return RestClient.builder().baseUrl("http://" + baseUrl)
+                    .requestFactory(new JdkClientHttpRequestFactory(
+                            HttpClient.newBuilder()
+                                    .version(HttpClient.Version.HTTP_1_1)
+                                    .build()
+                    ))
+                    .build();
+        } else {
+            return RestClient.builder().baseUrl(scheme + "://" + baseUrl).build();
+        }
 
     }
 
