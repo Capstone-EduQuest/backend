@@ -46,8 +46,8 @@ public class PistonRunnerService implements CodeRunnerService {
                     .files(List.of(Map.of("name", evaluateRequest.fileName(), "content", evaluateRequest.source())))
                     .runTimeout(evaluateRequest.runTimeLimitMs())
                     .runMemoryLimit(evaluateRequest.runtTimeMemoryLimitKb())
-                    .compileMemoryLimit(null)
-                    .compileTimeout(null)
+                    .compileMemoryLimit(evaluateRequest.compileTimeMemoryLimitKb())
+                    .compileTimeout(evaluateRequest.compileTimeLimitMs())
                     .build();
 
             RestClient restClient = createRestClient();
@@ -63,6 +63,8 @@ public class PistonRunnerService implements CodeRunnerService {
                     .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
                         log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
                     }).toEntity(String.class);
+
+            log.info(results.getBody());
 
             return parseResponse(results);
         } catch (Exception e) {

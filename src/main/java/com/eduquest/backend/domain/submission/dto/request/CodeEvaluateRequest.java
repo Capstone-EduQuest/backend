@@ -10,8 +10,8 @@ public record CodeEvaluateRequest(
         String version,
         String fileName,
         String input,
-        String compileTimeLimitMs,
-        String compileTimeMemoryLimitKb,
+        Long compileTimeLimitMs,
+        Long compileTimeMemoryLimitKb,
         Long runTimeLimitMs,
         Long runtTimeMemoryLimitKb,
         Boolean compileOnly
@@ -23,8 +23,8 @@ public record CodeEvaluateRequest(
             String version,
             String fileName,
             String input,
-            String compileTimeLimitMs,
-            String compileTimeMemoryLimitKb,
+            Long compileTimeLimitMs,
+            Long compileTimeMemoryLimitKb,
             Long runTimeLimitMs,
             Long runtTimeMemoryLimitKb,
             Boolean compileOnly

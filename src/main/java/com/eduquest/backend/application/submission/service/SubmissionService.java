@@ -33,11 +33,16 @@ public class SubmissionService {
 	private String languageVersion;
 	@Value("${coderunner.config.language.python.file}")
 	private String fileName;
+	@Value("${coderunner.config.limit.compilation.time}")
+	private String compileTimeLimitMs;
+	@Value("${coderunner.config.limit.compilation.memory}")
+	private String compileTimeMemoryLimitKb;
+	@Value("${coderunner.config.limit.runtime.time}")
+	private String runTimeLimitMs;
+	@Value("${coderunner.config.limit.runtime.memory}")
+	private String runtTimeMemoryLimitKb;
 
 	private static final String DEFAULT_LANGUAGE = "python";
-	// 권장 기본값: 0L은 무제한이므로 안전한 값으로 교체하거나 config화 권장
-	private static final long DEFAULT_TIME_LIMIT_MS = 2000L;
-	private static final long DEFAULT_MEMORY_LIMIT_KB = 64 * 1024L;
 	private static final int LOG_TRUNCATE_MAX = 2000;
 
 	private final ProblemQueryService problemQueryService;
@@ -100,8 +105,6 @@ public class SubmissionService {
 
 		String language = DEFAULT_LANGUAGE;
 		String input = "";
-		Long timeLimitMs = DEFAULT_TIME_LIMIT_MS;
-		Long memoryLimitKb = DEFAULT_MEMORY_LIMIT_KB;
 		Boolean compileOnly = false;
 
 		CodeEvaluateRequest request = CodeEvaluateRequest.of(
@@ -110,10 +113,10 @@ public class SubmissionService {
 				languageVersion,
 				fileName,
 				input,
-				null, // compile time limit (optional)
-				null, // compile memory limit (optional)
-				timeLimitMs,
-				memoryLimitKb,
+				Long.parseLong(compileTimeLimitMs),
+				Long.parseLong(compileTimeMemoryLimitKb),
+				Long.parseLong(runTimeLimitMs),
+				Long.parseLong(runtTimeMemoryLimitKb),
 				compileOnly
 		);
 

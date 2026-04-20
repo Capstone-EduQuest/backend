@@ -26,8 +26,10 @@ class PistonRunnerServiceTest {
                 "3.12.0",
                 "main.py",
                 "null",
-                0L,
-                0L,
+                3000L,
+                -1L,
+                3000L,
+                -1L,
                 false
         );
 
@@ -52,8 +54,10 @@ class PistonRunnerServiceTest {
                 "3.12.0",
                 "main.py",
                 "null",
-                0L,
-                0L,
+                100000L,
+                65536L,
+                100000L,
+                256000L,
                 false
         );
 
@@ -79,8 +83,10 @@ class PistonRunnerServiceTest {
                 "3.12.0",
                 "main.py",
                 "null",
-                0L,
-                0L,
+                100000L,
+                65536L,
+                100000L,
+                256000L,
                 false
         );
 

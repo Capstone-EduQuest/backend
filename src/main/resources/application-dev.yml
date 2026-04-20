@@ -38,11 +38,11 @@ coderunner:
   config:
     limit:
       compilation:
-        memory: 256MB
-        time: 10s
+        memory: 67108864
+        time: 3000
       runtime:
-        memory: 256MB
-        time: 10s
+        memory: 268435456
+        time: 10000
     language:
       python:
         version: 3.12.0
