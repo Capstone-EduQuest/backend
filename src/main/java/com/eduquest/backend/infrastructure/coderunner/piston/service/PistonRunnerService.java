@@ -4,6 +4,7 @@ import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
 import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
 import com.eduquest.backend.domain.submission.service.CodeRunnerService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -61,26 +62,7 @@ public class PistonRunnerService implements CodeRunnerService {
                         log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
                     }).toEntity(String.class);
 
-            log.info(results.getBody());
-
-            JsonNode root = mapper.readTree(results.getBody() == null ? "{}" : results.getBody());
-
-            String language = root.path("language").asText(null);
-            String version = root.path("version").asText(null);
-
-            JsonNode run = root.path("run");
-            String stdout = run.path("stdout").asText(null);
-            String stderr = run.path("stderr").asText(null);
-            Integer exitCode = run.has("code") && !run.get("code").isNull() ? run.get("code").asInt() : null;
-            String signal = run.path("signal").isNull() ? null : run.path("signal").asText(null);
-            Boolean timedOut = run.has("timed_out") && run.get("timed_out").asBoolean(false);
-
-            JsonNode compile = root.path("compile");
-            String compileStdout = compile.path("stdout").asText(null);
-            String compileStderr = compile.path("stderr").asText(null);
-            Integer compileExit = compile.has("code") && !compile.get("code").isNull() ? compile.get("code").asInt() : null;
-
-            return CodeEvaluateResponse.of(language, version, stdout, stderr, exitCode, signal, timedOut, compileStdout, compileStderr, compileExit);
+            return parseResponse(results);
         } catch (Exception e) {
             log.error("Failed to evaluate code via Piston", e);
             return CodeEvaluateResponse.of(null, null, null, e.getMessage(), -1, null, Boolean.FALSE, null, null, -1);
@@ -122,6 +104,34 @@ public class PistonRunnerService implements CodeRunnerService {
         } else {
             return RestClient.builder().baseUrl(scheme + "://" + baseUrl).build();
         }
+
+    }
+
+    private CodeEvaluateResponse parseResponse(ResponseEntity<String> results) {
+
+        JsonNode root = null;
+        try {
+            root = mapper.readTree(results.getBody() == null ? "{}" : results.getBody());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        String language = root.path("language").asText(null);
+        String version = root.path("version").asText(null);
+
+        JsonNode run = root.path("run");
+        String stdout = run.path("stdout").asText(null);
+        String stderr = run.path("stderr").asText(null);
+        Integer exitCode = run.has("code") && !run.get("code").isNull() ? run.get("code").asInt() : null;
+        String signal = run.path("signal").isNull() ? null : run.path("signal").asText(null);
+        Boolean timedOut = run.has("timed_out") && run.get("timed_out").asBoolean(false);
+
+        JsonNode compile = root.path("compile");
+        String compileStdout = compile.path("stdout").asText(null);
+        String compileStderr = compile.path("stderr").asText(null);
+        Integer compileExit = compile.has("code") && !compile.get("code").isNull() ? compile.get("code").asInt() : null;
+
+        return CodeEvaluateResponse.of(language, version, stdout, stderr, exitCode, signal, timedOut, compileStdout, compileStderr, compileExit);
 
     }
 
