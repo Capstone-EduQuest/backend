@@ -3,6 +3,7 @@ package com.eduquest.backend.infrastructure.coderunner.piston.service;
 import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
 import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
 import com.eduquest.backend.domain.submission.service.CodeRunnerService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -30,10 +31,7 @@ public class PistonRunnerService implements CodeRunnerService {
     private String baseUrl;
     @Value("${coderunner.piston.scheme}")
     private String scheme;
-    @Value("${coderunner.config.language.python.version}")
-    private String languageVersion;
-    @Value("${coderunner.config.language.python.file}")
-    private String fileName;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -43,10 +41,10 @@ public class PistonRunnerService implements CodeRunnerService {
             PistonRequest pistonRequest = PistonRequest.builder()
                     .stdin("")
                     .language(evaluateRequest.language())
-                    .version(languageVersion)
-                    .files(List.of(Map.of("name", fileName, "content", evaluateRequest.source())))
-                    .compile_memory_limit(-1)
-                    .compile_timeout(10000)
+                    .version(evaluateRequest.version())
+                    .files(List.of(Map.of("name", evaluateRequest.fileName(), "content", evaluateRequest.source())))
+                    .compileMemoryLimit(evaluateRequest.memoryLimitKb())
+                    .compileTimeout(evaluateRequest.timeLimitMs())
                     .build();
 
             RestClient restClient = createRestClient();
@@ -95,10 +93,14 @@ public class PistonRunnerService implements CodeRunnerService {
             String version,
             List<Map<String, String>> files,
             String stdin,
-            Integer compile_timeout,
-            Integer compile_memory_limit,
-            Integer run_timeout,
-            Integer run_memory_limit
+            @JsonProperty("compile_timeout")
+            Long compileTimeout,
+            @JsonProperty("compile_memory_limit")
+            Long compileMemoryLimit,
+            @JsonProperty("run_timeout")
+            Long runTimeout,
+            @JsonProperty("run_memory_limit")
+            Long runMemoryLimit
     ) {
 
     }

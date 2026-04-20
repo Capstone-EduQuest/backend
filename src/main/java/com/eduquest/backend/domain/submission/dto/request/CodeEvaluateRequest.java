@@ -3,6 +3,8 @@ package com.eduquest.backend.domain.submission.dto.request;
 public record CodeEvaluateRequest(
         String source,
         String language,
+        String version,
+        String fileName,
         String input,
         Long timeLimitMs,
         Long memoryLimitKb,

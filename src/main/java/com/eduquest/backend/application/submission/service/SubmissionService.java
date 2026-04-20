@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class SubmissionService {
+
+	@Value("${coderunner.config.language.python.version}")
+	private String languageVersion;
+	@Value("${coderunner.config.language.python.file}")
+	private String fileName;
 
 	private static final String DEFAULT_LANGUAGE = "python3";
 	// 권장 기본값: 0L은 무제한이므로 안전한 값으로 교체하거나 config화 권장
@@ -94,6 +100,8 @@ public class SubmissionService {
 		CodeEvaluateRequest request = new CodeEvaluateRequest(
 				source,
 				language,
+				languageVersion,
+				fileName,
 				input,
 				timeLimitMs,
 				memoryLimitKb,
