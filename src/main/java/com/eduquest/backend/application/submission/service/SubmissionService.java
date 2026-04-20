@@ -9,6 +9,7 @@ import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
 import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;
 import com.eduquest.backend.domain.submission.event.WrongNoteCreateRequestedEvent;
 import com.eduquest.backend.domain.submission.model.Submission;
+import com.eduquest.backend.domain.submission.model.enums.EvaluationResult;
 import com.eduquest.backend.domain.submission.service.CodeRunnerService;
 import com.eduquest.backend.domain.submission.service.SubmissionCommandService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +34,7 @@ public class SubmissionService {
 	@Value("${coderunner.config.language.python.file}")
 	private String fileName;
 
-	private static final String DEFAULT_LANGUAGE = "python3";
+	private static final String DEFAULT_LANGUAGE = "python";
 	// 권장 기본값: 0L은 무제한이므로 안전한 값으로 교체하거나 config화 권장
 	private static final long DEFAULT_TIME_LIMIT_MS = 2000L;
 	private static final long DEFAULT_MEMORY_LIMIT_KB = 64 * 1024L;
@@ -57,24 +58,28 @@ public class SubmissionService {
 		UUID userUuid = memberQueryService.findMemberUuidByUserId(userId);
 		Long memberId = memberQueryService.findMemberIdByUuid(userUuid);
 
-		// domain 모델 생성 후 도메인 포트로 저장 (infrastructure 의존 제거)
+		// domain 모델 생성 후 도메인 포트로 저장
 		Submission submissionDomain = Submission.of(memberId, problemId, answer);
 		Long submissionId = submissionCommandService.saveSubmission(submissionDomain);
 
-		boolean isCorrect;
+		boolean isWrong = false;
 
 		if ("basic".equalsIgnoreCase(Objects.toString(detail.type(), ""))) {
-			isCorrect = compareAnswers(detail.expectedOutput(), answer);
+			isWrong = !compareAnswers(detail.expectedOutput(), answer);
 		} else {
-			isCorrect = evaluateCodeProblem(detail, answer);
+
+			EvaluationResult result = evaluateCodeProblem(detail, answer);
+
+			isWrong = result == EvaluationResult.WRONG;
+
 		}
 
-		log.info("Evaluated submission: submissionId={}, memberId={}, isCorrect={}", submissionId, memberId, isCorrect);
+		log.info("Evaluated submission: submissionId={}, memberId={}, isWrong={}", submissionId, memberId, isWrong);
 
 		SubmissionEvaluatedEvent event = SubmissionEvaluatedEvent.of(
 				submissionId,
 				memberId,
-				isCorrect,
+                !isWrong,
 				detail.stageUuid(),
 				detail.type()
 		);
@@ -82,15 +87,16 @@ public class SubmissionService {
 		eventPublisher.publishEvent(event);
 
 		// 틀렸을 경우에만 오답노트 생성 요청 이벤트 발행(비동기 처리)
-		if (!isCorrect) {
+		if (isWrong) {
 			WrongNoteCreateRequestedEvent wrongNoteEvent = WrongNoteCreateRequestedEvent.of(submissionId, memberId, problemId, answer);
 			eventPublisher.publishEvent(wrongNoteEvent);
 		}
 
-		return isCorrect;
+		return !isWrong;
 	}
 
-	private boolean evaluateCodeProblem(ProblemQuery.Detail detail, String source) {
+	private EvaluationResult evaluateCodeProblem(ProblemQuery.Detail detail, String source) {
+
 		String language = DEFAULT_LANGUAGE;
 		String input = "";
 		Long timeLimitMs = DEFAULT_TIME_LIMIT_MS;
@@ -108,63 +114,58 @@ public class SubmissionService {
 				compileOnly
 		);
 
-		CodeEvaluateResponse resp;
+		CodeEvaluateResponse evaluateResponse;
+
 		try {
-			resp = codeRunnerService.evaluate(request);
+			evaluateResponse = codeRunnerService.evaluate(request);
 		} catch (Exception ex) {
 			log.error("Code runner evaluation failed for problem {}: {}", detail.id(), ex.getMessage(), ex);
-			return false;
+			return EvaluationResult.ERROR;
 		}
 
-		if (resp == null) {
+		if (evaluateResponse == null) {
 			log.warn("Code runner returned null response for problem {}", detail.id());
-			return false;
+			return EvaluationResult.ERROR;
 		}
 
 		try {
-			String stdoutLog = truncateLog(resp.stdout(), LOG_TRUNCATE_MAX);
-			String stderrLog = truncateLog(resp.stderr(), LOG_TRUNCATE_MAX);
-			String compileStdoutLog = truncateLog(resp.compileStdout(), LOG_TRUNCATE_MAX);
-			String compileStderrLog = truncateLog(resp.compileStderr(), LOG_TRUNCATE_MAX);
-
 			log.info("Code evaluation summary for problemId={}: language={}, version={}, exitCode={}, signal={}, timedOut={}, compileExitCode={}",
-					detail.id(), resp.language(), resp.version(), resp.exitCode(), resp.signal(), resp.timedOut(), resp.compileExitCode());
-
-			if (stdoutLog != null && !stdoutLog.isBlank()) log.debug("Evaluation stdout (truncated):\n{}", stdoutLog);
-			if (stderrLog != null && !stderrLog.isBlank()) log.debug("Evaluation stderr (truncated):\n{}", stderrLog);
-			if (compileStdoutLog != null && !compileStdoutLog.isBlank()) log.debug("Compile stdout (truncated):\n{}", compileStdoutLog);
-			if (compileStderrLog != null && !compileStderrLog.isBlank()) log.debug("Compile stderr (truncated):\n{}", compileStderrLog);
-		} catch (Exception logEx) {
-			log.warn("Failed to log evaluation details for problem {}: {}", detail.id(), logEx.getMessage());
+					detail.id(), evaluateResponse.language(), evaluateResponse.version(), evaluateResponse.exitCode(), evaluateResponse.signal(), evaluateResponse.timedOut(), evaluateResponse.compileExitCode());
+		} catch (Exception e) {
+			log.warn("Failed to log evaluation details for problem {}: {}", detail.id(), e.getMessage());
 		}
 
 		// 컴파일 실패
-		if (resp.compileExitCode() != null && resp.compileExitCode() != 0) {
-			log.info("Code compile error for problem {} : {}", detail.id(), truncateLog(resp.compileStderr(), 500));
-			return false;
+		if (evaluateResponse.compileExitCode() != null && evaluateResponse.compileExitCode() != 0) {
+			log.info("Code compile error for problem {} : {}", detail.id(), truncateLog(evaluateResponse.compileStderr(), 500));
+			return EvaluationResult.WRONG;
 		}
 
 		// 타임아웃
-		if (Boolean.TRUE.equals(resp.timedOut())) {
-			log.info("Code timed out for problem {}: {}", detail.id(), truncateLog(resp.stdout(), 200));
-			return false;
+		if (Boolean.TRUE.equals(evaluateResponse.timedOut())) {
+			log.info("Code timed out for problem {}: {}", detail.id(), truncateLog(evaluateResponse.stdout(), 200));
+			return EvaluationResult.WRONG;
 		}
 
 		// 런타임 에러(비정상 종료)
-		if (resp.exitCode() != null && resp.exitCode() != 0) {
-			log.info("Code runtime non-zero exit for problem {}: exit={}, stderr={}", detail.id(), resp.exitCode(), truncateLog(resp.stderr(), 500));
-			return false;
+		if (evaluateResponse.exitCode() != null && evaluateResponse.exitCode() != 0) {
+			log.info("Code runtime non-zero exit for problem {}: exit={}, stderr={}", detail.id(), evaluateResponse.exitCode(), truncateLog(evaluateResponse.stderr(), 500));
+			return EvaluationResult.WRONG;
 		}
 
 		String expected = detail.expectedOutput();
-		String stdout = resp.stdout() == null ? "" : resp.stdout();
+		String stdout = evaluateResponse.stdout() == null ? "" : evaluateResponse.stdout();
 
-		return compareAnswers(expected, stdout);
+		boolean compare = compareAnswers(expected, stdout);
+		return compare ? EvaluationResult.CORRECT : EvaluationResult.WRONG;
+
 	}
 
 	private boolean compareAnswers(String expected, String answer) {
-		if (expected == null) return false;
-		if (answer == null) return false;
+		if (expected == null)
+			return false;
+		if (answer == null)
+			return false;
 
 		String expNorm = normalizeNewlines(expected).trim();
 		String ansNorm = normalizeNewlines(answer).trim();
