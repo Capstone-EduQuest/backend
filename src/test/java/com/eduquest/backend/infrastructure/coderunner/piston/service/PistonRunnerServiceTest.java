@@ -23,9 +23,13 @@ class PistonRunnerServiceTest {
         CodeEvaluateRequest req = new CodeEvaluateRequest(
                 "print('Hello, world!')",
                 "python",
-                null,
-                0L,
-                0L,
+                "3.12.0",
+                "main.py",
+                "null",
+                3000L,
+                -1L,
+                3000L,
+                -1L,
                 false
         );
 
@@ -47,10 +51,14 @@ class PistonRunnerServiceTest {
         CodeEvaluateRequest req = new CodeEvaluateRequest(
                 "print('Hello' ", // 문법 오류 유도
                 "python",
-                null,
-                0L,
-                0L,
-                true
+                "3.12.0",
+                "main.py",
+                "null",
+                100000L,
+                65536L,
+                100000L,
+                256000L,
+                false
         );
 
         // when
@@ -72,9 +80,13 @@ class PistonRunnerServiceTest {
         CodeEvaluateRequest req = new CodeEvaluateRequest(
                 "print(1/0)",
                 "python",
-                null,
-                0L,
-                0L,
+                "3.12.0",
+                "main.py",
+                "null",
+                100000L,
+                65536L,
+                100000L,
+                256000L,
                 false
         );
 

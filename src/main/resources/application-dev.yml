@@ -35,8 +35,21 @@ spring:
     encoding: UTF-8
 
 coderunner:
+  config:
+    limit:
+      compilation:
+        memory: 67108864
+        time: 3000
+      runtime:
+        memory: 268435456
+        time: 10000
+    language:
+      python:
+        version: 3.12.0
+        file: main.py
   piston:
     url: ${PISTON_EXECUTE_URL}
+    scheme: ${PISTON_EXECUTE_SCHEME:http}
 
 logging:
   level:
