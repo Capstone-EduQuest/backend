@@ -18,13 +18,8 @@ public class UseHintEventListener {
     @EventListener
     public void handleUseHintEvent(UseHintEvent event) {
 
-        Long hintId = problemQueryService.findHintIdByProblemUuidAndLevel(
-                event.problemUuid(),
-                event.level()
-        );
-
         HintHistory hintHistory = HintHistory.of(
-                hintId,
+                event.hintId(),
                 event.memberId()
         );
 

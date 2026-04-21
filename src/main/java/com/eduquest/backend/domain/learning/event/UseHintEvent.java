@@ -4,12 +4,11 @@ import java.util.UUID;
 
 public record UseHintEvent(
         Long memberId,
-        UUID problemUuid,
-        Integer level
+        Long hintId
 ) {
 
-    public static UseHintEvent of(Long memberId, UUID problemUuid, Integer level) {
-        return new UseHintEvent(memberId, problemUuid, level);
+    public static UseHintEvent of(Long memberId, Long hindId) {
+        return new UseHintEvent(memberId, hindId);
     }
 
 }

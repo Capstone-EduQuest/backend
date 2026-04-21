@@ -132,6 +132,7 @@ public class ProblemService {
 
         ProblemQuery.Detail detail = problemQueryService.findProblemByUuid(problemUuid);
         Long memberId = memberQueryService.findMemberIdByUserId(userId);
+        Long hintId = problemQueryService.findHintIdByProblemUuidAndLevel(problemUuid, level);
 
         HintDto hintDto = detail.hints().stream()
                 .filter(h -> h.level().equals(level))
@@ -139,7 +140,7 @@ public class ProblemService {
                 .map(h -> HintDto.of(h.level(), h.point(), h.content()))
                 .orElse(null);
 
-        boolean isHintHistoryExists = hintHistoryQueryService.isHintHistoryExistsByHintIdAndMemberId(detail.id(), memberId);
+        boolean isHintHistoryExists = hintHistoryQueryService.isHintHistoryExistsByHintIdAndMemberId(hintId, memberId);
 
         if (!isHintHistoryExists && walletQueryService.findByUserId(memberId).getBalance() >= hintDto.point()) {
             // 힌트 포인트 차감 이벤트 발생시키기
@@ -155,8 +156,7 @@ public class ProblemService {
             eventPublisher.publishEvent(
                     UseHintEvent.of(
                             memberId,
-                            problemUuid,
-                            level
+                            hintId
                     )
             );
 
