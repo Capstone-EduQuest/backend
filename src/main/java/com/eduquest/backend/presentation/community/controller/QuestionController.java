@@ -1,5 +1,9 @@
 package com.eduquest.backend.presentation.community.controller;
 
+import com.eduquest.backend.application.community.dto.CreateQuestionCommand;
+import com.eduquest.backend.application.community.dto.QuestionDetailResponse;
+import com.eduquest.backend.application.community.dto.QuestionListQuery;
+import com.eduquest.backend.application.community.dto.QuestionListResult;
 import com.eduquest.backend.application.community.service.QuestionService;
 import com.eduquest.backend.presentation.community.dto.request.CreateQuestionRequest;
 import com.eduquest.backend.presentation.community.dto.request.QuestionListRequest;
@@ -8,9 +12,11 @@ import com.eduquest.backend.presentation.community.dto.response.QuestionResponse
 import com.eduquest.backend.presentation.community.dto.response.QuestionSummary;
 import com.eduquest.backend.presentation.community.dto.response.UserInfo;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,19 +32,20 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @PostMapping("/questions")
-    public ResponseEntity<Void> createQuestion(@Valid @RequestBody CreateQuestionRequest request) {
+    public ResponseEntity<Void> createQuestion(@Valid @RequestBody CreateQuestionRequest request, Authentication authentication) {
 
-        UUID createdUuid = questionService.createQuestion(
-                com.eduquest.backend.application.community.dto.CreateQuestionCommand.of(
+        questionService.createQuestion(
+                CreateQuestionCommand.of(
                         request.title(),
-                        request.content()
+                        request.content(),
+                        authentication == null ? null : authentication.getName()
                 )
         );
 
         return ResponseEntity.status(201).build();
     }
 
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/questions/{questionUuid}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable UUID questionUuid) {
         questionService.deleteQuestionByUuid(questionUuid);
@@ -48,8 +55,8 @@ public class QuestionController {
     @GetMapping("/questions")
     public ResponseEntity<QuestionListResponse> listQuestions(@Valid @ModelAttribute QuestionListRequest request) {
 
-        com.eduquest.backend.application.community.dto.QuestionListResult result = questionService.findQuestions(
-                com.eduquest.backend.application.community.dto.QuestionListQuery.of(
+        QuestionListResult result = questionService.findQuestions(
+                QuestionListQuery.of(
                         request.page(),
                         request.size(),
                         request.sort(),
@@ -78,7 +85,7 @@ public class QuestionController {
     @GetMapping("/questions/{questionUuid}")
     public ResponseEntity<QuestionResponse> getQuestion(@PathVariable UUID questionUuid) {
 
-        com.eduquest.backend.application.community.dto.QuestionDetailResponse detailResponse = questionService.findQuestionByUuid(questionUuid);
+        QuestionDetailResponse detailResponse = questionService.findQuestionByUuid(questionUuid);
 
         return ResponseEntity.ok(
                 QuestionResponse.of(

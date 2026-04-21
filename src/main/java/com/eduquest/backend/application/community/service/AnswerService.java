@@ -38,7 +38,7 @@ public class AnswerService {
 
     private static final long ADOPT_REWARD = 100L;
 
-    public UUID createAnswer(CreateAnswerCommand command) {
+    public void createAnswer(CreateAnswerCommand command) {
         if (command == null || command.userId() == null || command.userId().isBlank()) {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
@@ -60,7 +60,6 @@ public class AnswerService {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
 
-        return saved.getUuid();
     }
 
     public AnswerListResult findAnswersByQuestionUuid(UUID questionUuid, AnswerListQuery query) {
@@ -82,8 +81,12 @@ public class AnswerService {
         answerCommandService.deleteAnswerByUuid(answerUuid);
     }
 
-    public void adoptAnswer(UUID answerUuid) {
-        // 권한 체크: 질문 작성자 또는 ADMIN
+    public void adoptAnswer(UUID answerUuid, String requesterUserId) {
+        // only question author can adopt; admin not allowed
+        if (requesterUserId == null || requesterUserId.isBlank()) {
+            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
+        }
+
         Answer answer = answerQueryService.findAnswerByUuid(answerUuid);
         if (answer == null) {
             throw new EduQuestException(CommunityErrorCode.ANSWER_NOT_FOUND);
@@ -94,23 +97,23 @@ public class AnswerService {
             throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        Long requesterMemberId = memberQueryService.findMemberIdByUserId(requesterUserId);
 
-        Long requesterMemberId = null;
-        if (authentication != null && authentication.getName() != null && !authentication.getName().isBlank()) {
-            requesterMemberId = memberQueryService.findMemberIdByUserId(authentication.getName());
+        // only the original question author may adopt
+        if (requesterMemberId == null || !requesterMemberId.equals(question.getUserId())) {
+            throw new EduQuestException(CommunityErrorCode.FORBIDDEN);
         }
 
-        if (!isAdmin && (requesterMemberId == null || !requesterMemberId.equals(question.getUserId()))) {
-            throw new EduQuestException(CommunityErrorCode.FORBIDDEN);
+        // cannot adopt an answer written by the question author
+        if (answer.getUserId() != null && answer.getUserId().equals(question.getUserId())) {
+            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
 
         // 수행: 도메인에게 채택 명령
         questionCommandService.markAdoptedByUuid(question.getUuid(), answer.getUuid());
         answerCommandService.adoptAnswerByUuid(answerUuid);
 
-        // 이벤트 발행
+        // publish domain event for reward handling
         AnswerAdoptedEvent event = AnswerAdoptedEvent.of(answerUuid, ADOPT_REWARD);
         eventPublisher.publishEvent(event);
     }

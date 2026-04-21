@@ -29,15 +29,12 @@ public class QuestionService {
     private final QuestionQueryService questionQueryService;
     private final MemberQueryService memberQueryService;
 
-    public UUID createQuestion(CreateQuestionCommand command) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || authentication.getName() == null || authentication.getName().isBlank()) {
+    public void createQuestion(CreateQuestionCommand command) {
+        if (command == null || command.userId() == null || command.userId().isBlank()) {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
 
-        String authUserId = authentication.getName();
-        Long memberId = memberQueryService.findMemberIdByUserId(authUserId);
+        Long memberId = memberQueryService.findMemberIdByUserId(command.userId());
 
         Question question = Question.of(command.title(), command.content(), memberId);
 
@@ -49,7 +46,6 @@ public class QuestionService {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
 
-        return saved.getUuid();
     }
 
     public void deleteQuestionByUuid(UUID questionUuid) {

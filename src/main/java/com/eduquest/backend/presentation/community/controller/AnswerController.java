@@ -1,5 +1,8 @@
 package com.eduquest.backend.presentation.community.controller;
 
+import com.eduquest.backend.application.community.dto.AnswerListQuery;
+import com.eduquest.backend.application.community.dto.AnswerListResult;
+import com.eduquest.backend.application.community.dto.CreateAnswerCommand;
 import com.eduquest.backend.application.community.service.AnswerService;
 import com.eduquest.backend.presentation.community.dto.request.AnswerListRequest;
 import com.eduquest.backend.presentation.community.dto.request.CreateAnswerRequest;
@@ -7,6 +10,7 @@ import com.eduquest.backend.presentation.community.dto.response.AnswerListRespon
 import com.eduquest.backend.presentation.community.dto.response.AnswerSummary;
 import com.eduquest.backend.presentation.community.dto.response.UserInfo;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +36,8 @@ public class AnswerController {
             Authentication authentication
     ) {
 
-        UUID createdUuid = answerService.createAnswer(
-                com.eduquest.backend.application.community.dto.CreateAnswerCommand.of(
+        answerService.createAnswer(
+                CreateAnswerCommand.of(
                         questionUuid,
                         request.content(),
                         authentication == null ? null : authentication.getName()
@@ -49,9 +53,9 @@ public class AnswerController {
             @Valid @ModelAttribute AnswerListRequest request
     ) {
 
-        com.eduquest.backend.application.community.dto.AnswerListResult result = answerService.findAnswersByQuestionUuid(
+        AnswerListResult result = answerService.findAnswersByQuestionUuid(
                 questionUuid,
-                com.eduquest.backend.application.community.dto.AnswerListQuery.of(
+                AnswerListQuery.of(
                         request.page(),
                         request.size(),
                         request.isAsc()
@@ -77,7 +81,7 @@ public class AnswerController {
         );
     }
 
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/answers/{answerUuid}")
     public ResponseEntity<Void> deleteAnswer(@PathVariable UUID answerUuid) {
         answerService.deleteAnswerByUuid(answerUuid);
@@ -85,8 +89,8 @@ public class AnswerController {
     }
 
     @PostMapping("/answers/{answerUuid}/adopt")
-    public ResponseEntity<Void> adoptAnswer(@PathVariable UUID answerUuid) {
-        answerService.adoptAnswer(answerUuid);
+    public ResponseEntity<Void> adoptAnswer(@PathVariable UUID answerUuid, Authentication authentication) {
+        answerService.adoptAnswer(answerUuid, authentication == null ? null : authentication.getName());
         return ResponseEntity.status(201).build();
     }
 
