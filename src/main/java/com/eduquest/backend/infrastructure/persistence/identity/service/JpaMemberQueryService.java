@@ -86,7 +86,11 @@ public class JpaMemberQueryService implements MemberQueryService {
 
     @Override
     public Long findMemberIdByUserId(String userId) {
-        return 0L;
+        return memberQueryRepository.findIdByUserId(userId)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                        new HashMap<>() {{
+                            put("userId", "유저 아이디를 찾을 수 없습니다.");
+                        }}));
     }
 
     @Override
