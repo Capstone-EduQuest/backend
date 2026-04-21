@@ -24,6 +24,8 @@ public interface MemberQueryService {
 
     Long findMemberIdByUuid(UUID uuid);
 
+    Long findMemberIdByUserId(String userId);
+
     Long findRoleIdByUuid(UUID uuid);
 
     MemberQuery.UserProfile findUserProfileByUuid(UUID uuid);

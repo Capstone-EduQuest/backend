@@ -29,4 +29,10 @@ public class AsyncConfig {
         return new VirtualThreadTaskExecutor();
     }
 
+    // hint 이벤트 전용 가상 스레드 TaskExecutor
+    @Bean(name = "hintHistoryTaskExecutor")
+    public TaskExecutor hintHistoryTaskExecutor() {
+        return new VirtualThreadTaskExecutor();
+    }
+
 }

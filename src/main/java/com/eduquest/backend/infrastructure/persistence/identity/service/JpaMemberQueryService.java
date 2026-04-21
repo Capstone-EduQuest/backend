@@ -85,6 +85,15 @@ public class JpaMemberQueryService implements MemberQueryService {
     }
 
     @Override
+    public Long findMemberIdByUserId(String userId) {
+        return memberQueryRepository.findIdByUserId(userId)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                        new HashMap<>() {{
+                            put("userId", "유저 아이디를 찾을 수 없습니다.");
+                        }}));
+    }
+
+    @Override
     public Long findRoleIdByUuid(UUID uuid) {
         return roleQueryRepository.findIdByUuid(uuid)
                 .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,

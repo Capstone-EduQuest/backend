@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -79,9 +80,15 @@ public class ProblemController {
 	}
 
 	@GetMapping("/problems/{uuid}/hint")
-	public ResponseEntity<HintResponse> findHint(@PathVariable UUID uuid, @RequestParam("level") Integer level) {
+	public ResponseEntity<HintResponse> findHint(
+			@PathVariable UUID uuid,
+			@RequestParam("level") Integer level,
+			Authentication authentication
+	) {
 
-		return ResponseEntity.ok(HintMapper.toResponse(problemService.findHint(uuid, level)));
+		String userId = authentication.getName();
+
+		return ResponseEntity.ok(HintMapper.toResponse(problemService.findHint(uuid, level, authentication.getName())));
 	}
 
 }

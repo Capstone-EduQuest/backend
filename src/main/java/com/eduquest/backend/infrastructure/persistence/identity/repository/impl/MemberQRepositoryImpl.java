@@ -87,6 +87,16 @@ public class MemberQRepositoryImpl implements MemberQRepository {
     }
 
     @Override
+    public Optional<Long> findIdByUserId(String userId) {
+        return Optional.ofNullable(
+                queryFactory.select(QMemberEntity.memberEntity.id)
+                        .from(QMemberEntity.memberEntity)
+                        .where(QMemberEntity.memberEntity.userId.eq(userId))
+                        .fetchOne()
+        );
+    }
+
+    @Override
     public Optional<MemberQuery.UserProfile> findUserProfileByUuid(UUID uuid) {
         return Optional.ofNullable(
                 queryFactory.select(

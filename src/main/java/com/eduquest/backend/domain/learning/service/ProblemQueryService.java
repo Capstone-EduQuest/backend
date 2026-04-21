@@ -9,6 +9,10 @@ public interface ProblemQueryService {
 
     ProblemQuery.Detail findProblemByUuid(UUID uuid);
 
+    ProblemQuery.HintDetail findHintByProblemUuidAndLevel(UUID uuid, Integer level);
+
+    Long findHintIdByProblemUuidAndLevel(UUID problemUuid, int level);
+
     List<ProblemQuery.Summary> findAllByStageNumber(Integer stageNumber);
 
     List<ProblemQuery.Detail> findAllDetailsByStageNumber(Integer stageNumber);
