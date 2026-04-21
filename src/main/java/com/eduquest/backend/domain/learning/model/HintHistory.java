@@ -31,4 +31,13 @@ public class HintHistory {
                 .build();
     }
 
+    public static HintHistory of(Long id, LocalDateTime createdAt, Long hintId, Long memberId) {
+        return HintHistory.builder()
+                .id(id)
+                .createdAt(createdAt)
+                .hintId(hintId)
+                .memberId(memberId)
+                .build();
+    }
+
 }
