@@ -36,12 +36,6 @@ public class RewardEventListener {
                 event.reason()
         );
 
-        Long walletId = walletQueryService.findByUserId(member.getId()).getId();
-
-        walletCommandService.saveWalletHistory(
-                WalletHistory.of(walletId, event.point(), event.reason())
-        );
-
     }
 
     @EventListener
