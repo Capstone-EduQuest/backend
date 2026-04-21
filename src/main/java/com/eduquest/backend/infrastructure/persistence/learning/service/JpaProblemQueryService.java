@@ -26,6 +26,12 @@ public class JpaProblemQueryService implements ProblemQueryService {
 	}
 
 	@Override
+	public ProblemQuery.HintDetail findHintByProblemUuidAndLevel(UUID uuid, Integer level) {
+		return hintQueryRepository.findHintDetailByProblemUuidAndLevel(uuid, level)
+				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+	}
+
+	@Override
 	public Long findHintIdByProblemUuidAndLevel(UUID problemUuid, int level) {
 		return hintQueryRepository.findIdByProblemUuidAndLevel(problemUuid, level)
 				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));

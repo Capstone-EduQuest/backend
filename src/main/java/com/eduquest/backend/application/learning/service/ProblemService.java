@@ -130,17 +130,16 @@ public class ProblemService {
     @Transactional(readOnly = true)
     public HintDto findHint(UUID problemUuid, Integer level, String userId) {
 
-        ProblemQuery.Detail detail = problemQueryService.findProblemByUuid(problemUuid);
+        ProblemQuery.HintDetail hintDetail = problemQueryService.findHintByProblemUuidAndLevel(problemUuid, level);
         Long memberId = memberQueryService.findMemberIdByUserId(userId);
-        Long hintId = problemQueryService.findHintIdByProblemUuidAndLevel(problemUuid, level);
 
-        HintDto hintDto = detail.hints().stream()
-                .filter(h -> h.level().equals(level))
-                .findFirst()
-                .map(h -> HintDto.of(h.level(), h.point(), h.content()))
-                .orElse(null);
+        HintDto hintDto = HintDto.of(
+                hintDetail.level(),
+                hintDetail.point(),
+                hintDetail.content()
+        );
 
-        boolean isHintHistoryExists = hintHistoryQueryService.isHintHistoryExistsByHintIdAndMemberId(hintId, memberId);
+        boolean isHintHistoryExists = hintHistoryQueryService.isHintHistoryExistsByHintIdAndMemberId(hintDetail.id(), memberId);
 
         if (!isHintHistoryExists && walletQueryService.findByUserId(memberId).getBalance() >= hintDto.point()) {
             // 힌트 포인트 차감 이벤트 발생시키기
@@ -148,7 +147,7 @@ public class ProblemService {
                     GrantPointEvent.of(
                             memberId,
                             -hintDto.point(),
-                            "힌트 사용 : " + detail.summary() + " - 힌트 레벨 " + hintDto.level()
+                            "힌트 사용 - 문제번호 : " + hintDetail.problemId() + " - 힌트 레벨 " + hintDto.level()
                     )
             );
 
@@ -156,7 +155,7 @@ public class ProblemService {
             eventPublisher.publishEvent(
                     UseHintEvent.of(
                             memberId,
-                            hintId
+                            hintDetail.id()
                     )
             );
 

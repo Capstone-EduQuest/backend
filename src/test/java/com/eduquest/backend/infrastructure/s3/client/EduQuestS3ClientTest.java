@@ -1,11 +1,9 @@
 package com.eduquest.backend.infrastructure.s3.client;
 
 import com.eduquest.backend.domain.file.dto.S3FileDto;
-import com.eduquest.backend.infrastructure.s3.config.S3Config;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,13 +13,13 @@ import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
-import java.net.URI;
-import java.util.Optional;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.UUID;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 

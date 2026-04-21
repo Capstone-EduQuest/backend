@@ -15,6 +15,12 @@ public class ProblemQuery {
         }
     }
 
+    public record HintDetail(Long id, Long problemId, Integer level, Long point, String content) {
+        public static HintDetail of(Long id, Long problemId, Integer level, Long point, String content) {
+            return new HintDetail(id, problemId, level, point, content);
+        }
+    }
+
     public record Detail(
             Long id,
             UUID uuid,

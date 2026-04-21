@@ -6,6 +6,7 @@ import com.eduquest.backend.infrastructure.security.handler.JwtLoginFailureHandl
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginSuccessHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutSuccessHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;

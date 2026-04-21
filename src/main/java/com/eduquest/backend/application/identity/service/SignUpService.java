@@ -12,13 +12,13 @@ import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.model.enums.RoleType;
 import com.eduquest.backend.domain.member.service.MemberCommandService;
+import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.reward.event.GrantPointEvent;
+import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import com.eduquest.backend.domain.reward.event.GrantPointEvent;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
-import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

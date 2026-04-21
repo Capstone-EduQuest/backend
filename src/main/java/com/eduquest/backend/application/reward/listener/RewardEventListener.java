@@ -5,12 +5,10 @@ import com.eduquest.backend.domain.learning.event.StageClearedEvent;
 import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
-import com.eduquest.backend.domain.reward.model.WalletHistory;
 import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import com.eduquest.backend.domain.reward.service.WalletQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
