@@ -24,10 +24,8 @@ public class HintHistory {
         this.memberId = memberId;
     }
 
-    public static HintHistory of(Long id, LocalDateTime createdAt, Long hintId, Long memberId) {
+    public static HintHistory of(Long hintId, Long memberId) {
         return HintHistory.builder()
-                .id(id)
-                .createdAt(createdAt)
                 .hintId(hintId)
                 .memberId(memberId)
                 .build();
