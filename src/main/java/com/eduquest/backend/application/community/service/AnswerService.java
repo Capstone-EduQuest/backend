@@ -4,10 +4,9 @@ package com.eduquest.backend.application.community.service;
 import com.eduquest.backend.application.community.dto.AnswerListQuery;
 import com.eduquest.backend.application.community.dto.AnswerListResult;
 import com.eduquest.backend.application.community.dto.CreateAnswerCommand;
-import com.eduquest.backend.application.community.event.AdoptConfig;
-import com.eduquest.backend.application.community.event.AnswerAdoptedEvent;
 import com.eduquest.backend.application.community.exception.CommunityErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.community.event.AnswerAdoptedEvent;
 import com.eduquest.backend.domain.community.model.Answer;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.AnswerCommandService;
@@ -36,6 +35,8 @@ public class AnswerService {
     private final QuestionQueryService questionQueryService;
     private final QuestionCommandService questionCommandService;
     private final MemberQueryService memberQueryService;
+
+    private static final long ADOPT_REWARD = 100L;
 
     public UUID createAnswer(CreateAnswerCommand command) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -113,7 +114,7 @@ public class AnswerService {
         answerCommandService.adoptAnswerByUuid(answerUuid);
 
         // 이벤트 발행
-        AnswerAdoptedEvent event = AnswerAdoptedEvent.of(answerUuid, AdoptConfig.ADOPT_REWARD);
+        AnswerAdoptedEvent event = AnswerAdoptedEvent.of(answerUuid, ADOPT_REWARD);
         eventPublisher.publishEvent(event);
     }
 

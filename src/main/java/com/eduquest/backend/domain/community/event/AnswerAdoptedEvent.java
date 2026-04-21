@@ -1,4 +1,4 @@
-package com.eduquest.backend.application.community.event;
+package com.eduquest.backend.domain.community.event;
 
 import java.util.UUID;
 
