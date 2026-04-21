@@ -21,7 +21,7 @@ public class RewardEventListener {
     private final WalletCommandService walletCommandService;
 
     @Transactional
-    @Async
+    @EventListener
     public void handleGrantPointEvent(GrantPointEvent event) {
 
         // 존재하는 멤버인지 검사
