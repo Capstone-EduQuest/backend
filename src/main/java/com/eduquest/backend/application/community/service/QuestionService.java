@@ -12,8 +12,6 @@ import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

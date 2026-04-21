@@ -1,8 +1,8 @@
 package com.eduquest.backend.application.community.exception;
 
 import com.eduquest.backend.common.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter

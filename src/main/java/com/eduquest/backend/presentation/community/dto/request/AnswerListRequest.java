@@ -1,7 +1,7 @@
 package com.eduquest.backend.presentation.community.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 
 public record AnswerListRequest(
         @NotNull(message = "페이지 번호는 필수입니다.")

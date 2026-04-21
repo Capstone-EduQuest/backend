@@ -1,12 +1,12 @@
 package com.eduquest.backend.infrastructure.persistence.community.service;
 
+import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
+import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityPostEntity;
 import com.eduquest.backend.infrastructure.persistence.community.mapper.CommunityPostEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.community.repository.CommunityPostJpaRepository;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
-import com.eduquest.backend.common.exception.EduQuestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
