@@ -7,6 +7,7 @@ import com.eduquest.backend.presentation.community.dto.response.AnswerListRespon
 import com.eduquest.backend.presentation.community.dto.response.AnswerSummary;
 import com.eduquest.backend.presentation.community.dto.response.UserInfo;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,15 @@ public class AnswerController {
     @PostMapping("/question/{questionUuid}/answers")
     public ResponseEntity<Void> createAnswer(
             @PathVariable UUID questionUuid,
-            @Valid @RequestBody CreateAnswerRequest request
+            @Valid @RequestBody CreateAnswerRequest request,
+            Authentication authentication
     ) {
 
         UUID createdUuid = answerService.createAnswer(
                 com.eduquest.backend.application.community.dto.CreateAnswerCommand.of(
                         questionUuid,
-                        request.content()
+                        request.content(),
+                        authentication == null ? null : authentication.getName()
                 )
         );
 

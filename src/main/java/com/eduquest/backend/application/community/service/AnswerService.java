@@ -39,14 +39,11 @@ public class AnswerService {
     private static final long ADOPT_REWARD = 100L;
 
     public UUID createAnswer(CreateAnswerCommand command) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || authentication.getName() == null || authentication.getName().isBlank()) {
+        if (command == null || command.userId() == null || command.userId().isBlank()) {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
 
-        String authUserId = authentication.getName();
-        Long memberId = memberQueryService.findMemberIdByUserId(authUserId);
+        Long memberId = memberQueryService.findMemberIdByUserId(command.userId());
 
         Question question = questionQueryService.findQuestionByUuid(command.questionUuid());
         if (question == null) {

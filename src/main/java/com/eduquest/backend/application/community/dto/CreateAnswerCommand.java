@@ -4,10 +4,11 @@ import java.util.UUID;
 
 public record CreateAnswerCommand(
         UUID questionUuid,
-        String content
+        String content,
+        String userId
 ) {
-    public static CreateAnswerCommand of(UUID questionUuid, String content) {
-        return new CreateAnswerCommand(questionUuid, content);
+    public static CreateAnswerCommand of(UUID questionUuid, String content, String userId) {
+        return new CreateAnswerCommand(questionUuid, content, userId);
     }
 }
 
