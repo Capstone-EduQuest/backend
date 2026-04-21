@@ -1,30 +1,97 @@
+
 package com.eduquest.backend.application.community.service;
 
 import com.eduquest.backend.application.community.dto.CreateQuestionCommand;
 import com.eduquest.backend.application.community.dto.QuestionDetailResponse;
 import com.eduquest.backend.application.community.dto.QuestionListQuery;
 import com.eduquest.backend.application.community.dto.QuestionListResult;
+import com.eduquest.backend.application.community.exception.CommunityErrorCode;
+import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.community.model.Question;
+import com.eduquest.backend.domain.community.service.QuestionCommandService;
+import com.eduquest.backend.domain.community.service.QuestionQueryService;
+import com.eduquest.backend.domain.member.service.MemberQueryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionService {
 
+    private final QuestionCommandService questionCommandService;
+    private final QuestionQueryService questionQueryService;
+    private final MemberQueryService memberQueryService;
+
     public UUID createQuestion(CreateQuestionCommand command) {
-        throw new UnsupportedOperationException("Not implemented");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null || authentication.getName().isBlank()) {
+            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
+        }
+
+        String authUserId = authentication.getName();
+        Long memberId = memberQueryService.findMemberIdByUserId(authUserId);
+
+        Question question = Question.of(command.title(), command.content(), memberId);
+
+        Long savedId = questionCommandService.saveQuestion(question);
+
+        Question saved = questionQueryService.findQuestionById(savedId);
+
+        if (saved == null || saved.getUuid() == null) {
+            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
+        }
+
+        return saved.getUuid();
     }
 
     public void deleteQuestionByUuid(UUID questionUuid) {
-        throw new UnsupportedOperationException("Not implemented");
+        questionCommandService.deleteQuestionByUuid(questionUuid);
     }
 
     public QuestionListResult findQuestions(QuestionListQuery query) {
-        throw new UnsupportedOperationException("Not implemented");
+        List<Question> questions = questionQueryService.findAll(query.page(), query.size());
+
+        List<QuestionListResult.Item> items = questions.stream().map(q -> {
+            var member = memberQueryService.findMemberById(q.getUserId());
+            UUID userUuid = member.getUuid();
+            String nickname = member.getNickname();
+            Instant createdAt = q.getCreatedAt() == null ? Instant.now() : q.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant();
+
+            return QuestionListResult.Item.of(q.getUuid(), q.getTitle(), userUuid, nickname, createdAt);
+        }).collect(Collectors.toList());
+
+        return QuestionListResult.of(query.page(), query.size(), query.sort(), query.isAsc(), items);
     }
 
     public QuestionDetailResponse findQuestionByUuid(UUID questionUuid) {
-        throw new UnsupportedOperationException("Not implemented");
+        Question question = questionQueryService.findQuestionByUuid(questionUuid);
+
+        if (question == null) {
+            throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
+        }
+
+        var member = memberQueryService.findMemberById(question.getUserId());
+
+        Instant createdAt = question.getCreatedAt() == null ? Instant.now() : question.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant();
+
+        return QuestionDetailResponse.of(
+                question.getUuid(),
+                question.getTitle(),
+                member.getUuid(),
+                member.getNickname(),
+                createdAt,
+                question.getContent(),
+                question.getIsAdopted(),
+                null
+        );
     }
 
 }
