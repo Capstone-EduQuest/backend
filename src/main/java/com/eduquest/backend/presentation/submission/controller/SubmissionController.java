@@ -8,6 +8,7 @@ import com.eduquest.backend.presentation.submission.exception.SubmissionApiError
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class SubmissionController {
 
     private final SubmissionService submissionService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/problems/{problemUuid}/submissions")
     public ResponseEntity<SubmissionResponse> submitProblem(
             @PathVariable UUID problemUuid,
