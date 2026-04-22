@@ -31,6 +31,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/questions")
     public ResponseEntity<Void> createQuestion(@Valid @RequestBody CreateQuestionRequest request, Authentication authentication) {
 
@@ -52,6 +53,7 @@ public class QuestionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/questions")
     public ResponseEntity<QuestionListResponse> listQuestions(@Valid @ModelAttribute QuestionListRequest request) {
 
@@ -82,6 +84,7 @@ public class QuestionController {
         );
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/questions/{questionUuid}")
     public ResponseEntity<QuestionResponse> getQuestion(@PathVariable UUID questionUuid) {
 

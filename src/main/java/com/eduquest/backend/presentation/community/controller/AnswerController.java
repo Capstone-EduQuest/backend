@@ -29,6 +29,7 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/question/{questionUuid}/answers")
     public ResponseEntity<Void> createAnswer(
             @PathVariable UUID questionUuid,
@@ -47,6 +48,7 @@ public class AnswerController {
         return ResponseEntity.status(201).build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/questions/{questionUuid}/answers")
     public ResponseEntity<AnswerListResponse> listAnswers(
             @PathVariable UUID questionUuid,
