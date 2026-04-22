@@ -13,6 +13,7 @@ import com.eduquest.backend.domain.community.service.AnswerCommandService;
 import com.eduquest.backend.domain.community.service.AnswerQueryService;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
+import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -64,7 +65,7 @@ public class AnswerService {
         List<Answer> answers = answerQueryService.findAnswersByQuestionUuid(questionUuid);
 
         List<AnswerListResult.Item> items = answers.stream().map(a -> {
-            var member = memberQueryService.findMemberById(a.getUserId());
+            Member member = memberQueryService.findMemberById(a.getUserId());
             UUID userUuid = member.getUuid();
             String nickname = member.getNickname();
             LocalDateTime createdAt = a.getCreatedAt() == null ? LocalDateTime.now() : a.getCreatedAt();
