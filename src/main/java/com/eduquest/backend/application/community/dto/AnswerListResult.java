@@ -1,6 +1,7 @@
 package com.eduquest.backend.application.community.dto;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,9 +22,9 @@ public record AnswerListResult(
             UUID userUuid,
             String userNickname,
             Boolean isAdopt,
-            Instant createdAt
+            LocalDateTime createdAt
     ) {
-        public static Item of(UUID uuid, String content, UUID userUuid, String userNickname, Boolean isAdopt, Instant createdAt) {
+        public static Item of(UUID uuid, String content, UUID userUuid, String userNickname, Boolean isAdopt, LocalDateTime createdAt) {
             return new Item(uuid, content, userUuid, userNickname, isAdopt, createdAt);
         }
     }

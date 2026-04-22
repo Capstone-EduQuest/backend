@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -67,7 +67,7 @@ public class AnswerService {
             var member = memberQueryService.findMemberById(a.getUserId());
             UUID userUuid = member.getUuid();
             String nickname = member.getNickname();
-            Instant createdAt = a.getCreatedAt() == null ? Instant.now() : a.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant();
+            LocalDateTime createdAt = a.getCreatedAt() == null ? LocalDateTime.now() : a.getCreatedAt();
 
             return AnswerListResult.Item.of(a.getUuid(), a.getContent(), userUuid, nickname, a.getIsAdopted(), createdAt);
         }).collect(Collectors.toList());
