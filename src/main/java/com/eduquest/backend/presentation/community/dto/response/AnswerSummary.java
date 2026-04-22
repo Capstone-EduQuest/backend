@@ -2,6 +2,7 @@ package com.eduquest.backend.presentation.community.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record AnswerSummary(
@@ -11,9 +12,9 @@ public record AnswerSummary(
         @JsonProperty("is_adopt")
         Boolean isAdopt,
         @JsonProperty("created_at")
-        Instant createdAt
+        LocalDateTime createdAt
 ) {
-    public static AnswerSummary of(UUID uuid, String content, UserInfo user, Boolean isAdopt, Instant createdAt) {
+    public static AnswerSummary of(UUID uuid, String content, UserInfo user, Boolean isAdopt, LocalDateTime createdAt) {
         return new AnswerSummary(uuid, content, user, isAdopt, createdAt);
     }
 }
