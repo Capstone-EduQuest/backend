@@ -18,6 +18,7 @@ import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -77,6 +78,7 @@ public class AnswerService {
         answerCommandService.deleteAnswerByUuid(answerUuid);
     }
 
+    @Transactional
     public void adoptAnswer(UUID answerUuid, String requesterUserId) {
         // only question author can adopt; admin not allowed
         if (requesterUserId == null || requesterUserId.isBlank()) {
