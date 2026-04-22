@@ -19,14 +19,13 @@ public class WrongNoteController {
 
     private final WrongNoteService wrongNoteService;
 
-    // GET /api/v1/wrong-notes/{uuid}
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{uuid}")
     public ResponseEntity<WrongNoteResponse> getWrongNote(@PathVariable UUID uuid) {
         WrongNoteResponse dto = wrongNoteService.findWrongNoteByUuid(uuid);
         return ResponseEntity.ok(dto);
     }
 
-    // GET /api/v1/wrong-notes/users/{uuid}
     @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
     @GetMapping("/users/{uuid}")
     public ResponseEntity<WrongNoteListResponse.WrongNoteList> listByUser(
@@ -44,7 +43,7 @@ public class WrongNoteController {
         return ResponseEntity.ok(list);
     }
 
-    // GET /api/v1/wrong-notes?page=&size=&sort=&is_asc=
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<WrongNoteListResponse.WrongNoteList> listAll(
             @Valid @ModelAttribute WrongNoteListRequest request
@@ -55,7 +54,6 @@ public class WrongNoteController {
         return ResponseEntity.ok(list);
     }
 
-    // DELETE /api/v1/wrong-notes/{uuid} (관리자만 가능)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteByUuid(@PathVariable UUID uuid) {

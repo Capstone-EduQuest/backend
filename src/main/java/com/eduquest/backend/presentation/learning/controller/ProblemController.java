@@ -55,6 +55,7 @@ public class ProblemController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/problems/{uuid}")
 	public ResponseEntity<ProblemResponse> getProblem(@PathVariable UUID uuid) {
 
@@ -63,6 +64,7 @@ public class ProblemController {
 		return ResponseEntity.ok(ProblemMapper.toResponse(problem));
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/problems", params = "stage_number")
 	public ResponseEntity<List<ProblemResponse>> getProblemsByStageNumber(@RequestParam("stage_number") Integer stageNumber) {
 
@@ -71,6 +73,7 @@ public class ProblemController {
 		return ResponseEntity.ok(ProblemMapper.toResponseList(results));
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/problems")
 	public ResponseEntity<ProblemListResponse> listProblems(@Valid ProblemListRequest request) {
 
@@ -79,6 +82,7 @@ public class ProblemController {
 		return ResponseEntity.ok(ProblemMapper.toListResponse(problems));
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/problems/{uuid}/hint")
 	public ResponseEntity<HintResponse> findHint(
 			@PathVariable UUID uuid,

@@ -49,12 +49,14 @@ public class StageController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/stages/{uuid}")
 	public ResponseEntity<StageResponse> getStage(@PathVariable UUID uuid) {
 
 		return ResponseEntity.ok(StageMapper.toResponse(stageService.getStage(uuid)));
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/stages")
 	public ResponseEntity<StageListResponse> listStages(@Valid StageListRequest request) {
 
