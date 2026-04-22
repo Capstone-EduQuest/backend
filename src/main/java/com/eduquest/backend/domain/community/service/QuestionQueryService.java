@@ -1,5 +1,6 @@
 package com.eduquest.backend.domain.community.service;
 
+import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.domain.community.model.Question;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface QuestionQueryService {
 
     List<Question> findQuestionsByUserId(Long userId);
 
-    List<Question> findAll(int page, int size);
+    List<QuestionQuery.Summary> findAll(int page, int size);
 
 }
 

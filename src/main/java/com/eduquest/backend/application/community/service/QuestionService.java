@@ -7,6 +7,7 @@ import com.eduquest.backend.application.community.dto.QuestionListQuery;
 import com.eduquest.backend.application.community.dto.QuestionListResult;
 import com.eduquest.backend.application.community.exception.CommunityErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
@@ -15,7 +16,6 @@ import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -53,13 +53,11 @@ public class QuestionService {
     }
 
     public QuestionListResult findQuestions(QuestionListQuery query) {
-        List<Question> questions = questionQueryService.findAll(query.page(), query.size());
+        List<QuestionQuery.Summary> summaries = questionQueryService.findAll(query.page(), query.size());
 
-        List<QuestionListResult.Item> items = questions.stream().map(q -> {
-            Member member = memberQueryService.findMemberById(q.getUserId());
-
-            return QuestionListResult.Item.of(q.getUuid(), q.getTitle(), member.getUuid(), member.getNickname(), q.getCreatedAt());
-        }).collect(Collectors.toList());
+        List<QuestionListResult.Item> items = summaries.stream()
+                .map(summary -> QuestionListResult.Item.of(summary.uuid(), summary.title(), summary.userUuid(), summary.userNickname(), summary.createdAt()))
+                .collect(Collectors.toList());
 
         return QuestionListResult.of(query.page(), query.size(), query.sort(), query.isAsc(), items);
     }

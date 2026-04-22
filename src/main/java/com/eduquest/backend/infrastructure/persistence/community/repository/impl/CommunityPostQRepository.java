@@ -1,5 +1,7 @@
+
 package com.eduquest.backend.infrastructure.persistence.community.repository.impl;
 
+import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityPostEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ public interface CommunityPostQRepository {
 
     Optional<CommunityPostEntity> findByUuid(UUID uuid);
 
-    // 복잡한 조회는 여기에 추가 선언
+    Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable);
+
 }
 

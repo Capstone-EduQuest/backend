@@ -80,7 +80,7 @@ public class AnswerService {
 
     @Transactional
     public void adoptAnswer(UUID answerUuid, String requesterUserId) {
-        // only question author can adopt; admin not allowed
+
         if (requesterUserId == null || requesterUserId.isBlank()) {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
@@ -111,9 +111,9 @@ public class AnswerService {
         questionCommandService.markAdoptedByUuid(question.getUuid(), answer.getUuid());
         answerCommandService.adoptAnswerByUuid(answerUuid);
 
-        // publish domain event for reward handling
         AnswerAdoptedEvent event = AnswerAdoptedEvent.of(answerUuid, ADOPT_REWARD);
         eventPublisher.publishEvent(event);
+
     }
 
 }

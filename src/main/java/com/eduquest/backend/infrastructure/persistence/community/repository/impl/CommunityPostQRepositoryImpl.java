@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import com.eduquest.backend.domain.community.dto.QuestionQuery;
+import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
+import com.querydsl.core.types.Projections;
 
 @RequiredArgsConstructor
 @Repository
@@ -25,6 +28,35 @@ public class CommunityPostQRepositoryImpl implements CommunityPostQRepository {
 
         List<CommunityPostEntity> content = queryFactory
                 .selectFrom(post)
+                .orderBy(post.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory.select(post.count()).from(post).fetchOne();
+        if (total == null) total = 0L;
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable) {
+        QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
+        QMemberEntity member = QMemberEntity.memberEntity;
+
+        List<QuestionQuery.Summary> content = queryFactory
+                .select(
+                        Projections.constructor(
+                                QuestionQuery.Summary.class,
+                                post.uuid,
+                                post.title,
+                                member.uuid,
+                                member.nickname,
+                                post.createdAt
+                        )
+                )
+                .from(post)
+                .leftJoin(member).on(member.id.eq(post.userId))
                 .orderBy(post.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
