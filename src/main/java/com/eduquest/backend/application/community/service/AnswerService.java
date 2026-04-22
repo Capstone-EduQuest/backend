@@ -66,11 +66,8 @@ public class AnswerService {
 
         List<AnswerListResult.Item> items = answers.stream().map(a -> {
             Member member = memberQueryService.findMemberById(a.getUserId());
-            UUID userUuid = member.getUuid();
-            String nickname = member.getNickname();
-            LocalDateTime createdAt = a.getCreatedAt() == null ? LocalDateTime.now() : a.getCreatedAt();
 
-            return AnswerListResult.Item.of(a.getUuid(), a.getContent(), userUuid, nickname, a.getIsAdopted(), createdAt);
+            return AnswerListResult.Item.of(a.getUuid(), a.getContent(), member.getUuid(), member.getNickname(), a.getIsAdopted(), a.getCreatedAt());
         }).collect(Collectors.toList());
 
         return AnswerListResult.of(query.page(), query.size(), null, query.isAsc(), items);

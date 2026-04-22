@@ -57,11 +57,8 @@ public class QuestionService {
 
         List<QuestionListResult.Item> items = questions.stream().map(q -> {
             Member member = memberQueryService.findMemberById(q.getUserId());
-            UUID userUuid = member.getUuid();
-            String nickname = member.getNickname();
-            LocalDateTime createdAt = q.getCreatedAt() == null ? LocalDateTime.now() : q.getCreatedAt();
 
-            return QuestionListResult.Item.of(q.getUuid(), q.getTitle(), userUuid, nickname, createdAt);
+            return QuestionListResult.Item.of(q.getUuid(), q.getTitle(), member.getUuid(), member.getNickname(), q.getCreatedAt());
         }).collect(Collectors.toList());
 
         return QuestionListResult.of(query.page(), query.size(), query.sort(), query.isAsc(), items);
@@ -76,14 +73,12 @@ public class QuestionService {
 
         Member member = memberQueryService.findMemberById(question.getUserId());
 
-        LocalDateTime createdAt = question.getCreatedAt() == null ? LocalDateTime.now() : question.getCreatedAt();
-
         return QuestionDetailResponse.of(
                 question.getUuid(),
                 question.getTitle(),
                 member.getUuid(),
                 member.getNickname(),
-                createdAt,
+                question.getCreatedAt(),
                 question.getContent(),
                 question.getIsAdopted(),
                 null
