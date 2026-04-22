@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "community_post")
 public class CommunityPostEntity extends BasicEntity {
 
-    @Column(name = "title", length = 255, nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)

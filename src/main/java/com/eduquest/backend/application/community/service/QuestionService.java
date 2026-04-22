@@ -10,11 +10,13 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
+import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,6 +30,7 @@ public class QuestionService {
     private final MemberQueryService memberQueryService;
 
     public void createQuestion(CreateQuestionCommand command) {
+
         if (command == null || command.userId() == null || command.userId().isBlank()) {
             throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
         }
@@ -54,10 +57,10 @@ public class QuestionService {
         List<Question> questions = questionQueryService.findAll(query.page(), query.size());
 
         List<QuestionListResult.Item> items = questions.stream().map(q -> {
-            var member = memberQueryService.findMemberById(q.getUserId());
+            Member member = memberQueryService.findMemberById(q.getUserId());
             UUID userUuid = member.getUuid();
             String nickname = member.getNickname();
-            Instant createdAt = q.getCreatedAt() == null ? Instant.now() : q.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant();
+            LocalDateTime createdAt = q.getCreatedAt() == null ? LocalDateTime.now() : q.getCreatedAt();
 
             return QuestionListResult.Item.of(q.getUuid(), q.getTitle(), userUuid, nickname, createdAt);
         }).collect(Collectors.toList());
@@ -72,9 +75,9 @@ public class QuestionService {
             throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
         }
 
-        var member = memberQueryService.findMemberById(question.getUserId());
+        Member member = memberQueryService.findMemberById(question.getUserId());
 
-        Instant createdAt = question.getCreatedAt() == null ? Instant.now() : question.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant();
+        LocalDateTime createdAt = question.getCreatedAt() == null ? LocalDateTime.now() : question.getCreatedAt();
 
         return QuestionDetailResponse.of(
                 question.getUuid(),

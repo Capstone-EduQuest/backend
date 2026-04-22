@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "community_answer")
 public class CommunityAnswerEntity extends BasicEntity {
 
-	@Column(name = "content", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "content", nullable = false)
 	private String content;
 
 	@Column(name = "is_adopted", nullable = false)
