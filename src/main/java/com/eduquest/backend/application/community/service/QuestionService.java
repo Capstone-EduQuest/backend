@@ -53,10 +53,23 @@ public class QuestionService {
     }
 
     public QuestionListResult findQuestions(QuestionListQuery query) {
-        List<QuestionQuery.Summary> summaries = questionQueryService.findAll(query.page(), query.size());
+        List<QuestionQuery.Summary> summaries = questionQueryService.findAll(
+                query.page(),
+                query.size(),
+                query.sort(),
+                query.isAsc() != null && query.isAsc(),
+                query.searchBy(),
+                query.keyword()
+        );
 
         List<QuestionListResult.Item> items = summaries.stream()
-                .map(summary -> QuestionListResult.Item.of(summary.uuid(), summary.title(), summary.userUuid(), summary.userNickname(), summary.createdAt()))
+                .map(summary -> QuestionListResult.Item.of(
+                        summary.uuid(),
+                        summary.title(),
+                        summary.userUuid(),
+                        summary.userNickname(),
+                        summary.createdAt()
+                ))
                 .collect(Collectors.toList());
 
         return QuestionListResult.of(query.page(), query.size(), query.sort(), query.isAsc(), items);

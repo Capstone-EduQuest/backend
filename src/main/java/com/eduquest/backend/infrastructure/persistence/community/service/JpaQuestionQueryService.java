@@ -39,8 +39,8 @@ public class JpaQuestionQueryService implements QuestionQueryService {
 	}
 
 	@Override
-	public List<QuestionQuery.Summary> findAll(int page, int size) {
-		return postQueryRepository.findSummaryBy(PageRequest.of(page, size)).getContent();
+	public List<QuestionQuery.Summary> findAll(int page, int size, String sortBy, boolean isAsc, String searchBy, String keyword) {
+		return postQueryRepository.findSummaryBy(PageRequest.of(page, size), searchBy, keyword, sortBy, isAsc).getContent();
 	}
 
 }

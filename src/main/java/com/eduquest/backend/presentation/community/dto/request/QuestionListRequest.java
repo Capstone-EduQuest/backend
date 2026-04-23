@@ -10,11 +10,13 @@ public record QuestionListRequest(
         Integer size,
         String sort,
         @JsonProperty("is_asc")
-        Boolean isAsc
+        Boolean isAsc,
+        String searchBy,
+        String keyword
 ) {
 
-    public static QuestionListRequest of(int page, int size, String sort, Boolean isAsc) {
-        return new QuestionListRequest(page, size, sort, isAsc);
+    public static QuestionListRequest of(int page, int size, String sort, Boolean isAsc, String searchBy, String keyword) {
+        return new QuestionListRequest(page, size, sort, isAsc, searchBy, keyword);
     }
 
 }

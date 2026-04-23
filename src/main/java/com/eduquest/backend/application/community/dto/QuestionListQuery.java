@@ -4,10 +4,12 @@ public record QuestionListQuery(
         int page,
         int size,
         String sort,
-        Boolean isAsc
+        Boolean isAsc,
+        String searchBy,
+        String keyword
 ) {
-    public static QuestionListQuery of(int page, int size, String sort, Boolean isAsc) {
-        return new QuestionListQuery(page, size, sort, isAsc);
+    public static QuestionListQuery of(int page, int size, String sort, Boolean isAsc, String searchBy, String keyword) {
+        return new QuestionListQuery(page, size, sort, isAsc, searchBy, keyword);
     }
 }
 
