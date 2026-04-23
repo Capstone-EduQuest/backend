@@ -1,5 +1,9 @@
 package com.eduquest.backend.presentation.note.controller;
 
+import com.eduquest.backend.application.note.dto.CreateNoteCommand;
+import com.eduquest.backend.application.note.dto.NoteDto;
+import com.eduquest.backend.application.note.dto.NoteListResult;
+import com.eduquest.backend.application.note.dto.UpdateNoteCommand;
 import com.eduquest.backend.application.note.service.NoteService;
 import com.eduquest.backend.presentation.note.dto.request.NoteCreateRequest;
 import com.eduquest.backend.presentation.note.dto.request.NoteListRequest;
@@ -29,7 +33,7 @@ public class NoteController {
             Authentication authentication
     ) {
         String username = authentication.getName();
-        UUID createdUuid = noteService.createNote(username, request);
+        UUID createdUuid = noteService.createNote(username, CreateNoteCommand.of(request.title(), request.content()));
         return ResponseEntity.ok(createdUuid);
     }
 
@@ -39,7 +43,8 @@ public class NoteController {
             @PathVariable UUID uuid,
             Authentication authentication
     ) {
-        NoteResponse response = noteService.findNoteByUuid(uuid);
+        NoteDto dto = noteService.findNoteDtoByUuid(uuid);
+        NoteResponse response = NoteResponse.of(dto.uuid(), dto.title(), dto.content(), dto.authorUuid(), dto.createdAt(), dto.updatedAt());
         return ResponseEntity.ok(response);
     }
 
@@ -49,15 +54,11 @@ public class NoteController {
             @Valid @ModelAttribute NoteListRequest request,
             Authentication authentication
     ) {
-        NoteListResponse.NoteList list = noteService.findNotes(
-                request.page(),
-                request.size(),
-                request.sort(),
-                request.isAsc(),
-                request.searchBy(),
-                request.keyword()
-        );
-        return ResponseEntity.ok(list);
+        NoteListResult result = noteService.findNotes(request.page(), request.size(), request.sort(), request.isAsc(), request.searchBy(), request.keyword());
+
+        var items = result.results().stream().map(i -> com.eduquest.backend.presentation.note.dto.response.NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
+
+        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() == null ? false : result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
@@ -67,16 +68,11 @@ public class NoteController {
             @Valid @ModelAttribute NoteListRequest request,
             Authentication authentication
     ) {
-        NoteListResponse.NoteList list = noteService.findNotesByUserUuid(
-                uuid,
-                request.page(),
-                request.size(),
-                request.sort(),
-                request.isAsc(),
-                request.searchBy(),
-                request.keyword()
-        );
-        return ResponseEntity.ok(list);
+        NoteListResult result = noteService.findNotesByUserUuid(uuid, request.page(), request.size(), request.sort(), request.isAsc(), request.searchBy(), request.keyword());
+
+        var items = result.results().stream().map(i -> com.eduquest.backend.presentation.note.dto.response.NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
+
+        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() == null ? false : result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -87,7 +83,7 @@ public class NoteController {
             Authentication authentication
     ) {
         String username = authentication.getName();
-        noteService.updateNoteByUuid(uuid, username, request);
+        noteService.updateNoteByUuid(uuid, username, UpdateNoteCommand.of(request.title(), request.content()));
         return ResponseEntity.noContent().build();
     }
 
