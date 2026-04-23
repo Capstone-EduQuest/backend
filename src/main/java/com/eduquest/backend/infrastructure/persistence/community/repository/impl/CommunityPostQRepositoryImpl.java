@@ -1,7 +1,10 @@
 package com.eduquest.backend.infrastructure.persistence.community.repository.impl;
 
+import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityPostEntity;
 import com.eduquest.backend.infrastructure.persistence.community.entity.QCommunityPostEntity;
+import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,9 +15,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import com.eduquest.backend.domain.community.dto.QuestionQuery;
-import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
-import com.querydsl.core.types.Projections;
 
 @RequiredArgsConstructor
 @Repository
