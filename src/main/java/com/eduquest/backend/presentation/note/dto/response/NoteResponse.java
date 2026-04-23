@@ -1,5 +1,6 @@
 package com.eduquest.backend.presentation.note.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -10,9 +11,9 @@ public record NoteResponse(
         UUID uuid,
         String title,
         String content,
-        UUID authorUuid,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        @JsonProperty("author_uuid") UUID authorUuid,
+        @JsonProperty("created_at") LocalDateTime createdAt,
+        @JsonProperty("updated_at") LocalDateTime updatedAt
 ) {
 
     public static NoteResponse of(
