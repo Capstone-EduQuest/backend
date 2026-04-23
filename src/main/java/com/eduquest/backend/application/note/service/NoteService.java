@@ -1,11 +1,14 @@
 package com.eduquest.backend.application.note.service;
 
-import com.eduquest.backend.application.note.dto.*;
-import com.eduquest.backend.domain.note.dto.NoteQuery;
-import com.eduquest.backend.domain.member.model.Member;
+import com.eduquest.backend.application.note.dto.CreateNoteCommand;
+import com.eduquest.backend.application.note.dto.NoteDto;
+import com.eduquest.backend.application.note.dto.NoteListResult;
+import com.eduquest.backend.application.note.dto.UpdateNoteCommand;
 import com.eduquest.backend.application.note.exception.NoteErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.member.model.Member;
 import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.note.dto.NoteQuery;
 import com.eduquest.backend.domain.note.model.Note;
 import com.eduquest.backend.domain.note.service.NoteCommandService;
 import com.eduquest.backend.domain.note.service.NoteQueryService;
@@ -38,6 +41,7 @@ public class NoteService {
         Long savedId = noteCommandService.saveNote(note);
 
         NoteQuery.Detail detail = noteQueryService.findNoteById(savedId);
+
         if (detail == null) {
             throw new EduQuestException(NoteErrorCode.INVALID_REQUEST);
         }
@@ -57,7 +61,7 @@ public class NoteService {
 
     @Transactional(readOnly = true)
     public NoteListResult findNotes(int page, int size, String sort, Boolean isAsc, String searchBy, String keyword) {
-        List<NoteQuery.Detail> details = noteQueryService.findNotes(page, size, sort, isAsc == null ? false : isAsc, searchBy, keyword);
+        List<NoteQuery.Detail> details = noteQueryService.findNotes(page, size, sort, isAsc != null && isAsc, searchBy, keyword);
         long total = noteQueryService.countNotes();
 
         List<NoteListResult.Item> items = details.stream().map(d -> {
@@ -71,7 +75,7 @@ public class NoteService {
     @Transactional(readOnly = true)
     public NoteListResult findNotesByUserUuid(UUID userUuid, int page, int size, String sort, Boolean isAsc, String searchBy, String keyword) {
         Long memberId = memberQueryService.findMemberIdByUuid(userUuid);
-        List<NoteQuery.Detail> details = noteQueryService.findNotesByUserId(memberId, page, size, sort, isAsc == null ? false : isAsc, searchBy, keyword);
+        List<NoteQuery.Detail> details = noteQueryService.findNotesByUserId(memberId, page, size, sort, isAsc != null && isAsc, searchBy, keyword);
         long total = noteQueryService.countNotesByUserId(memberId);
 
         List<NoteListResult.Item> items = details.stream().map(d -> {
@@ -84,6 +88,7 @@ public class NoteService {
 
     @Transactional
     public void updateNoteByUuid(UUID uuid, String userId, UpdateNoteCommand command) {
+
         if (userId == null || userId.isBlank()) {
             throw new EduQuestException(NoteErrorCode.INVALID_REQUEST);
         }
@@ -103,6 +108,7 @@ public class NoteService {
 
     @Transactional
     public void deleteNoteByUuid(UUID uuid, String userId) {
+
         if (userId == null || userId.isBlank()) {
             throw new EduQuestException(NoteErrorCode.INVALID_REQUEST);
         }
@@ -118,6 +124,7 @@ public class NoteService {
         }
 
         noteCommandService.deleteByUuid(uuid);
+
     }
 
 }

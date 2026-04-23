@@ -4,11 +4,8 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.note.dto.NoteQuery;
 import com.eduquest.backend.domain.note.service.NoteQueryService;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
-import com.eduquest.backend.infrastructure.persistence.note.mapper.NoteEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.note.repository.NoteQueryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
