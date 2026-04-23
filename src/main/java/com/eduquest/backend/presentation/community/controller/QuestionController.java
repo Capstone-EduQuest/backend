@@ -62,7 +62,9 @@ public class QuestionController {
                         request.page(),
                         request.size(),
                         request.sort(),
-                        request.isAsc()
+                        request.isAsc(),
+                        request.searchBy(),
+                        request.keyword()
                 )
         );
 

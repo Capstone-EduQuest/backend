@@ -17,5 +17,7 @@ public interface CommunityPostQRepository {
 
     Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable);
 
+    Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable, String searchBy, String keyword, String sortBy, boolean isAsc);
+
 }
 
