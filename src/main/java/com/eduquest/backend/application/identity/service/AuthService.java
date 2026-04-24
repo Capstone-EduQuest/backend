@@ -72,6 +72,25 @@ public class AuthService {
 
     }
 
+    public void verifySignUpToken(String token) {
+
+        if (!mailService.isValidToken(token)) {
+            throw new EduQuestException(AuthErrorCode.INVALID_EMAIL_VERIFICATION_TOKEN);
+        }
+
+        String email = mailService.findEmailByToken(token);
+
+        Member member = memberQueryService.findMemberByEmail(email);
+
+        if (Boolean.TRUE.equals(member.getIsLocked())) {
+            member.unlock();
+            memberCommandService.updateMember(member);
+        }
+
+        mailService.deleteToken(token);
+
+    }
+
     public void rotateRefreshToken(String refreshToken, HttpServletResponse response) {
 
         eventPublisher.publishEvent(

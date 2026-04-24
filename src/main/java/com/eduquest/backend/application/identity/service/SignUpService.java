@@ -14,6 +14,7 @@ import com.eduquest.backend.domain.identity.model.enums.RoleType;
 import com.eduquest.backend.domain.identity.service.MemberCommandService;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
+import com.eduquest.backend.domain.identity.event.SignUpMailEvent;
 import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +70,7 @@ public class SignUpService {
             walletCommandService.changeBalance(savedMemberId, 0L, "init-wallet");
 
             // 회원 가입 성공 이벤트 발행(이벤트 기반) - 기본 포인트 지급
+            eventPublisher.publishEvent(SignUpMailEvent.of(command.email()));
             eventPublisher.publishEvent(GrantPointEvent.of(savedMemberId, 1000L, "sign-up"));
 
         } catch (Exception e) {
