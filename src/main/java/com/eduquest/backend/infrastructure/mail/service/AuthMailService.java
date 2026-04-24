@@ -4,6 +4,7 @@ import com.eduquest.backend.domain.identity.service.MailService;
 import com.eduquest.backend.infrastructure.mail.repository.EmailTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.eduquest.backend.common.config.MailConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -47,7 +48,7 @@ public class AuthMailService implements MailService {
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("[EduQuest] 이메일 인증 안내");
         mailMessage.setText("회원가입을 완료하려면 아래 링크를 클릭하세요:\n" + verificationUrl
-                + "\n\n토큰은 생성 후 10분간 유효하며, 동일 이메일로는 10분 이내에 재발급되지 않습니다.");
+                + "\n\n토큰은 생성 후 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분간 유효하며, 동일 이메일로는 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분 이내에 재발급되지 않습니다.");
 
         javaMailSender.send(mailMessage);
 
@@ -81,7 +82,7 @@ public class AuthMailService implements MailService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("[EduQuest] 비밀번호 재설정");
-        mailMessage.setText("고객님의 비밀번호 변경 토큰은 " + token + "입니다.\n\n토큰은 생성 후 10분간 유효하며, 동일 이메일로는 10분 이내에 재발급되지 않습니다.");
+        mailMessage.setText("고객님의 비밀번호 변경 토큰은 " + token + "입니다.\n\n토큰은 생성 후 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분간 유효하며, 동일 이메일로는 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분 이내에 재발급되지 않습니다.");
         mailMessage.setFrom(senderEmailAddress);
         javaMailSender.send(mailMessage);
 
