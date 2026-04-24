@@ -54,7 +54,7 @@ public class SignUpService {
                 passwordEncoder.encode(command.password()),
                 command.birth(),
                 command.nickname(),
-                false,
+                true,
                 fileId
         );
 
