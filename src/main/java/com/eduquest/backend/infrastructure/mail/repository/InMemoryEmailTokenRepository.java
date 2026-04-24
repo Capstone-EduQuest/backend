@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class InMemoryPasswordResetTokenRepository implements PasswordResetTokenRepository {
+public class InMemoryEmailTokenRepository implements EmailTokenRepository {
 
     private static final ConcurrentHashMap<String, PasswordStoredToken> PASSWORD_RESET_TOKEN_STORE = new ConcurrentHashMap<>();
 

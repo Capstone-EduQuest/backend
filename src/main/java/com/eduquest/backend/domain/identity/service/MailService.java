@@ -2,6 +2,8 @@ package com.eduquest.backend.domain.identity.service;
 
 public interface MailService {
 
+    void sendSignUpMail(String recipientEmail);
+
     void sendFindIdEmail(String recipientEmail);
 
     void sendResetPasswordEmail(String recipientEmail);

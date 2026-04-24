@@ -1,6 +1,6 @@
 package com.eduquest.backend.infrastructure.mail.repository;
 
-public interface PasswordResetTokenRepository {
+public interface EmailTokenRepository {
 
     boolean existsByToken(String token);
 

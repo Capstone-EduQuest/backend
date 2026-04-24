@@ -1,7 +1,7 @@
 package com.eduquest.backend.infrastructure.mail.service;
 
 import com.eduquest.backend.domain.identity.service.MailService;
-import com.eduquest.backend.infrastructure.mail.repository.PasswordResetTokenRepository;
+import com.eduquest.backend.infrastructure.mail.repository.EmailTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +18,15 @@ import java.util.UUID;
 public class AuthMailService implements MailService {
 
     private final JavaMailSender javaMailSender;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailTokenRepository emailTokenRepository;
 
     @Value("${spring.mail.username}")
     private String senderEmailAddress;
+
+    @Override
+    public void sendSignUpMail(String recipientEmail) {
+
+    }
 
     @Async("mailEventTaskExecutor")
     public void sendFindIdEmail(String recipientEmail) {
@@ -38,7 +43,7 @@ public class AuthMailService implements MailService {
     @Async("mailEventTaskExecutor")
     public void sendResetPasswordEmail(String recipientEmail) {
 
-        if (passwordResetTokenRepository.existsByEmail(recipientEmail)) {
+        if (emailTokenRepository.existsByEmail(recipientEmail)) {
             // 이미 토큰이 존재하는 경우 예외 처리
             log.warn("A password reset token already exists for email: {}", recipientEmail);
             return;
@@ -46,7 +51,7 @@ public class AuthMailService implements MailService {
 
         String token = UUID.randomUUID().toString();
 
-        passwordResetTokenRepository.save(token, recipientEmail);
+        emailTokenRepository.save(token, recipientEmail);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(recipientEmail);
@@ -59,17 +64,17 @@ public class AuthMailService implements MailService {
 
     @Override
     public boolean isValidToken(String token) {
-        return passwordResetTokenRepository.existsByToken(token);
+        return emailTokenRepository.existsByToken(token);
     }
 
     @Override
     public String findEmailByToken(String token) {
-        return passwordResetTokenRepository.findEmailByToken(token);
+        return emailTokenRepository.findEmailByToken(token);
     }
 
     @Override
     public void deleteToken(String token) {
-        passwordResetTokenRepository.deleteByToken(token);
+        emailTokenRepository.deleteByToken(token);
     }
 
 }
