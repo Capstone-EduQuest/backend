@@ -1,8 +1,8 @@
 package com.eduquest.backend.application.identity.listener;
 
-import com.eduquest.backend.domain.member.event.FindIdMailEvent;
-import com.eduquest.backend.domain.member.event.ResetPasswordMailEvent;
-import com.eduquest.backend.domain.member.service.MailService;
+import com.eduquest.backend.domain.identity.event.FindIdMailEvent;
+import com.eduquest.backend.domain.identity.event.ResetPasswordMailEvent;
+import com.eduquest.backend.domain.identity.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

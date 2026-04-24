@@ -2,8 +2,8 @@ package com.eduquest.backend.application.submission.service;
 
 import com.eduquest.backend.application.submission.exception.WrongNoteErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
@@ -82,7 +82,7 @@ public class WrongNoteService {
 
         List<WrongNoteResponse> results = details.stream()
                 .map(detail -> {
-                    com.eduquest.backend.domain.member.model.Member member = memberQueryService.findMemberById(detail.userId());
+                    com.eduquest.backend.domain.identity.model.Member member = memberQueryService.findMemberById(detail.userId());
                     java.util.UUID userUuid = member.getUuid();
                     return WrongNoteResponse.of(
                             detail.id(),

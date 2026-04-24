@@ -3,7 +3,7 @@ package com.eduquest.backend.application.reward.service;
 import com.eduquest.backend.application.reward.dto.RewardHistoryDto;
 import com.eduquest.backend.application.reward.dto.RewardListDto;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.model.RewardHistory;
 import com.eduquest.backend.domain.reward.service.RewardCommandService;
 import com.eduquest.backend.domain.reward.service.RewardQueryService;

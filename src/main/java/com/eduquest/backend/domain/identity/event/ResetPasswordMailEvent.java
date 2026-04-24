@@ -1,4 +1,4 @@
-package com.eduquest.backend.domain.member.event;
+package com.eduquest.backend.domain.identity.event;
 
 public record ResetPasswordMailEvent(
         String userId,

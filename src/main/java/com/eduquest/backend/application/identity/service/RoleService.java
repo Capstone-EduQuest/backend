@@ -1,8 +1,8 @@
 package com.eduquest.backend.application.identity.service;
 
 import com.eduquest.backend.application.identity.dto.RoleCommand;
-import com.eduquest.backend.domain.member.service.MemberCommandService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.service.MemberCommandService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.eduquest.backend.domain.member.service;
+package com.eduquest.backend.domain.identity.service;
 
 public interface MailService {
 

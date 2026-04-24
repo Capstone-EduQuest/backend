@@ -2,8 +2,8 @@ package com.eduquest.backend.application.reward.listener;
 
 import com.eduquest.backend.application.reward.service.RewardService;
 import com.eduquest.backend.domain.learning.event.StageClearedEvent;
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import com.eduquest.backend.domain.reward.service.WalletQueryService;

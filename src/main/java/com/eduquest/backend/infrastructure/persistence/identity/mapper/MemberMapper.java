@@ -1,5 +1,5 @@
 package com.eduquest.backend.infrastructure.persistence.identity.mapper;
-import com.eduquest.backend.domain.member.model.Member;
+import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.MemberEntity;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package com.eduquest.backend.infrastructure.persistence.identity.repository.impl;
 
-import com.eduquest.backend.domain.member.dto.MemberQuery;
+import com.eduquest.backend.domain.identity.dto.MemberQuery;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QRoleEntity;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

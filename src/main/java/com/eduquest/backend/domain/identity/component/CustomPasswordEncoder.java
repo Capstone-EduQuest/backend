@@ -1,4 +1,4 @@
-package com.eduquest.backend.domain.member.component;
+package com.eduquest.backend.domain.identity.component;
 
 public interface CustomPasswordEncoder {
 

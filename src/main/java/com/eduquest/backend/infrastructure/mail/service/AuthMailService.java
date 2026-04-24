@@ -1,6 +1,6 @@
 package com.eduquest.backend.infrastructure.mail.service;
 
-import com.eduquest.backend.domain.member.service.MailService;
+import com.eduquest.backend.domain.identity.service.MailService;
 import com.eduquest.backend.infrastructure.mail.repository.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

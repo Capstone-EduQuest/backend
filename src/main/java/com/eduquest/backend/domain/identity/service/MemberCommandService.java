@@ -1,7 +1,7 @@
-package com.eduquest.backend.domain.member.service;
+package com.eduquest.backend.domain.identity.service;
 
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.model.Role;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.model.Role;
 
 import java.util.UUID;
 

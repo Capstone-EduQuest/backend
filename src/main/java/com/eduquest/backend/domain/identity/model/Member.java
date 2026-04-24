@@ -1,4 +1,4 @@
-package com.eduquest.backend.domain.member.model;
+package com.eduquest.backend.domain.identity.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;

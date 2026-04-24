@@ -1,7 +1,7 @@
 package com.eduquest.backend.infrastructure.security.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.domain.member.dto.UserDetailsData;
+import com.eduquest.backend.domain.identity.dto.UserDetailsData;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;

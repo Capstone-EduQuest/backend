@@ -1,12 +1,12 @@
 package com.eduquest.backend.application.identity.runner;
 
-import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
-import com.eduquest.backend.domain.member.dto.MemberQuery;
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.model.Role;
-import com.eduquest.backend.domain.member.model.enums.RoleType;
-import com.eduquest.backend.domain.member.service.MemberCommandService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.component.CustomPasswordEncoder;
+import com.eduquest.backend.domain.identity.dto.MemberQuery;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.model.Role;
+import com.eduquest.backend.domain.identity.model.enums.RoleType;
+import com.eduquest.backend.domain.identity.service.MemberCommandService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
