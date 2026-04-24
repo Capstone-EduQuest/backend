@@ -1,6 +1,6 @@
 package com.eduquest.backend.domain.bookmark.service;
 
-import com.eduquest.backend.domain.bookmark.dto.BookmarkListResult;
+import com.eduquest.backend.domain.bookmark.dto.BookmarkList;
 
 public interface BookmarkQueryService {
 
@@ -14,6 +14,6 @@ public interface BookmarkQueryService {
      * @param isAsc  ascending flag
      * @return BookmarkListResult containing results and paging meta
      */
-    BookmarkListResult listBookmarksByUserId(Long userId, int page, int size, String sort, Boolean isAsc);
+    BookmarkList listBookmarksByUserId(Long userId, int page, int size, String sort, Boolean isAsc);
 }
 
