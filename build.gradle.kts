@@ -51,6 +51,7 @@ dependencies {
 	implementation("io.github.openfeign.querydsl:querydsl-jpa-spring:7.1")
 	implementation(platform("org.springframework.ai:spring-ai-bom:1.1.4"))
 	implementation ("org.springframework.ai:spring-ai-openai")
+	implementation("com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20260313.1")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
