@@ -94,11 +94,15 @@ public class SignUpService {
         String fileName = UUID.randomUUID().toString(); // 고유한 파일 이름 생성
 
         try (InputStream is = command.profileImage().getInputStream()) {
+
+            String extension = command.profileImage().getOriginalFilename().substring(command.profileImage().getOriginalFilename().lastIndexOf("."));
+
             s3Client.putObject(
                     fileName,
                     S3FileDto.of(
                             command.profileImage().getOriginalFilename(),
                             command.profileImage().getContentType(),
+                            extension,
                             is.readAllBytes()
                     )
             );
