@@ -38,7 +38,7 @@ public class EduQuestS3Client implements CustomS3Client {
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(id)
+                .key(id + "." + file.extension())
                 .contentType(file.fileType())
                 .build();
 
