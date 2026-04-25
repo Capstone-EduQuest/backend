@@ -1,6 +1,9 @@
 package com.eduquest.backend.application.identity.service;
 
+import com.eduquest.backend.application.identity.component.ProfileImageFilter;
 import com.eduquest.backend.application.identity.dto.UserProfileCommand;
+import com.eduquest.backend.application.identity.exception.AuthErrorCode;
+import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.file.component.CustomS3Client;
 import com.eduquest.backend.domain.file.dto.S3FileDto;
 import com.eduquest.backend.domain.file.event.FileDataDeleteEvent;
@@ -36,6 +39,7 @@ public class UserProfileService {
     private final FileQueryService fileQueryService;
     private final CustomS3Client customS3Client;
     private final ApplicationEventPublisher eventPublisher;
+    private final ProfileImageFilter profileImageFilter;
     private final CustomPasswordEncoder passwordEncoder;
 
     public UUID getUuidByUserId(String userId) {
@@ -131,6 +135,10 @@ public class UserProfileService {
         String fileName = UUID.randomUUID().toString(); // 고유한 파일 이름 생성
 
         try (InputStream is = command.profileImage().getInputStream()) {
+
+            if (!profileImageFilter.isImage(command.profileImage())) {
+                throw new EduQuestException(AuthErrorCode.INVALID_PROFILE_FILE_FORMAT);
+            }
 
             String extension = command.profileImage().getOriginalFilename().substring(command.profileImage().getOriginalFilename().lastIndexOf("."));
 
