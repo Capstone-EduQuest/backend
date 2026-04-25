@@ -1,4 +1,4 @@
-package com.eduquest.backend.domain.member.dto;
+package com.eduquest.backend.domain.identity.dto;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

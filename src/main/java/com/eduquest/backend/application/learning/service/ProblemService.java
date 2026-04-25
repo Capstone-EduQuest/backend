@@ -14,7 +14,7 @@ import com.eduquest.backend.domain.learning.service.HintHistoryQueryService;
 import com.eduquest.backend.domain.learning.service.ProblemCommandService;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.reward.service.WalletQueryService;
 import lombok.RequiredArgsConstructor;

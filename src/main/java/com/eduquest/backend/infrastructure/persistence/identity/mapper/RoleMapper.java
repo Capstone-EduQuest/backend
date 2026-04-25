@@ -1,6 +1,6 @@
 package com.eduquest.backend.infrastructure.persistence.identity.mapper;
 
-import com.eduquest.backend.domain.member.model.Role;
+import com.eduquest.backend.domain.identity.model.Role;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.RoleEntity;
 import org.springframework.stereotype.Component;
 

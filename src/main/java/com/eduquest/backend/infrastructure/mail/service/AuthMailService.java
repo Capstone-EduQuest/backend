@@ -1,9 +1,10 @@
 package com.eduquest.backend.infrastructure.mail.service;
 
-import com.eduquest.backend.domain.member.service.MailService;
-import com.eduquest.backend.infrastructure.mail.repository.PasswordResetTokenRepository;
+import com.eduquest.backend.domain.identity.service.MailService;
+import com.eduquest.backend.infrastructure.mail.repository.EmailTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.eduquest.backend.common.config.MailConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,10 +19,40 @@ import java.util.UUID;
 public class AuthMailService implements MailService {
 
     private final JavaMailSender javaMailSender;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailTokenRepository emailTokenRepository;
 
     @Value("${spring.mail.username}")
     private String senderEmailAddress;
+    @Value("${app.backend.base-url}")
+    private String backendBaseUrl;
+
+    // 인증 url 메일 전송
+    @Override
+    @Async("mailEventTaskExecutor")
+    public void sendSignUpMail(String recipientEmail) {
+
+        if (emailTokenRepository.existsByEmail(recipientEmail)) {
+            // 이미 토큰이 존재하는 경우 예외 처리
+            log.warn("A signup token already exists for email: {}", recipientEmail);
+            return;
+        }
+
+        String token = UUID.randomUUID().toString();
+
+        emailTokenRepository.save(token, recipientEmail);
+
+        String verificationUrl = backendBaseUrl + "/api/v1/auth/sign-up/" + token;
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(senderEmailAddress);
+        mailMessage.setTo(recipientEmail);
+        mailMessage.setSubject("[EduQuest] 이메일 인증 안내");
+        mailMessage.setText("회원가입을 완료하려면 아래 링크를 클릭하세요:\n" + verificationUrl
+                + "\n\n토큰은 생성 후 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분간 유효하며, 동일 이메일로는 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분 이내에 재발급되지 않습니다.");
+
+        javaMailSender.send(mailMessage);
+
+    }
 
     @Async("mailEventTaskExecutor")
     public void sendFindIdEmail(String recipientEmail) {
@@ -38,7 +69,7 @@ public class AuthMailService implements MailService {
     @Async("mailEventTaskExecutor")
     public void sendResetPasswordEmail(String recipientEmail) {
 
-        if (passwordResetTokenRepository.existsByEmail(recipientEmail)) {
+        if (emailTokenRepository.existsByEmail(recipientEmail)) {
             // 이미 토큰이 존재하는 경우 예외 처리
             log.warn("A password reset token already exists for email: {}", recipientEmail);
             return;
@@ -46,12 +77,12 @@ public class AuthMailService implements MailService {
 
         String token = UUID.randomUUID().toString();
 
-        passwordResetTokenRepository.save(token, recipientEmail);
+        emailTokenRepository.save(token, recipientEmail);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("[EduQuest] 비밀번호 재설정");
-        mailMessage.setText("고객님의 비밀번호 변경 토큰은 " + token + "입니다.");
+        mailMessage.setText("고객님의 비밀번호 변경 토큰은 " + token + "입니다.\n\n토큰은 생성 후 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분간 유효하며, 동일 이메일로는 " + MailConstants.TOKEN_EXPIRATION_MINUTES + "분 이내에 재발급되지 않습니다.");
         mailMessage.setFrom(senderEmailAddress);
         javaMailSender.send(mailMessage);
 
@@ -59,17 +90,17 @@ public class AuthMailService implements MailService {
 
     @Override
     public boolean isValidToken(String token) {
-        return passwordResetTokenRepository.existsByToken(token);
+        return emailTokenRepository.existsByToken(token);
     }
 
     @Override
     public String findEmailByToken(String token) {
-        return passwordResetTokenRepository.findEmailByToken(token);
+        return emailTokenRepository.findEmailByToken(token);
     }
 
     @Override
     public void deleteToken(String token) {
-        passwordResetTokenRepository.deleteByToken(token);
+        emailTokenRepository.deleteByToken(token);
     }
 
 }

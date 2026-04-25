@@ -1,6 +1,6 @@
 package com.eduquest.backend.infrastructure.security.service;
 
-import com.eduquest.backend.domain.member.dto.MemberQuery;
+import com.eduquest.backend.domain.identity.dto.MemberQuery;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

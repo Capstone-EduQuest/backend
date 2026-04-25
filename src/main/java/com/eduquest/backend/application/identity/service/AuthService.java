@@ -2,14 +2,14 @@ package com.eduquest.backend.application.identity.service;
 
 import com.eduquest.backend.application.identity.exception.AuthErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.domain.member.component.CustomPasswordEncoder;
-import com.eduquest.backend.domain.member.event.FindIdMailEvent;
-import com.eduquest.backend.domain.member.event.ResetPasswordMailEvent;
-import com.eduquest.backend.domain.member.event.RotateTokenEvent;
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.service.MailService;
-import com.eduquest.backend.domain.member.service.MemberCommandService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.component.CustomPasswordEncoder;
+import com.eduquest.backend.domain.identity.event.FindIdMailEvent;
+import com.eduquest.backend.domain.identity.event.ResetPasswordMailEvent;
+import com.eduquest.backend.domain.identity.event.RotateTokenEvent;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.service.MailService;
+import com.eduquest.backend.domain.identity.service.MemberCommandService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +67,25 @@ public class AuthService {
         );
 
         memberCommandService.updateMember(member);
+
+        mailService.deleteToken(token);
+
+    }
+
+    public void verifySignUpToken(String token) {
+
+        if (!mailService.isValidToken(token)) {
+            throw new EduQuestException(AuthErrorCode.INVALID_EMAIL_VERIFICATION_TOKEN);
+        }
+
+        String email = mailService.findEmailByToken(token);
+
+        Member member = memberQueryService.findMemberByEmail(email);
+
+        if (Boolean.TRUE.equals(member.getIsLocked())) {
+            member.unlock();
+            memberCommandService.updateMember(member);
+        }
 
         mailService.deleteToken(token);
 

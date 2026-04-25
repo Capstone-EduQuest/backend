@@ -1,8 +1,8 @@
 package com.eduquest.backend.infrastructure.security.listener;
 
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.domain.member.event.AccountLockEvent;
-import com.eduquest.backend.domain.member.event.RotateTokenEvent;
+import com.eduquest.backend.domain.identity.event.AccountLockEvent;
+import com.eduquest.backend.domain.identity.event.RotateTokenEvent;
 import com.eduquest.backend.infrastructure.security.dto.JwtToken;
 import com.eduquest.backend.infrastructure.security.exception.SecurityErrorCode;
 import com.eduquest.backend.infrastructure.security.repository.JwtRepository;

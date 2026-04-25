@@ -1,9 +1,9 @@
 package com.eduquest.backend.infrastructure.persistence.identity.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.domain.member.dto.MemberQuery;
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.dto.MemberQuery;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.mapper.MemberMapper;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;

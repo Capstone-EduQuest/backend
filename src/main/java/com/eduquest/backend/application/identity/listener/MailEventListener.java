@@ -1,8 +1,9 @@
 package com.eduquest.backend.application.identity.listener;
 
-import com.eduquest.backend.domain.member.event.FindIdMailEvent;
-import com.eduquest.backend.domain.member.event.ResetPasswordMailEvent;
-import com.eduquest.backend.domain.member.service.MailService;
+import com.eduquest.backend.domain.identity.event.FindIdMailEvent;
+import com.eduquest.backend.domain.identity.event.ResetPasswordMailEvent;
+import com.eduquest.backend.domain.identity.event.SignUpMailEvent;
+import com.eduquest.backend.domain.identity.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -31,6 +32,15 @@ public class MailEventListener {
 
         log.info("Received ResetPasswordMailEvent for email: {}", event.email());
         mailService.sendResetPasswordEmail(event.email());
+
+    }
+
+    @Async("mailEventTaskExecutor")
+    @EventListener
+    public void handleSignUpMailEvent(SignUpMailEvent event) {
+
+        log.info("Received SignUpMailEvent for email: {}", event.email());
+        mailService.sendSignUpMail(event.email());
 
     }
 

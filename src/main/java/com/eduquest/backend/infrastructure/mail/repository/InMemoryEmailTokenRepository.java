@@ -1,6 +1,7 @@
 package com.eduquest.backend.infrastructure.mail.repository;
 
 import com.eduquest.backend.infrastructure.mail.dto.PasswordStoredToken;
+import com.eduquest.backend.common.config.MailConstants;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class InMemoryPasswordResetTokenRepository implements PasswordResetTokenRepository {
+public class InMemoryEmailTokenRepository implements EmailTokenRepository {
 
     private static final ConcurrentHashMap<String, PasswordStoredToken> PASSWORD_RESET_TOKEN_STORE = new ConcurrentHashMap<>();
 
@@ -42,14 +43,13 @@ public class InMemoryPasswordResetTokenRepository implements PasswordResetTokenR
                 .anyMatch(storedToken -> storedToken.email().equals(email));
     }
 
-    @Scheduled(fixedDelay = 1000 * 60 * 10, initialDelay = 1000 * 60 * 10)  // 10분마다 실행
+    @Scheduled(fixedDelayString = "${app.mail.token-expiration-millis:600000}", initialDelayString = "${app.mail.token-expiration-millis:600000}")
     public void cleanupExpiredTokens() {
-        int beforeSize = PASSWORD_RESET_TOKEN_STORE.size();
 
-        // 토큰이 생성된 지 10분이 지난 경우 삭제
+        // 토큰이 생성된 지 TOKEN_EXPIRATION(기본 10분)이 지난 경우 삭제
         PASSWORD_RESET_TOKEN_STORE.entrySet().removeIf(entry -> {
             LocalDateTime tokenCreationTime = entry.getValue().expiredAt();
-            return tokenCreationTime.plusMinutes(10).isBefore(LocalDateTime.now());
+            return tokenCreationTime.plus(MailConstants.TOKEN_EXPIRATION).isBefore(LocalDateTime.now());
         });
     }
 

@@ -31,3 +31,9 @@ admin:
 frontend:
   url: ${FRONTEND_URL:http://localhost:3000}
 
+app:
+  backend:
+    base-url: ${BACKEND_URL:http://localhost:8080}
+  mail:
+    token-expiration-millis: ${MAIL_TOKEN_EXPIRATION_MILLIS:600000}
+

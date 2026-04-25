@@ -46,6 +46,15 @@ public class AuthController {
         return ResponseEntity.status(204).build();
     }
 
+    @PutMapping("/sign-up/{token}")
+    public ResponseEntity<Void> verifySignUp(@PathVariable("token") String token) {
+
+        authService.verifySignUpToken(token);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
     @PostMapping("/refresh")
     public ResponseEntity<String> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
 

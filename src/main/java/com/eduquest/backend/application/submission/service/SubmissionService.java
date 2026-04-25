@@ -3,7 +3,7 @@ package com.eduquest.backend.application.submission.service;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
 import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
 import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;

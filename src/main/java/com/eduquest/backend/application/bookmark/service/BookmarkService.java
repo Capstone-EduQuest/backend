@@ -8,7 +8,7 @@ import com.eduquest.backend.domain.bookmark.service.BookmarkCommandService;
 import com.eduquest.backend.domain.bookmark.service.BookmarkQueryService;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
-import com.eduquest.backend.domain.member.service.MemberQueryService;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,9 +1,9 @@
 package com.eduquest.backend.infrastructure.persistence.identity.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.domain.member.model.Member;
-import com.eduquest.backend.domain.member.model.Role;
-import com.eduquest.backend.domain.member.service.MemberCommandService;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.model.Role;
+import com.eduquest.backend.domain.identity.service.MemberCommandService;
 import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.MemberEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.RoleEntity;

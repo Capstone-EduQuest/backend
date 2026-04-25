@@ -1,7 +1,7 @@
 package com.eduquest.backend.infrastructure.persistence.identity.repository.impl;
 
-import com.eduquest.backend.domain.member.dto.MemberQuery;
-import com.eduquest.backend.domain.member.dto.UserDetailsData;
+import com.eduquest.backend.domain.identity.dto.MemberQuery;
+import com.eduquest.backend.domain.identity.dto.UserDetailsData;
 
 import java.util.List;
 import java.util.Optional;
