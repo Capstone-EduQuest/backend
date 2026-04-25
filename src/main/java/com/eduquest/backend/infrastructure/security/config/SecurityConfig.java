@@ -2,6 +2,8 @@ package com.eduquest.backend.infrastructure.security.config;
 
 import com.eduquest.backend.infrastructure.security.filter.JwtAuthenticationFilter;
 import com.eduquest.backend.infrastructure.security.filter.JwtSignInFilter;
+import com.eduquest.backend.infrastructure.security.filter.XssRequestFilter;
+import com.eduquest.backend.infrastructure.security.filter.XssResponseFilter;
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginFailureHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLoginSuccessHandler;
 import com.eduquest.backend.infrastructure.security.handler.JwtLogoutHandler;
@@ -43,6 +45,8 @@ public class SecurityConfig {
     private final JwtLogoutHandler jwtLogoutHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     private final ObjectMapper objectMapper;
+    private final XssRequestFilter xssRequestFilter;
+    private final XssResponseFilter xssResponseFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
@@ -83,6 +87,8 @@ public class SecurityConfig {
         jwtSignInFilter.setAuthenticationFailureHandler(jwtLoginFailureHandler);
 
         http.addFilterAt(jwtSignInFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(xssRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(xssResponseFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

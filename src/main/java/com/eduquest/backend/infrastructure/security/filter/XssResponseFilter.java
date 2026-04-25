@@ -106,14 +106,14 @@ public class XssResponseFilter extends OncePerRequestFilter {
 		}
 
 		@Override
-		public PrintWriter getWriter() throws IOException {
+		public PrintWriter getWriter() {
 			if (this.writer == null) {
 				this.writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), StandardCharsets.UTF_8));
 			}
 			return this.writer;
 		}
 
-		byte[] getCapturedAsBytes() throws IOException {
+		byte[] getCapturedAsBytes() {
 			// writer가 열려 있으면 플러시하여 모든 데이터가 capture에 쓰이도록 함
 			if (this.writer != null) {
 				this.writer.flush();
