@@ -74,5 +74,9 @@ public class WrongNote {
         this.nextReviewAt = when;
     }
 
+    public void updateAiExplanation(String aiExplanation) {
+        this.aiExplanation = aiExplanation;
+    }
+
 }
 

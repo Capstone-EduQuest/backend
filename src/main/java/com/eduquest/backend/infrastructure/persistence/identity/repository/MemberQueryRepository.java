@@ -11,8 +11,12 @@ import java.util.UUID;
 @Repository
 public interface MemberQueryRepository extends MemberQRepository, JpaRepository<MemberEntity, Long> {
 
+    boolean existsByUserId(String userId);
+
     Optional<MemberEntity> findByEmail(String email);
 
     Optional<MemberEntity> findByUuid(UUID uuid);
+
+    Optional<MemberEntity> findByUserId(String userId);
 
 }

@@ -5,9 +5,11 @@ import com.eduquest.backend.presentation.submission.dto.request.WrongNoteListReq
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -58,6 +60,13 @@ public class WrongNoteController {
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteByUuid(@PathVariable UUID uuid) {
         wrongNoteService.deleteWrongNoteByUuid(uuid);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{uuid}/ai-feedback")
+    public ResponseEntity<Void> putWrongNoteAiExplain(@PathVariable @NotNull UUID uuid, Authentication authentication) {
+        wrongNoteService.requestAiFeedback(uuid, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 
