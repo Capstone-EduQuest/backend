@@ -64,7 +64,7 @@ public class WrongNoteController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{uuid}/ai-feedback")
-    public ResponseEntity<WrongNoteResponse> putWrongNoteAiExplain(@PathVariable UUID uuid, Authentication authentication) {
+    public ResponseEntity<Void> putWrongNoteAiExplain(@PathVariable UUID uuid, Authentication authentication) {
         wrongNoteService.requestAiFeedback(uuid, authentication.getName());
         return ResponseEntity.noContent().build();
     }
