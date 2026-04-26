@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:${user.dir}/.env[.properties]
   cloud:
     aws:
       region: garage
