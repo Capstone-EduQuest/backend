@@ -6,7 +6,7 @@ WORKDIR /app
 # 필요한 모든 빌드 파일 복사
 COPY gradlew ./
 COPY gradle ./gradle
-COPY build.gradle settings.gradle ./
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
 
 # CRLF를 LF로 변환 후 실행 권한 부여
 RUN sed -i 's/\r$//' ./gradlew && chmod +x ./gradlew
