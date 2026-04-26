@@ -73,7 +73,7 @@ class EduQuestS3ClientTest {
         }
 
         String key = testKeyPrefix + UUID.randomUUID() + "-sample-image.png";
-        S3FileDto file = S3FileDto.of("sample-image.png", "image/png", data);
+        S3FileDto file = S3FileDto.of("sample-image.png", "image/png", "png", data);
 
         // put object
         String returnedKey = sut.putObject(key, file);
