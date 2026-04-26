@@ -19,7 +19,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show_sql: true
+    show_sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
@@ -55,7 +55,7 @@ coderunner:
 
 logging:
   level:
-    org.hibernate.SQL: debug
-    org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.SQL: error
+    org.hibernate.orm.jdbc.bind: error
     org.springframework.security: trace
-    org.flywaydb: debug
+    org.flywaydb: info

@@ -11,6 +11,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
+    networks:
+      - eduquest-net
   garage:
     image: dxflrs/garage:v2.2.0
     container_name: garage
@@ -22,9 +24,31 @@ services:
       - ./garage-data:/var/lib/garage/data
       - ./garage-meta:/var/lib/garage/meta
       - ./garage.toml:/etc/garage.toml
+    networks:
+      - eduquest-net
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: eduquest-backend:latest
+    container_name: eduquest-backend
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - eduquest-net
+    restart: on-failure
 
 volumes:
   mariadb_data:
+
+networks:
+  eduquest-net:
+    driver: bridge
 
 
 
