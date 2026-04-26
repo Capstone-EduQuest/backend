@@ -4,7 +4,12 @@ import com.eduquest.backend.domain.submission.dto.AiFeedBackRequest;
 import com.eduquest.backend.domain.submission.service.ChatModelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,13 +20,19 @@ public class GeminiChatModelService implements ChatModelService {
     @Override
     public String generateAiExplanation(AiFeedBackRequest request) {
 
-        String systemMessage = "당신은 초등학생에게 파이썬을 가르치는 친절한 튜터입니다. " +
+        String systemMessageText = "당신은 초등학생에게 파이썬을 가르치는 친절한 튜터입니다. " +
                 "모든 설명은 쉬운 한국어로, 비난 없이 격려하는 어투로 작성하세요. " +
                 "출력은 aiExplanation(간단요약)용 텍스트를 우선 제공합니다.";
 
-        String userMessage = buildPrompt(request);
+        SystemMessage systemMessage = new SystemMessage(systemMessageText);
 
-        return null;
+        UserMessage userMessage = new UserMessage(buildPrompt(request));
+
+        Prompt prompt = Prompt.builder()
+                .messages(List.of(systemMessage, userMessage))
+                .build();
+
+        return chatClient.prompt(prompt).call().content();
 
     }
 
@@ -33,13 +44,14 @@ public class GeminiChatModelService implements ChatModelService {
         sb.append("정답(참고): ").append(request.correctAnswer()).append("\n");
         sb.append("학생의 답: ").append(request.userAnswer()).append("\n\n");
 
-        sb.append("요청: 아래 규칙에 따라 JSON 형태로 응답해 주세요.\n");
-        sb.append("(aiExplanation: 간결한 한-세 문장 요약, detailedFeedback: 전체 피드백 등). ");
+        sb.append("요청: 아래 규칙에 따라 문자열 형태로 응답해 주세요.\n");
+        sb.append("(요약: 간결한 한-세 문장 요약, 설명: 전체 피드백 등). ");
         sb.append("어조는 친절하고 쉬운 한국어로 작성하세요.\n");
 
         if (request.metadata() != null && !request.metadata().isEmpty()) {
             sb.append("메타데이터: ").append(request.metadata().toString()).append("\n");
         }
+
         return sb.toString();
 
     }
