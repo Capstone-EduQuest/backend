@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -58,6 +59,13 @@ public class WrongNoteController {
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteByUuid(@PathVariable UUID uuid) {
         wrongNoteService.deleteWrongNoteByUuid(uuid);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{uuid}/ai-feedback")
+    public ResponseEntity<WrongNoteResponse> putWrongNoteAiExplain(@PathVariable UUID uuid, Authentication authentication) {
+        wrongNoteService.requestAiFeedback(uuid, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 

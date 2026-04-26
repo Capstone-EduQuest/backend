@@ -12,6 +12,8 @@ public interface MemberQueryService {
 
     boolean isExistByEmail(String email);
 
+    boolean isExistByUserId(String userId);
+
     Member findMemberById(Long id);
 
     Member findMemberByUuid(UUID uuid);

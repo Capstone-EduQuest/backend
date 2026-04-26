@@ -38,6 +38,21 @@ public class ProblemEntityMapper {
         return entity;
     }
 
+    public Problem toDomain(ProblemEntity problemEntity) {
+        if (problemEntity == null) return null;
+
+        return Problem.of(
+                problemEntity.getStageId(),
+                problemEntity.getType(),
+                problemEntity.getNumber(),
+                problemEntity.getSummary(),
+                problemEntity.getExample(),
+                problemEntity.getExpectedOutput(),
+                problemEntity.getBlock(),
+                List.of() // 힌트는 별도로 매핑
+        );
+    }
+
     public Problem toDomain(ProblemEntity entity, List<HintEntity> hintEntities) {
         if (entity == null) return null;
 

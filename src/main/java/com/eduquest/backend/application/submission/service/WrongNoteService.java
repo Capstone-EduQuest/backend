@@ -4,7 +4,11 @@ import com.eduquest.backend.application.submission.exception.WrongNoteErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
+import com.eduquest.backend.domain.learning.model.Problem;
+import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
+import com.eduquest.backend.domain.submission.event.WrongNoteAiFeedBackEvent;
+import com.eduquest.backend.domain.submission.service.ChatModelService;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
@@ -12,6 +16,7 @@ import com.eduquest.backend.presentation.submission.dto.response.WrongNoteRespon
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +29,8 @@ public class WrongNoteService {
     private final MemberQueryService memberQueryService;
     private final WrongNoteQueryService wrongNoteQueryService;
     private final WrongNoteCommandService wrongNoteCommandService;
+    private final ProblemQueryService problemQueryService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public WrongNoteListResponse.WrongNoteList findWrongNotesByUserUuid(UUID userUuid, int page, int size, String sortBy, boolean isAsc) {
@@ -104,6 +111,34 @@ public class WrongNoteService {
     @Transactional
     public void deleteWrongNoteByUuid(UUID wrongNoteUuid) {
         wrongNoteCommandService.deleteByUuid(wrongNoteUuid);
+    }
+
+    @Transactional
+    public void requestAiFeedback(UUID wrongNoteUuid, String userId) {
+
+        if (!memberQueryService.isExistByUserId(userId)) {
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+        }
+
+        // wrong note 존재 확인
+        Long memberId = memberQueryService.findMemberIdByUserId(userId);
+        WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongDetailNoteByUuid(wrongNoteUuid);
+        Problem problem = problemQueryService.findProblemById(detail.problemId());
+
+        if (!detail.userId().equals(memberId)) {
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+        }
+
+        // 이벤트 발행
+        WrongNoteAiFeedBackEvent event = new WrongNoteAiFeedBackEvent(
+                wrongNoteUuid,
+                problem.getSummary(),
+                problem.getExpectedOutput(),
+                problem.getBlock(),
+                detail.wrongAnswer()
+        );
+
+        eventPublisher.publishEvent(event);
     }
 
 }
