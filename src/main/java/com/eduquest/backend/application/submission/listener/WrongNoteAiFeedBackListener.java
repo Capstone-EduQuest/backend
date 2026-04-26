@@ -40,7 +40,7 @@ public class WrongNoteAiFeedBackListener {
 
         WrongNote wrongNote = wrongNoteQueryService.findWrongNoteByUuid(event.wrongNoteUuid());
 
-        wrongNote.uodateAiExplanation(aiExplanation);
+        wrongNote.updateAiExplanation(aiExplanation);
 
         wrongNoteCommandService.updateWrongNote(wrongNote);
 
