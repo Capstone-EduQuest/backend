@@ -32,7 +32,11 @@ public class WrongNoteAiFeedBackListener {
                 Map.of("block", event.block())
         );
 
+        log.debug(event.toString());
+
         String aiExplanation = chatModelService.generateAiExplanation(request);
+
+        log.debug("ai explanation: {}", aiExplanation);
 
         WrongNote wrongNote = wrongNoteQueryService.findWrongNoteByUuid(event.wrongNoteUuid());
 
