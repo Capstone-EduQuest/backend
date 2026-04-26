@@ -12,7 +12,7 @@ public interface WrongNoteQRepository {
 
     List<WrongNoteQuery.Detail> findByUserId(Long userId, int page, int size, String sortBy, boolean isAsc);
 
-    Optional<WrongNoteQuery.Detail> findByUuid(UUID wrongNoteUuid);
+    Optional<WrongNoteQuery.Detail> findDetailByUuid(UUID wrongNoteUuid);
 
     List<WrongNoteQuery.Detail> findByPagination(int page, int size, String sortBy, boolean isAsc);
 

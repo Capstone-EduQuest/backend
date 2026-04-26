@@ -10,6 +10,8 @@ public interface WrongNoteCommandService {
 
     Long createWrongNote(String wrongAnswer, Long userId, Long problemId);
 
+    Long updateWrongNote(WrongNote wrongNote);
+
     void deleteByUserIdAndProblemId(Long userId, Long problemId);
 
     void markReviewed(Long userId, Long problemId, boolean isReviewed);

@@ -72,7 +72,7 @@ public class WrongNoteQRepositoryImpl implements WrongNoteQRepository{
     }
 
     @Override
-    public Optional<WrongNoteQuery.Detail> findByUuid(UUID wrongNoteUuid) {
+    public Optional<WrongNoteQuery.Detail> findDetailByUuid(UUID wrongNoteUuid) {
         return Optional.ofNullable(
                 queryFactory.select(
                         Projections.constructor(

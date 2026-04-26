@@ -30,7 +30,7 @@ public class WrongNoteService {
         Long userId = memberQueryService.findMemberIdByUuid(userUuid);
 
         String sort = sortBy == null ? "updatedAt" : sortBy;
-        List<WrongNoteQuery.Detail> details = wrongNoteQueryService.findWrongNotesByUserId(userId, page, size, sort, isAsc);
+        List<WrongNoteQuery.Detail> details = wrongNoteQueryService.findWrongDetailNotesByUserId(userId, page, size, sort, isAsc);
         long total = wrongNoteQueryService.countWrongNotesByUserId(userId);
 
         List<WrongNoteResponse> results = details.stream()
@@ -52,7 +52,7 @@ public class WrongNoteService {
 
     @Transactional(readOnly = true)
     public WrongNoteResponse findWrongNoteByUuid(UUID wrongNoteUuid) {
-        WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongNoteByUuid(wrongNoteUuid);
+        WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongDetailNoteByUuid(wrongNoteUuid);
         if (detail == null) {
             throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
         }
