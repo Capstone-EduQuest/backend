@@ -23,8 +23,8 @@ RUN ./gradlew clean build -x test
 # final stage
 FROM amazoncorretto:25
 
-ENV PROJECT_NAME=discodeit \
-    PROJECT_VERSION=1.2-M8 \
+ENV PROJECT_NAME=eduquest-backend \
+    PROJECT_VERSION=1.0 \
     JVM_OPTS=""
 
 WORKDIR /app
