@@ -35,4 +35,8 @@ public class AsyncConfig {
         return new VirtualThreadTaskExecutor();
     }
 
+    // Gemini api 요청 전용 가상 스레드 TaskExecutor
+    @Bean(name = "geminiChatTaskExecutor")
+    public TaskExecutor geminiChatTaskExecutor() { return new VirtualThreadTaskExecutor(); }
+
 }
