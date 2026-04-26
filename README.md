@@ -1,4 +1,25 @@
-## Garage 설치
+## EduQuest-Backend 설치 가이드
+
+### docker-compose.yml 실행
+
+repository를 로컬에 clone 합니다.
+
+```bash
+git clone <repository_url>
+cd <repository_directory> 
+```
+
+docker-compose.yml 파일이 있는 디렉토리에서 다음 명령어를 실행하여 컨테이너를 시작합니다.
+
+```bash
+docker-compose up -d
+```
+
+올바른 실행을 위해서는 .env 파일이 필요합니다. .env 파일이 없는 경우, .env.example 파일을 복사하여 .env 파일을 생성하고 필요한 환경 변수를 설정합니다.
+
+env 파일의 key는 애플리케이션 프로퍼티를 참조하세요.
+
+### Garage 설치
 
 Garage는 Self-hosted S3 compatible object storage입니다. 프로필 이미지를 저장하는데 사용합니다.
 
@@ -55,7 +76,7 @@ Bucket에 어떤 Key가 할당되었는지 확인합니다.
 garage bucket info eduquest-bucket
 ```
 
-## Piston 설치
+### Piston 설치
 
 Piston은 자바스크립트로 작성되 경량 코드 실행 엔진입니다. 
 
