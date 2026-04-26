@@ -8,15 +8,14 @@ import com.eduquest.backend.domain.learning.model.Problem;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
 import com.eduquest.backend.domain.submission.event.WrongNoteAiFeedBackEvent;
-import com.eduquest.backend.domain.submission.service.ChatModelService;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.UUID;
@@ -117,7 +116,7 @@ public class WrongNoteService {
     public void requestAiFeedback(UUID wrongNoteUuid, String userId) {
 
         if (!memberQueryService.isExistByUserId(userId)) {
-            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
         }
 
         // wrong note 존재 확인

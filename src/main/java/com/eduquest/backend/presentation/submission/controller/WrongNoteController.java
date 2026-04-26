@@ -5,6 +5,7 @@ import com.eduquest.backend.presentation.submission.dto.request.WrongNoteListReq
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,7 +65,7 @@ public class WrongNoteController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{uuid}/ai-feedback")
-    public ResponseEntity<Void> putWrongNoteAiExplain(@PathVariable UUID uuid, Authentication authentication) {
+    public ResponseEntity<Void> putWrongNoteAiExplain(@PathVariable @NotNull UUID uuid, Authentication authentication) {
         wrongNoteService.requestAiFeedback(uuid, authentication.getName());
         return ResponseEntity.noContent().build();
     }
