@@ -40,7 +40,6 @@ public class JpaMemberCommandService implements MemberCommandService {
         MemberEntity memberEntity = memberMapper.toEntity(member);
 
         memberEntity = memberJpaRepository.save(memberEntity);
-        memberJpaRepository.flush();
 
         RoleEntity roleEntity = roleJpaRepository.findByName(role)
                 .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
