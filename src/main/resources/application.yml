@@ -25,7 +25,7 @@ spring:
             enable: true
   profiles:
     active:
-      - dev
+      - prod
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
