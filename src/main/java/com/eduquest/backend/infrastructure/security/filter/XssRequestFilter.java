@@ -31,6 +31,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class XssRequestFilter extends OncePerRequestFilter {
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/api/v1/auth"); // 제외할 URI
+    }
+
     /**
      * HTML/JSON 요청에 대해 입력값을 안전하게 정제(sanitize)하여 XSS 공격을 완화하는 서블릿 필터입니다.
      *

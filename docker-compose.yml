@@ -2,6 +2,8 @@ services:
   db:
     image: mariadb
     container_name: eduquest-db
+    env_file:
+      - prod.env
     ports:
       - "3306:3306"
     environment:
@@ -9,6 +11,12 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin --silent ping -h 127.0.0.1 -u root -p\"$MYSQL_ROOT_PASSWORD\" || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
@@ -33,12 +41,9 @@ services:
     image: eduquest-backend:latest
     container_name: eduquest-backend
     env_file:
-      - .env
+      - prod.env
     ports:
       - "8080:8080"
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
       - eduquest-net
     restart: on-failure

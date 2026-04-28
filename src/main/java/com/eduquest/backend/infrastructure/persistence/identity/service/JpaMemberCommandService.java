@@ -46,7 +46,9 @@ public class JpaMemberCommandService implements MemberCommandService {
 
         UserRoleEntity userRoleEntity = UserRoleEntity.of(memberEntity, roleEntity);
 
-        return userRoleRepository.save(userRoleEntity).getId();
+        userRoleRepository.save(userRoleEntity);
+
+        return memberEntity.getId();
 
     }
 

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -21,8 +22,7 @@ public class RewardEventListener {
     private final WalletCommandService walletCommandService;
     private final WalletQueryService walletQueryService;
 
-    @Transactional
-    @EventListener
+    @TransactionalEventListener
     public void handleGrantPointEvent(GrantPointEvent event) {
 
         // 존재하는 멤버인지 검사

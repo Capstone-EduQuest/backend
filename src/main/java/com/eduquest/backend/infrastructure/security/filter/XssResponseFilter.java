@@ -26,6 +26,12 @@ public class XssResponseFilter extends OncePerRequestFilter {
 	private final HtmlSanitizeUtils htmlSanitizeUtils;
 
 	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+		return uri.startsWith("/api/v1/auth"); // 제외할 URI
+	}
+
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
 		CachedBodyResponseWrapper responseWrapper = new CachedBodyResponseWrapper(response);
 		// 체인 실행 — 응답은 래퍼에 캡처됩니다.

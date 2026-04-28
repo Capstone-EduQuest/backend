@@ -60,7 +60,7 @@ public class UserProfileService {
                 userProfile.point(),
                 userProfile.role(),
                 userProfile.isLocked(),
-                customS3Client.getPresignedUrl(storedName).orElse(null)
+                storedName != null ? customS3Client.getPresignedUrl(storedName).orElse(null) : null
         );
     }
 

@@ -15,4 +15,9 @@ public class SecurityPasswordEncoder implements CustomPasswordEncoder {
     public String encode(String plainText) {
         return passwordEncoder.encode(plainText);
     }
+
+    @Override
+    public boolean matches(String plainText, String encodedPassword) {
+        return passwordEncoder.matches(plainText, encodedPassword);
+    }
 }

@@ -63,11 +63,9 @@ public class SignUpService {
         );
 
         try {
-            memberCommandService.saveMember(member, RoleType.USER.toString());
 
             // 저장된 멤버의 PK(memberId)를 조회
-            UUID savedUuid = memberQueryService.findMemberUuidByUserId(member.getUserId());
-            Long savedMemberId = memberQueryService.findMemberIdByUuid(savedUuid);
+            Long savedMemberId = memberCommandService.saveMember(member, RoleType.USER.toString());
 
             // 회원의 wallet 초기화 (wallet이 없으면 생성하도록 WalletCommandService 이용)
             walletCommandService.changeBalance(savedMemberId, 0L, "init-wallet");
