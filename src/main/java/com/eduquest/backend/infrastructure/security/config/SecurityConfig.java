@@ -68,8 +68,7 @@ public class SecurityConfig {
                         "/api/v1/auth/find-password",
                         "/api/v1/auth/reset-password",
                         "/api/v1/auth/refresh",
-                        "/api/v1/auth/sign-up/*",
-                        "/api/v1/auth/sign-up/**"
+                        "/api/v1/auth/sign-up/*"
 
                 )
                     .permitAll()
