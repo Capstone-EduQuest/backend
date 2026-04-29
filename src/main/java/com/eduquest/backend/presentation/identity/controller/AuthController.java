@@ -7,8 +7,11 @@ import com.eduquest.backend.presentation.identity.dto.request.ResetPasswordReque
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @PostMapping("/sign-in")
     public ResponseEntity<String> signIn() {
@@ -46,12 +52,12 @@ public class AuthController {
         return ResponseEntity.status(204).build();
     }
 
-    @PutMapping("/sign-up/{token}")
-    public ResponseEntity<Void> verifySignUp(@PathVariable("token") String token) {
+    @GetMapping("/sign-up/{token}")
+    public void verifySignUp(@PathVariable("token") String token, HttpServletResponse response) throws IOException {
 
         authService.verifySignUpToken(token);
 
-        return ResponseEntity.noContent().build();
+        response.sendRedirect(frontendUrl);
 
     }
 
