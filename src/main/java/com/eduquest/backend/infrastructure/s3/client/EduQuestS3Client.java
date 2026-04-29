@@ -1,0 +1,108 @@
+package com.eduquest.backend.infrastructure.s3.client;
+
+import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.file.component.CustomS3Client;
+import com.eduquest.backend.domain.file.dto.S3FileDto;
+import com.eduquest.backend.infrastructure.s3.exception.S3ErrorCode;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class EduQuestS3Client implements CustomS3Client {
+
+    @Value("${spring.cloud.aws.s3.presigned-url-expiration}")
+    private String presignedUrlExpiration;
+    @Value("${spring.cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
+
+    public String putObject(String id, S3FileDto file) {
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(id + "." + file.extension())
+                .contentType(file.fileType())
+                .build();
+
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.fileData()));
+
+        log.info("Success to put object to S3 with userId: {}", file.fileName());
+
+        return id;
+
+    }
+
+    public void deleteObject(String id) {
+
+        checkIfObjectExists(id);
+
+        try {
+
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(id)
+                    .build();
+
+            s3Client.deleteObject(deleteObjectRequest);
+            log.info("Success to delete object from S3 with userId: {}", id);
+
+        } catch (Exception e) {
+            log.error("Failed to delete object from S3 with userId: {}", id, e);
+
+            throw new EduQuestException(S3ErrorCode.S3_DELETE_FAILED);
+        }
+
+    }
+
+    public Optional<String> getPresignedUrl(String id) {
+
+        try {
+            checkIfObjectExists(id);
+        } catch (EduQuestException e) {
+            return Optional.of("");
+        }
+
+        GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.parse(presignedUrlExpiration))
+                .getObjectRequest(builder -> builder.bucket(bucket)
+                        .key(id)
+                )
+                .build();
+
+        return Optional.ofNullable(s3Presigner.presignGetObject(getObjectPresignRequest)
+                .url().toString());
+    }
+
+    private Map<String, Object> detailMap(String key, Object value) {
+        Map<String, Object> details = new HashMap<>();
+        details.put(key, value);
+        return details;
+    }
+
+    private void checkIfObjectExists(String id) {
+        try {
+            s3Client.headObject(b -> b.bucket(bucket).key(id));
+        } catch (S3Exception e) {
+            throw new EduQuestException(S3ErrorCode.S3_FILE_NOT_FOUND);
+        }
+    }
+
+}

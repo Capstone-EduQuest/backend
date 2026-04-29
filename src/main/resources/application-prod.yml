@@ -1,0 +1,61 @@
+spring:
+  config:
+    import: optional:file:${user.dir}/.env[.properties]
+  cloud:
+    aws:
+      region: garage
+      credentials:
+        access-key: ${AWS_S3_ACCESS_KEY:aaa}
+        secret-key: ${AWS_S3_SECRET_KEY:aaa}
+      s3:
+        endpoint: ${AWS_S3_ENDPOINT:http://localhost:3900}
+        bucket: ${AWS_S3_BUCKET:aaa}
+        presigned-url-expiration: ${AWS_S3_PRESIGNED_URL_EXPIRATION:PT10H}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mariadb://localhost:3306/test?useSSL=false&serverTimezone=UTC&useGSSAPI=false&restrictedAuth=mysql_native_password}
+    username: ${SPRING_DATASOURCE_USERNAME:test}
+    password: ${SPRING_DATASOURCE_PASSWORD:test}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show_sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 100
+
+  flyway:
+    enabled: true
+    fail-on-missing-locations: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    encoding: UTF-8
+
+coderunner:
+  config:
+    limit:
+      compilation:
+        memory: 67108864
+        time: 3000
+      runtime:
+        memory: 268435456
+        time: 10000
+    language:
+      python:
+        version: 3.12.0
+        file: main.py
+  piston:
+    url: ${PISTON_EXECUTE_URL}
+    scheme: ${PISTON_EXECUTE_SCHEME:http}
+
+logging:
+  level:
+    org.hibernate.SQL: error
+    org.hibernate.orm.jdbc.bind: error
+    org.springframework.security: trace
+    org.flywaydb: info

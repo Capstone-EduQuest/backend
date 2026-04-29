@@ -2,6 +2,8 @@ services:
   db:
     image: mariadb
     container_name: eduquest-db
+    env_file:
+      - prod.env
     ports:
       - "3306:3306"
     environment:
@@ -9,11 +11,49 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin --silent ping -h 127.0.0.1 -u root -p\"$MYSQL_ROOT_PASSWORD\" || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
     volumes:
       - mariadb_data:/var/lib/mysql
+    networks:
+      - eduquest-net
+  garage:
+    image: dxflrs/garage:v2.2.0
+    container_name: garage
+    restart: unless-stopped
+    ports:
+      - "3900:3900"   # S3 API
+      - "3901:3901"   # RPC (클러스터용)
+    volumes:
+      - ./garage-data:/var/lib/garage/data
+      - ./garage-meta:/var/lib/garage/meta
+      - ./garage.toml:/etc/garage.toml
+    networks:
+      - eduquest-net
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: eduquest-backend:latest
+    container_name: eduquest-backend
+    env_file:
+      - prod.env
+    ports:
+      - "8080:8080"
+    networks:
+      - eduquest-net
+    restart: on-failure
 
 volumes:
   mariadb_data:
+
+networks:
+  eduquest-net:
+    driver: bridge
 
 
 

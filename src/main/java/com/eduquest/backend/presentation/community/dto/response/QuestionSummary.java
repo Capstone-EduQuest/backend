@@ -1,0 +1,19 @@
+package com.eduquest.backend.presentation.community.dto.response;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record QuestionSummary(
+        UUID uuid,
+        String title,
+        UserInfo user,
+        @JsonProperty("created_at")
+        LocalDateTime createdAt
+) {
+    public static QuestionSummary of(UUID uuid, String title, UserInfo user, LocalDateTime createdAt) {
+        return new QuestionSummary(uuid, title, user, createdAt);
+    }
+}
+

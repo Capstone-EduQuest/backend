@@ -1,0 +1,1 @@
+CREATE INDEX email_unique ON member (email ASC);
