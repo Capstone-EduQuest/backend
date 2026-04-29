@@ -46,7 +46,7 @@ public class AuthController {
         return ResponseEntity.status(204).build();
     }
 
-    @PutMapping("/sign-up/{token}")
+    @GetMapping("/sign-up/{token}")
     public ResponseEntity<Void> verifySignUp(@PathVariable("token") String token) {
 
         authService.verifySignUpToken(token);
