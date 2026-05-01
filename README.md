@@ -20,11 +20,9 @@ EduQuest는 초등학생을 대상으로 코딩 교육을 제공하는 유니티
 - **코드 실행 엔진**: Piston (Self-hosted code execution engine)
 - **API 문서화**: Postman
 
-## 시스템 아키텍처
-
-
-
 ## DB 설계
+
+ERD 다이어그램은 다음과 같습니다.
 
 ## API 명세
 
