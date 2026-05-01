@@ -11,16 +11,18 @@ EduQuest는 초등학생을 대상으로 코딩 교육을 제공하는 유니티
 
 ## 기술 스택
 
-<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=flat-square&logo=Spring-Boot&logoColor=white"/>
-<img src="https://img.shields.io/badge/mariadb-003545?style=flat-square&logo=MariaDB&logoColor=white"/>a
-<img src="https://img.shields.io/badge/JPA-6DB33F?style=flat-square&logo=spring&logoColor=white"/>
-<img src="https://img.shields.io/badge/springsecurity-6DB33F?style=flat-square&logo=Spring-Security&logoColor=white"/>
-<img src="https://img.shields.io/badge/git-F05032?style=flat-square&logo=Git&logoColor=white"/>
-<img src="https://img.shields.io/badge/github-181717?style=flat-square&logo=GitHub&logoColor=white"/>
-<img src="https://img.shields.io/badge/docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/>
+- **프로그래밍 언어**: Java 25
+- **프레임워크**: Spring Boot 4, Spring Data JPA, Spring Security
+- **데이터베이스**: MariaDB
+- **인증**: JWT (JSON Web Tokens)
+- **컨테이너화**: Docker
+- **오브젝트 스토리지**: Garage (Self-hosted S3 compatible object)
+- **코드 실행 엔진**: Piston (Self-hosted code execution engine)
+- **API 문서화**: Postman
 
 ## 시스템 아키텍처
+
+
 
 ## DB 설계
 
