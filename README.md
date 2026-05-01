@@ -26,6 +26,8 @@ ERD 다이어그램은 다음과 같습니다.
 
 ## API 명세
 
+Postman으로 작성한 API 명세는 다음 이미지와 같습니다.
+
 ## EduQuest-Backend 설치 가이드
 
 ### docker-compose.yml 실행
@@ -149,7 +151,7 @@ cli/index.js ppman install python
 docker-compose up -d api
 ```
 
-5. API 서버에 요청을 보내 Piston이 정상적으로 설치되었는지 확인합니다.
+5. API 서버에 curl 요청을 보내 Piston이 정상적으로 설치되었는지 확인합니다.
 
 ```bash
 curl -X POST http://localhost:2000/api/v2/execute \
