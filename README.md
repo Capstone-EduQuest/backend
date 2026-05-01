@@ -11,6 +11,15 @@ EduQuest는 초등학생을 대상으로 코딩 교육을 제공하는 유니티
 
 ## 기술 스택
 
+<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=flat-square&logo=Spring-Boot&logoColor=white"/>
+<img src="https://img.shields.io/badge/mariadb-003545?style=flat-square&logo=MariaDB&logoColor=white"/>a
+<img src="https://img.shields.io/badge/JPA-6DB33F?style=flat-square&logo=spring&logoColor=white"/>
+<img src="https://img.shields.io/badge/springsecurity-6DB33F?style=flat-square&logo=Spring-Security&logoColor=white"/>
+<img src="https://img.shields.io/badge/git-F05032?style=flat-square&logo=Git&logoColor=white"/>
+<img src="https://img.shields.io/badge/github-181717?style=flat-square&logo=GitHub&logoColor=white"/>
+<img src="https://img.shields.io/badge/docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/>
+
 ## 시스템 아키텍처
 
 ## DB 설계
