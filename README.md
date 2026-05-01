@@ -1,3 +1,22 @@
+# README
+
+## 프로젝트 소개
+
+EduQuest는 초등학생을 대상으로 코딩 교육을 제공하는 유니티 기반의 교육용 게임입니다. 
+
+이 프로젝트는 EduQuest의 백엔드 시스템을 개발하는 것을 목표로 합니다. 
+
+백엔드는 사용자 관리, 스테이지 및 문제 관리, 채점 시스템, 오답노트, 질의응답 커뮤니티 및 AI 피드백 연동
+시스템을 포함하여 게임의 백엔드 기능을 담당합니다.
+
+## 기술 스택
+
+## 시스템 아키텍처
+
+## DB 설계
+
+## API 명세
+
 ## EduQuest-Backend 설치 가이드
 
 ### docker-compose.yml 실행
@@ -124,7 +143,7 @@ docker-compose up -d api
 5. API 서버에 요청을 보내 Piston이 정상적으로 설치되었는지 확인합니다.
 
 ```bash
-curl -X POST http://localhost:3000/api/v2/execute \
+curl -X POST http://localhost:2000/api/v2/execute \
 -H "Content-Type: application/json" \
 -d '{
   "language": "python",
