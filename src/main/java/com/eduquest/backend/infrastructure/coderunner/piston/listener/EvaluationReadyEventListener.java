@@ -51,7 +51,6 @@ public class EvaluationReadyEventListener {
     private final ProblemQueryService problemQueryService;
     private final ObjectMapper objectMapper;
 
-
     @Async("coderunnerTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
@@ -110,8 +109,8 @@ public class EvaluationReadyEventListener {
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         } catch (Exception ex) {
-            // TODO: 재시도/오류 처리
             log.error("Failed to evaluate submissionUuid={}", submissionUuid, ex);
+            evaluationQueueRepository.offer(submissionUuid);
         }
     }
 
