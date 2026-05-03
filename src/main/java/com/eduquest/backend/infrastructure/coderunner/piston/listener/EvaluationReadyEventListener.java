@@ -53,7 +53,7 @@ public class EvaluationReadyEventListener {
 
     @Async("coderunnerTaskExecutor")
     @EventListener
-    public void onEvaluationReady(EvaluationReadyEvent event) {
+    public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
         UUID submissionUuid = event.submissionUuid();
 
         // 1) 큐에 등록
