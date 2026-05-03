@@ -6,12 +6,11 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.submission.model.Evaluation;
 import com.eduquest.backend.domain.submission.model.Submission;
-import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
 import com.eduquest.backend.domain.submission.service.EvaluationQueryService;
+import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,12 +32,8 @@ public class EvaluationService {
             throw new EduQuestException(SubMissionErrorCode.FORBIDDEN);
         }
 
-        List<Evaluation> evaluations = evaluationQueryService.findBySubmissionIds(List.of(submission.getId()));
-        if (evaluations == null || evaluations.isEmpty()) {
-            return null;
-        }
+        Evaluation evaluation = evaluationQueryService.findBySubmissionId(submission.getId());
 
-        Evaluation evaluation = evaluations.getFirst();
         return EvaluationInfo.of(evaluation.getIsCorrect(), evaluation.getCreatedAt());
     }
 }
