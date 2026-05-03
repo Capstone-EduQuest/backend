@@ -15,9 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class EvaluationReadyEventListener {
 
 
     @Async("coderunnerTaskExecutor")
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
 
         UUID submissionUuid = event.submissionUuid();
