@@ -54,6 +54,7 @@ public class EvaluationReadyEventListener {
     @Async("coderunnerTaskExecutor")
     @EventListener
     public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
+
         UUID submissionUuid = event.submissionUuid();
 
         // 1) 큐에 등록
@@ -67,10 +68,6 @@ public class EvaluationReadyEventListener {
             UUID uuidToProcess = evaluationQueueRepository.take();
 
             Submission submission = submissionQueryService.findByUuid(uuidToProcess);
-            if (submission == null) {
-                // 제출 레코드가 존재하지 않음
-                return;
-            }
 
             Long submissionId = submission.getId();
 
