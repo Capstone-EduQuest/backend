@@ -1,10 +1,10 @@
 package com.eduquest.backend.application.progress.service;
 
 import com.eduquest.backend.application.progress.dto.ProgressDto;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
-import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.progress.dto.ProgressQuery;
 import com.eduquest.backend.domain.submission.model.Evaluation;
 import com.eduquest.backend.domain.submission.model.Submission;

@@ -1,7 +1,7 @@
 package com.eduquest.backend.infrastructure.mail.repository;
 
-import com.eduquest.backend.infrastructure.mail.dto.PasswordStoredToken;
 import com.eduquest.backend.common.config.MailConstants;
+import com.eduquest.backend.infrastructure.mail.dto.PasswordStoredToken;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 

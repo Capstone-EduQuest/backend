@@ -39,4 +39,9 @@ public class AsyncConfig {
     @Bean(name = "geminiChatTaskExecutor")
     public TaskExecutor geminiChatTaskExecutor() { return new VirtualThreadTaskExecutor(); }
 
+    // 코드러너 / 인메모리 큐 처리 전용 가상 스레드 TaskExecutor
+    @Bean(name = "coderunnerTaskExecutor")
+    public TaskExecutor coderunnerTaskExecutor() {
+        return new VirtualThreadTaskExecutor();
+    }
 }

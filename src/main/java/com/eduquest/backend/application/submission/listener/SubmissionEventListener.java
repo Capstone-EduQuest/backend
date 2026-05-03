@@ -1,8 +1,8 @@
 package com.eduquest.backend.application.submission.listener;
 
-import com.eduquest.backend.domain.learning.service.StageQueryService;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
+import com.eduquest.backend.domain.learning.service.StageQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class SubmissionEventListener {
 
     @Async("evaluationTaskExecutor")
     @TransactionalEventListener
-    public void handleSubmissionEvaluated(SubmissionEvaluatedEvent event) {
+    public void handleSubmissionEvaluatedEvent(SubmissionEvaluatedEvent event) {
 
         if (Boolean.TRUE.equals(event.isCorrect())) {
             if ("basic".equals(event.problemType())) {
