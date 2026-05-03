@@ -35,6 +35,13 @@ public class JpaSubmissionQueryService implements SubmissionQueryService {
 		return mapper.toDomainList(submissionQueryRepository.findByUserId(userId));
 	}
 
+	@Override
+	public Submission findByUuid(java.util.UUID uuid) {
+		return submissionQueryRepository.findByUuid(uuid)
+				.map(mapper::toDomain)
+				.orElseThrow(() -> new com.eduquest.backend.common.exception.EduQuestException(com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode.NOT_FOUND_DATA));
+	}
+
 }
 
 

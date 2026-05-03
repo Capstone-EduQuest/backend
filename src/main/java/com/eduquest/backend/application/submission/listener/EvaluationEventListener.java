@@ -18,7 +18,7 @@ public class EvaluationEventListener {
 
     @Async("evaluationTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onSubmissionEvaluated(SubmissionEvaluatedEvent event) {
+    public void handleSubmissionEvaluatedEvent(SubmissionEvaluatedEvent event) {
         try {
             Long id = evaluationCommandService.saveEvaluation(event.isCorrect(), event.submissionId());
             log.info("Evaluation saved asynchronously (after commit): id={}, submissionId={}, isCorrect={}", id, event.submissionId(), event.isCorrect());

@@ -1,16 +1,15 @@
 package com.eduquest.backend.application.reward.listener;
 
 import com.eduquest.backend.application.reward.service.RewardService;
-import com.eduquest.backend.domain.learning.event.StageClearedEvent;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
+import com.eduquest.backend.domain.learning.event.StageClearedEvent;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import com.eduquest.backend.domain.reward.service.WalletQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component

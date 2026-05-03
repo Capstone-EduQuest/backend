@@ -8,6 +8,8 @@ public interface SubmissionQueryService {
 
     Submission findById(Long id);
 
+    Submission findByUuid(java.util.UUID uuid);
+
     List<Submission> findByProblemId(Long problemId);
 
     List<Submission> findByUserId(Long userId);
