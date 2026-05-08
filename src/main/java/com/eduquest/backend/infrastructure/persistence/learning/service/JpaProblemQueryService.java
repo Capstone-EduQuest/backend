@@ -47,13 +47,13 @@ public class JpaProblemQueryService implements ProblemQueryService {
 	}
 
 	@Override
-	public List<ProblemQuery.Summary> findAllByStageNumber(Integer stageNumber) {
-		return problemQueryRepository.findAllByStageNumber(stageNumber);
+	public List<ProblemQuery.Detail> findAllDetailsByStageNumber(Integer stageNumber) {
+		return problemQueryRepository.findDetailsByStageNumber(stageNumber);
 	}
 
 	@Override
-	public List<ProblemQuery.Detail> findAllDetailsByStageNumber(Integer stageNumber) {
-		return problemQueryRepository.findDetailsByStageNumber(stageNumber);
+	public List<ProblemQuery.Detail> findDetailsByPagination(int page, int size, String sort, Boolean isAsc) {
+		return problemQueryRepository.findDetailsByPagination(page, size, sort, isAsc);
 	}
 
 }

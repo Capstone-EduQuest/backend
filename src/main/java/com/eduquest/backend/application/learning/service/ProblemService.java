@@ -124,7 +124,33 @@ public class ProblemService {
     }
 
     public ProblemListDto listProblems(int page, int size, String sort, Boolean isAsc) {
-        return ProblemListDto.of(page, size, sort, isAsc, List.of());
+        List<ProblemQuery.Detail> details = problemQueryService.findDetailsByPagination(page, size, sort, isAsc);
+
+        if (details == null || details.isEmpty()) {
+            return ProblemListDto.of(page, size, sort, isAsc, List.of());
+        }
+
+        List<ProblemDto> results = details.stream().map(detail -> {
+            List<HintDto> hintList = detail.hints() == null ? List.of() : detail.hints().stream()
+                    .map(h -> HintDto.of(h.level(), h.point(), h.content()))
+                    .collect(Collectors.toList());
+
+            return ProblemDto.of(
+                    detail.uuid(),
+                    detail.stageUuid(),
+                    detail.stageTitle(),
+                    detail.stageNumber(),
+                    detail.type(),
+                    detail.number(),
+                    detail.summary(),
+                    detail.example(),
+                    detail.expectedOutput(),
+                    detail.block(),
+                    hintList
+            );
+        }).collect(Collectors.toList());
+
+        return ProblemListDto.of(page, size, sort, isAsc, results);
     }
 
     @Transactional(readOnly = true)

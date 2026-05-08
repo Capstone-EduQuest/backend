@@ -47,7 +47,7 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
                                 problemEntity.example,
                                 problemEntity.expectedOutput,
                                 problemEntity.block,
-                                Expressions.constant(null)
+                                Expressions.constant(List.of())
                         )
                 )
                 .from(problemEntity)
@@ -118,7 +118,7 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
                                 problemEntity.example,
                                 problemEntity.expectedOutput,
                                 problemEntity.block,
-                                Expressions.constant(null)
+                                Expressions.constant(List.of())
                         )
                 )
                 .from(problemEntity)
@@ -128,7 +128,7 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
 
         if (problems == null || problems.isEmpty()) {
             return List.of();
-        };
+        }
 
         List<Long> problemIds = queryFactory.select(problemEntity.id)
                 .from(problemEntity)
@@ -149,6 +149,75 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
                     pq.id(), pq.uuid(), pq.stageUuid(), pq.stageTitle(), pq.stageNumber(), pq.type(), pq.number(), pq.summary(), pq.example(), pq.expectedOutput(), pq.block(), hs
             );
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProblemQuery.Detail> findDetailsByPagination(int page, int size, String sort, Boolean isAsc) {
+
+        QProblemEntity problemEntity = QProblemEntity.problemEntity;
+        QStageEntity stageEntity = QStageEntity.stageEntity;
+
+        com.querydsl.core.types.OrderSpecifier<?> order;
+
+        boolean ascending = isAsc != null && isAsc;
+
+        if ("number".equalsIgnoreCase(sort)) {
+            order = ascending ? problemEntity.number.asc() : problemEntity.number.desc();
+        } else if ("type".equalsIgnoreCase(sort)) {
+            order = ascending ? problemEntity.type.asc() : problemEntity.type.desc();
+        } else if ("created_at".equalsIgnoreCase(sort) || "createdAt".equalsIgnoreCase(sort)) {
+            order = ascending ? problemEntity.createdAt.asc() : problemEntity.createdAt.desc();
+        } else {
+            // default sort by createdAt desc
+            order = ascending ? problemEntity.createdAt.asc() : problemEntity.createdAt.desc();
+        }
+
+        long offset = Math.max(0, (long) page) * Math.max(1, size);
+
+        List<ProblemQuery.Detail> problems = queryFactory.select(
+                        Projections.constructor(
+                                ProblemQuery.Detail.class,
+                                problemEntity.id,
+                                problemEntity.uuid,
+                                stageEntity.uuid,
+                                stageEntity.title,
+                                stageEntity.number,
+                                problemEntity.type,
+                                problemEntity.number,
+                                problemEntity.summary,
+                                problemEntity.example,
+                                problemEntity.expectedOutput,
+                                problemEntity.block,
+                                Expressions.constant(List.of())
+                        )
+                )
+                .from(problemEntity)
+                .join(stageEntity).on(problemEntity.stageId.eq(stageEntity.id))
+                .orderBy(order)
+                .offset(offset)
+                .limit(Math.max(1, size))
+                .fetch();
+
+        if (problems == null || problems.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> problemIds = problems.stream().map(ProblemQuery.Detail::id).collect(Collectors.toList());
+
+        List<HintEntity> hintEntities = hintJpaRepository.findAllByProblemIdIn(problemIds);
+
+        Map<Long, List<HintEntity>> hintsByProblem = hintEntities.stream().collect(Collectors.groupingBy(HintEntity::getProblemId));
+
+        return problems.stream().map(pq -> {
+            List<ProblemQuery.Hint> hs = hintsByProblem.getOrDefault(pq.id(), List.of()).stream()
+                    .map(h -> ProblemQuery.Hint.of(h.getLevel(), h.getPoint(), h.getContent()))
+                    .collect(Collectors.toList());
+
+            return ProblemQuery.Detail.of(
+                    pq.id(), pq.uuid(), pq.stageUuid(), pq.stageTitle(), pq.stageNumber(), pq.type(), pq.number(), pq.summary(), pq.example(), pq.expectedOutput(), pq.block(), hs
+            );
+        }).collect(Collectors.toList());
+
     }
 
 }
