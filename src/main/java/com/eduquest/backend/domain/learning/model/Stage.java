@@ -35,5 +35,11 @@ public class Stage {
                 .build();
     }
 
+    public void update(String title, Integer number, Long reward) {
+        this.title = title;
+        this.number = number;
+        this.reward = reward;
+    }
+
 }
 

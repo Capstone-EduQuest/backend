@@ -1,5 +1,6 @@
 package com.eduquest.backend.domain.learning.service;
 
+import com.eduquest.backend.domain.learning.model.Stage;
 import com.eduquest.backend.domain.progress.dto.ProgressQuery;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface StageQueryService {
     Long findIdByUuid(UUID uuid);
 
     Long findRewardById(Long stageId);
+
+    Stage findStageByUuid(UUID uuid);
 
     List<ProgressQuery.Detail> findAllStageSummaries();
 

@@ -27,7 +27,9 @@ public class StageService {
 
     public void updateStage(UUID uuid, String title, Integer number, Long reward) {
 
-        Stage stage = Stage.of(title, number, reward);
+        Stage stage = stageQueryService.findStageByUuid(uuid);
+
+        stage.update(title, number, reward);
 
         stageCommandService.updateStage(stage);
 
