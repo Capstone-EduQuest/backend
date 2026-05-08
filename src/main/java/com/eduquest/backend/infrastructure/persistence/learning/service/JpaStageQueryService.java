@@ -1,6 +1,7 @@
 package com.eduquest.backend.infrastructure.persistence.learning.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.learning.dto.StageQuery;
 import com.eduquest.backend.domain.learning.model.Stage;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
 import com.eduquest.backend.domain.progress.dto.ProgressQuery;
@@ -45,6 +46,11 @@ public class JpaStageQueryService implements StageQueryService {
     @Override
     public List<ProgressQuery.Detail> findAllStageSummaries() {
         return stageQueryRepository.findAllStageSummaries();
+    }
+
+    @Override
+    public List<StageQuery.Summary> findStageSummariesWithRewardByPagination(int page, int size, String sort, Boolean isAsc) {
+        return stageQueryRepository.findStageSummariesWithRewardByPagination(page, size, sort, isAsc);
     }
 
 }
