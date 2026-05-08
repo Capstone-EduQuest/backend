@@ -47,7 +47,7 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
                                 problemEntity.example,
                                 problemEntity.expectedOutput,
                                 problemEntity.block,
-                                Expressions.constant(null)
+                                Expressions.constant(List.of())
                         )
                 )
                 .from(problemEntity)
@@ -118,7 +118,7 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
                                 problemEntity.example,
                                 problemEntity.expectedOutput,
                                 problemEntity.block,
-                                Expressions.constant(null)
+                                Expressions.constant(List.of())
                         )
                 )
                 .from(problemEntity)
@@ -128,7 +128,7 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
 
         if (problems == null || problems.isEmpty()) {
             return List.of();
-        };
+        }
 
         List<Long> problemIds = queryFactory.select(problemEntity.id)
                 .from(problemEntity)
