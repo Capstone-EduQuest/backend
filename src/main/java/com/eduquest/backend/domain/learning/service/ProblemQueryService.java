@@ -14,7 +14,11 @@ public interface ProblemQueryService {
 
     ProblemQuery.HintDetail findHintByProblemUuidAndLevel(UUID uuid, Integer level);
 
+    Long findHintIdByProblemUuidAndLevel(UUID problemUuid, int level);
+
     List<ProblemQuery.Detail> findAllDetailsByStageNumber(Integer stageNumber);
+
+    List<ProblemQuery.Detail> findDetailsByPagination(int page, int size, String sort, Boolean isAsc);
 
 }
 
