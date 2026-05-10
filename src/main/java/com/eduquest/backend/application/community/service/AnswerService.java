@@ -52,13 +52,7 @@ public class AnswerService {
 
         Answer answer = Answer.of(command.content(), memberId, question.getId());
 
-        Long savedId = answerCommandService.saveAnswer(answer);
-
-        Answer saved = answerQueryService.findAnswerById(savedId);
-
-        if (saved == null || saved.getUuid() == null) {
-            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
-        }
+        answerCommandService.saveAnswer(answer);
 
     }
 
