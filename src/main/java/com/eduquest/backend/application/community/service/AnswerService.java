@@ -94,6 +94,10 @@ public class AnswerService {
             throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
         }
 
+        if (question.getIsAdopted()) {
+            throw new EduQuestException(CommunityErrorCode.QUESTION_ALREADY_ADOPTED);
+        }
+
         Long requesterMemberId = memberQueryService.findMemberIdByUserId(requesterUserId);
 
         // only the original question author may adopt
