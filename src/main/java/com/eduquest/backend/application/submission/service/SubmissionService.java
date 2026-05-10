@@ -35,9 +35,7 @@ public class SubmissionService {
 
 		Long problemId = detail.id();
 
-		// userId(String) -> userUuid(UUID) -> memberId(Long)
-		UUID userUuid = memberQueryService.findMemberUuidByUserId(userId);
-		Long memberId = memberQueryService.findMemberIdByUuid(userUuid);
+		Long memberId = memberQueryService.findMemberIdByUserId(userId);
 
 		// domain 모델 생성 후 도메인 포트로 저장
 		Submission submissionDomain = Submission.of(memberId, problemId, answer);
