@@ -23,8 +23,7 @@ public class EvaluationService {
 
     public EvaluationInfo findBySubmissionUuid(UUID submissionUuid, String userId) {
         // userId -> memberId
-        UUID userUuid = memberQueryService.findMemberUuidByUserId(userId);
-        Long memberId = memberQueryService.findMemberIdByUuid(userUuid);
+        Long memberId = memberQueryService.findMemberIdByUserId(userId);
 
         Submission submission = submissionQueryService.findByUuid(submissionUuid);
 
