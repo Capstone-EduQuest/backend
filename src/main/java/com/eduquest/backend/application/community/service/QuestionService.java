@@ -76,24 +76,24 @@ public class QuestionService {
     }
 
     public QuestionDetailResponse findQuestionByUuid(UUID questionUuid) {
-        Question question = questionQueryService.findQuestionByUuid(questionUuid);
 
-        if (question == null) {
+        QuestionQuery.Detail detail = questionQueryService.findQuestionDetailByUuid(questionUuid);
+
+        if (detail == null) {
             throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
         }
 
-        Member member = memberQueryService.findMemberById(question.getUserId());
-
         return QuestionDetailResponse.of(
-                question.getUuid(),
-                question.getTitle(),
-                member.getUuid(),
-                member.getNickname(),
-                question.getCreatedAt(),
-                question.getContent(),
-                question.getIsAdopted(),
-                null
+                detail.uuid(),
+                detail.title(),
+                detail.userUuid(),
+                detail.userNickname(),
+                detail.createdAt(),
+                detail.content(),
+                detail.isAdopted(),
+                detail.adoptedAnswerUuid()
         );
+
     }
 
 }
