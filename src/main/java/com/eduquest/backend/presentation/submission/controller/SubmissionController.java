@@ -30,10 +30,6 @@ public class SubmissionController {
             , Authentication authentication
     ) {
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().isBlank()) {
-            throw new EduQuestException(SubmissionApiErrorCode.SUBMISSION_NOT_ALLOWED);
-        }
-
         String userId = authentication.getName();
 
         UUID submissionUuid = submissionService.submit(problemUuid, userId, request.answer());

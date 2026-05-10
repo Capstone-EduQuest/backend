@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -78,6 +79,11 @@ public class JpaMemberQueryService implements MemberQueryService {
                         new HashMap<>() {{
                             put("userId", "유저 아이디를 찾을 수 없습니다.");
                         }}));
+    }
+
+    @Override
+    public Map<Long, UUID> findMemberUuidByUserIds(List<Long> userIds) {
+        return memberQueryRepository.findUuidByUserIds(userIds);
     }
 
     @Override

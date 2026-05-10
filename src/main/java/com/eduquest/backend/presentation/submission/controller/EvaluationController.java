@@ -29,6 +29,7 @@ public class EvaluationController {
 
         String userId = authentication.getName();
         EvaluationInfo info = evaluationService.findBySubmissionUuid(submissionUuid, userId);
+
         if (info == null) {
             return ResponseEntity.ok(EvaluationPollingResponse.pending());
         }
