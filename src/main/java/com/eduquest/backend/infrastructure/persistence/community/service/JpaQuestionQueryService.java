@@ -24,12 +24,14 @@ public class JpaQuestionQueryService implements QuestionQueryService {
 
 	@Override
 	public Question findQuestionById(Long id) {
-		return postQueryRepository.findById(id).map(postEntityMapper::toDomain).orElse(null);
+		return postQueryRepository.findById(id).map(postEntityMapper::toDomain)
+				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
 	}
 
 	@Override
 	public Question findQuestionByUuid(UUID uuid) {
-		return postQueryRepository.findByUuid(uuid).map(postEntityMapper::toDomain).orElse(null);
+		return postQueryRepository.findByUuid(uuid).map(postEntityMapper::toDomain)
+				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
 	}
 
 	@Override
