@@ -1,8 +1,10 @@
 package com.eduquest.backend.infrastructure.persistence.community.service;
 
+import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
+import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.mapper.CommunityPostEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.community.repository.CommunityPostQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +33,14 @@ public class JpaQuestionQueryService implements QuestionQueryService {
 	}
 
 	@Override
+	public QuestionQuery.Detail findQuestionDetailByUuid(UUID uuid) {
+		return postQueryRepository.findDetailByUuid(uuid)
+				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+	}
+
+	@Override
 	public List<Question> findQuestionsByUserId(Long userId) {
-		return postQueryRepository.findAllBy(PageRequest.of(0, 1000)).getContent().stream()
+		return postQueryRepository.findAllByPagination(PageRequest.of(0, 1000)).getContent().stream()
 				.filter(p -> p.getUserId().equals(userId))
 				.map(postEntityMapper::toDomain)
 				.collect(Collectors.toList());
@@ -40,7 +48,7 @@ public class JpaQuestionQueryService implements QuestionQueryService {
 
 	@Override
 	public List<QuestionQuery.Summary> findAll(int page, int size, String sortBy, boolean isAsc, String searchBy, String keyword) {
-		return postQueryRepository.findSummaryBy(PageRequest.of(page, size), searchBy, keyword, sortBy, isAsc).getContent();
+		return postQueryRepository.findSummaryByPagination(PageRequest.of(page, size), searchBy, keyword, sortBy, isAsc).getContent();
 	}
 
 }
