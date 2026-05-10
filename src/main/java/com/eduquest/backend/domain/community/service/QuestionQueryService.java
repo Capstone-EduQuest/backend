@@ -12,6 +12,8 @@ public interface QuestionQueryService {
 
     Question findQuestionByUuid(UUID uuid);
 
+    QuestionQuery.Detail findQuestionDetailByUuid(UUID uuid);
+
     List<Question> findQuestionsByUserId(Long userId);
 
     List<QuestionQuery.Summary> findAll(int page, int size, String sortBy, boolean isAsc, String searchBy, String keyword);

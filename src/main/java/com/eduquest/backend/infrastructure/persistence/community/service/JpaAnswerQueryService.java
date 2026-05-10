@@ -1,7 +1,10 @@
 package com.eduquest.backend.infrastructure.persistence.community.service;
 
+import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.community.dto.AnswerQuery;
 import com.eduquest.backend.domain.community.model.Answer;
 import com.eduquest.backend.domain.community.service.AnswerQueryService;
+import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.mapper.CommunityAnswerEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.community.repository.CommunityAnswerQueryRepository;
 import com.eduquest.backend.infrastructure.persistence.community.repository.CommunityPostQueryRepository;
@@ -23,12 +26,19 @@ public class JpaAnswerQueryService implements AnswerQueryService {
 
     @Override
     public Answer findAnswerById(Long id) {
-        return answerQueryRepository.findById(id).map(answerEntityMapper::toDomain).orElse(null);
+        return answerQueryRepository.findById(id).map(answerEntityMapper::toDomain)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
     }
 
     @Override
     public Answer findAnswerByUuid(UUID uuid) {
-        return answerQueryRepository.findByUuid(uuid).map(answerEntityMapper::toDomain).orElse(null);
+        return answerQueryRepository.findByUuid(uuid).map(answerEntityMapper::toDomain)
+                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+    }
+
+    @Override
+    public List<AnswerQuery.Summary> findAnswerSummariesByQuestionUuid(UUID questionUuid, int page, int size, Boolean isAsc) {
+        return answerQueryRepository.findSummariesByUuid(questionUuid, page, size, isAsc);
     }
 
     @Override

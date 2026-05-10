@@ -11,13 +11,15 @@ import java.util.UUID;
 
 public interface CommunityPostQRepository {
 
-    Page<CommunityPostEntity> findAllBy(Pageable pageable);
+    Page<CommunityPostEntity> findAllByPagination(Pageable pageable);
 
     Optional<CommunityPostEntity> findByUuid(UUID uuid);
 
-    Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable);
+    Optional<QuestionQuery.Detail> findDetailByUuid(UUID uuid);
 
-    Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable, String searchBy, String keyword, String sortBy, boolean isAsc);
+    Page<QuestionQuery.Summary> findSummaryByPagination(Pageable pageable);
+
+    Page<QuestionQuery.Summary> findSummaryByPagination(Pageable pageable, String searchBy, String keyword, String sortBy, boolean isAsc);
 
 }
 
