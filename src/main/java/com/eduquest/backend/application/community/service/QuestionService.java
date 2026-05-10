@@ -38,13 +38,7 @@ public class QuestionService {
 
         Question question = Question.of(command.title(), command.content(), memberId);
 
-        Long savedId = questionCommandService.saveQuestion(question);
-
-        Question saved = questionQueryService.findQuestionById(savedId);
-
-        if (saved == null || saved.getUuid() == null) {
-            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
-        }
+        questionCommandService.saveQuestion(question);
 
     }
 
