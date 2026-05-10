@@ -6,6 +6,7 @@ import com.eduquest.backend.application.community.dto.AnswerListResult;
 import com.eduquest.backend.application.community.dto.CreateAnswerCommand;
 import com.eduquest.backend.application.community.exception.CommunityErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.community.dto.AnswerQuery;
 import com.eduquest.backend.domain.community.event.AnswerAdoptedEvent;
 import com.eduquest.backend.domain.community.model.Answer;
 import com.eduquest.backend.domain.community.model.Question;
@@ -62,12 +63,10 @@ public class AnswerService {
     }
 
     public AnswerListResult findAnswersByQuestionUuid(UUID questionUuid, AnswerListQuery query) {
-        List<Answer> answers = answerQueryService.findAnswersByQuestionUuid(questionUuid);
+        List<AnswerQuery.Summary> answers = answerQueryService.findAnswerSummariesByQuestionUuid(questionUuid);
 
         List<AnswerListResult.Item> items = answers.stream().map(a -> {
-            Member member = memberQueryService.findMemberById(a.getUserId());
-
-            return AnswerListResult.Item.of(a.getUuid(), a.getContent(), member.getUuid(), member.getNickname(), a.getIsAdopted(), a.getCreatedAt());
+            return AnswerListResult.Item.of(a.uuid(), a.content(), a.userUuid(), a.userNickname(), a.isAdopt(), a.createdAt());
         }).collect(Collectors.toList());
 
         return AnswerListResult.of(query.page(), query.size(), null, query.isAsc(), items);
