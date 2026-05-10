@@ -9,7 +9,9 @@ import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.Map;
 
@@ -22,7 +24,8 @@ public class WrongNoteAiFeedBackListener {
     private final WrongNoteQueryService wrongNoteQueryService;
     private final WrongNoteCommandService wrongNoteCommandService;
 
-    @EventListener
+    @Async("evaluationTaskExecutor")
+    @TransactionalEventListener
     public void handleWrongNoteAiFeedBackEvent(WrongNoteAiFeedBackEvent event) {
 
         AiFeedBackRequest request = AiFeedBackRequest.of(
