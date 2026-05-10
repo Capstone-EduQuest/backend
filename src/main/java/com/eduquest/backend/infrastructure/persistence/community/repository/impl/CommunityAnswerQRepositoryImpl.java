@@ -1,7 +1,11 @@
 package com.eduquest.backend.infrastructure.persistence.community.repository.impl;
 
+import com.eduquest.backend.domain.community.dto.AnswerQuery;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityAnswerEntity;
 import com.eduquest.backend.infrastructure.persistence.community.entity.QCommunityAnswerEntity;
+import com.eduquest.backend.infrastructure.persistence.community.entity.QCommunityPostEntity;
+import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,6 +46,36 @@ public class CommunityAnswerQRepositoryImpl implements CommunityAnswerQRepositor
 		QCommunityAnswerEntity answer = QCommunityAnswerEntity.communityAnswerEntity;
 		CommunityAnswerEntity entity = queryFactory.selectFrom(answer).where(answer.uuid.eq(uuid)).fetchOne();
 		return Optional.ofNullable(entity);
+	}
+
+	@Override
+	public List<AnswerQuery.Summary> findSummariesByUuid(UUID uuid) {
+
+		QCommunityAnswerEntity answer = QCommunityAnswerEntity.communityAnswerEntity;
+		QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
+		QMemberEntity member = QMemberEntity.memberEntity;
+
+		List<AnswerQuery.Summary> content = queryFactory
+				.select(
+						Projections.constructor(
+								AnswerQuery.Summary.class,
+								answer.uuid,
+								answer.content,
+								member.uuid,
+								member.nickname,
+								answer.isAdopted,
+								answer.createdAt
+						)
+				)
+				.from(answer)
+				.join(post).on(answer.communityPostId.eq(post.id))
+				.leftJoin(member).on(member.id.eq(answer.userId))
+				.where(post.uuid.eq(uuid))
+				.orderBy(answer.createdAt.desc())
+				.fetch();
+
+		return content;
+
 	}
 
 	@Override
