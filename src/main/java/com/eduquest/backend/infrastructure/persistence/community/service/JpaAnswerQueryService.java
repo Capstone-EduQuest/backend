@@ -37,8 +37,8 @@ public class JpaAnswerQueryService implements AnswerQueryService {
     }
 
     @Override
-    public List<AnswerQuery.Summary> findAnswerSummariesByQuestionUuid(UUID questionUuid) {
-        return answerQueryRepository.findSummariesByUuid(questionUuid);
+    public List<AnswerQuery.Summary> findAnswerSummariesByQuestionUuid(UUID questionUuid, int page, int size, Boolean isAsc) {
+        return answerQueryRepository.findSummariesByUuid(questionUuid, page, size, isAsc);
     }
 
     @Override

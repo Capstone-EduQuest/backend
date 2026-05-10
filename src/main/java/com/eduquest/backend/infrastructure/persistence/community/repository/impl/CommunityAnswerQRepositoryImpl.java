@@ -49,32 +49,38 @@ public class CommunityAnswerQRepositoryImpl implements CommunityAnswerQRepositor
 	}
 
 	@Override
-	public List<AnswerQuery.Summary> findSummariesByUuid(UUID uuid) {
+	public List<AnswerQuery.Summary> findSummariesByUuid(UUID uuid, int page, int size, Boolean isAsc) {
 
 		QCommunityAnswerEntity answer = QCommunityAnswerEntity.communityAnswerEntity;
 		QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
 		QMemberEntity member = QMemberEntity.memberEntity;
 
-		List<AnswerQuery.Summary> content = queryFactory
-				.select(
-						Projections.constructor(
-								AnswerQuery.Summary.class,
-								answer.uuid,
-								answer.content,
-								member.uuid,
-								member.nickname,
-								answer.isAdopted,
-								answer.createdAt
-						)
-				)
-				.from(answer)
-				.join(post).on(answer.communityPostId.eq(post.id))
-				.leftJoin(member).on(member.id.eq(answer.userId))
-				.where(post.uuid.eq(uuid))
-				.orderBy(answer.createdAt.desc())
-				.fetch();
+		int normalizedPage = Math.max(0, page);
+		int normalizedSize = size <= 0 ? 10 : size;
+		long offset = (long) normalizedPage * normalizedSize;
 
-		return content;
+		boolean asc = isAsc != null && isAsc;
+
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                AnswerQuery.Summary.class,
+                                answer.uuid,
+                                answer.content,
+                                member.uuid,
+                                member.nickname,
+                                answer.isAdopted,
+                                answer.createdAt
+                        )
+                )
+                .from(answer)
+                .join(post).on(answer.communityPostId.eq(post.id))
+                .leftJoin(member).on(member.id.eq(answer.userId))
+                .where(post.uuid.eq(uuid))
+                .orderBy(asc ? answer.createdAt.asc() : answer.createdAt.desc())
+                .offset(offset)
+                .limit(normalizedSize)
+                .fetch();
 
 	}
 

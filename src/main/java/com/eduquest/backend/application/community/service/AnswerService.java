@@ -63,7 +63,7 @@ public class AnswerService {
     }
 
     public AnswerListResult findAnswersByQuestionUuid(UUID questionUuid, AnswerListQuery query) {
-        List<AnswerQuery.Summary> answers = answerQueryService.findAnswerSummariesByQuestionUuid(questionUuid);
+        List<AnswerQuery.Summary> answers = answerQueryService.findAnswerSummariesByQuestionUuid(questionUuid, query.page(), query.size(), query.isAsc());
 
         List<AnswerListResult.Item> items = answers.stream().map(a -> {
             return AnswerListResult.Item.of(a.uuid(), a.content(), a.userUuid(), a.userNickname(), a.isAdopt(), a.createdAt());

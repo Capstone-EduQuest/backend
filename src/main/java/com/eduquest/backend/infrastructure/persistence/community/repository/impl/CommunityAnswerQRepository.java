@@ -15,7 +15,7 @@ public interface CommunityAnswerQRepository {
 
     Optional<CommunityAnswerEntity> findByUuid(UUID uuid);
 
-    List<AnswerQuery.Summary> findSummariesByUuid(UUID uuid);
+    List<AnswerQuery.Summary> findSummariesByUuid(UUID uuid, int page, int size, Boolean isAsc);
 
     List<CommunityAnswerEntity> findAllByCommunityPostId(Long postId);
 }

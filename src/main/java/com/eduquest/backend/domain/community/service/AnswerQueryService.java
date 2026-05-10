@@ -12,7 +12,7 @@ public interface AnswerQueryService {
 
     Answer findAnswerByUuid(UUID uuid);
 
-    List<AnswerQuery.Summary> findAnswerSummariesByQuestionUuid(UUID questionUuid);
+    List<AnswerQuery.Summary> findAnswerSummariesByQuestionUuid(UUID questionUuid, int page, int size, Boolean isAsc);
 
     List<Answer> findAnswersByQuestionId(Long questionId);
 
