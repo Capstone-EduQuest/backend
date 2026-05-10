@@ -113,7 +113,7 @@ public class WrongNoteQRepositoryImpl implements WrongNoteQRepository{
                 )
         )
                 .from(QWrongNoteEntity.wrongNoteEntity)
-                .orderBy(buildOrderBy(sortBy, isAsc ? "asc" : "desc").toArray(new OrderSpecifier[0]))
+                .orderBy(buildOrderBy(sortBy != null ? sortBy : "", isAsc ? "asc" : "desc").toArray(new OrderSpecifier[0]))
                 .offset((long) page * size)
                 .limit(size)
                 .fetch();
