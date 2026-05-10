@@ -32,9 +32,13 @@ public class EvaluationService {
             throw new EduQuestException(SubMissionErrorCode.FORBIDDEN);
         }
 
-        Evaluation evaluation = evaluationQueryService.findBySubmissionId(submission.getId());
+        try {
+            Evaluation evaluation = evaluationQueryService.findBySubmissionId(submission.getId());
 
-        return EvaluationInfo.of(evaluation.getIsCorrect(), evaluation.getCreatedAt());
+            return EvaluationInfo.of(evaluation.getIsCorrect(), evaluation.getCreatedAt());
+        } catch (EduQuestException e) {
+            return null;
+        }
     }
 }
 
