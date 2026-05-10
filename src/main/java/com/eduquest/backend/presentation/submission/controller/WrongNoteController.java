@@ -23,8 +23,11 @@ public class WrongNoteController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{uuid}")
-    public ResponseEntity<WrongNoteResponse> getWrongNote(@PathVariable UUID uuid) {
-        WrongNoteResponse dto = wrongNoteService.findWrongNoteByUuid(uuid);
+    public ResponseEntity<WrongNoteResponse> getWrongNote(
+            @PathVariable UUID uuid,
+            Authentication authentication
+    ) {
+        WrongNoteResponse dto = wrongNoteService.findWrongNoteByUuid(uuid, authentication.getName());
         return ResponseEntity.ok(dto);
     }
 

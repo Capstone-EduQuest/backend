@@ -57,7 +57,7 @@ public class WrongNoteService {
     }
 
     @Transactional(readOnly = true)
-    public WrongNoteResponse findWrongNoteByUuid(UUID wrongNoteUuid) {
+    public WrongNoteResponse findWrongNoteByUuid(UUID wrongNoteUuid, String userId) {
         WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongDetailNoteByUuid(wrongNoteUuid);
         if (detail == null) {
             throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
@@ -65,7 +65,12 @@ public class WrongNoteService {
 
         // memberQueryService를 사용해 userId -> userUuid 변환
         Member member = memberQueryService.findMemberById(detail.userId());
-        java.util.UUID userUuid = member.getUuid();
+
+        if (!userId.equals(member.getUserId())) {
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+        }
+
+        UUID userUuid = member.getUuid();
 
         return WrongNoteResponse.of(
                 detail.id(),
