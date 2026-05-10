@@ -59,6 +59,7 @@ public class JpaWrongNoteCommandService implements WrongNoteCommandService {
     }
 
     @Override
+    @Transactional
     public Long updateWrongNote(WrongNote wrongNote) {
 
         if (!wrongNoteJpaRepository.existsById(wrongNote.getId())) {
