@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -84,6 +86,27 @@ public class MemberQRepositoryImpl implements MemberQRepository {
                         .where(QMemberEntity.memberEntity.uuid.eq(uuid))
                         .fetchOne()
         );
+    }
+
+    @Override
+    public Map<Long, UUID> findUuidByUserIds(List<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return queryFactory
+                .select(
+                        QMemberEntity.memberEntity.id,
+                        QMemberEntity.memberEntity.uuid
+                )
+                .from(QMemberEntity.memberEntity)
+                .where(QMemberEntity.memberEntity.id.in(userIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(QMemberEntity.memberEntity.id),
+                        tuple -> tuple.get(QMemberEntity.memberEntity.uuid)
+                ));
     }
 
     @Override

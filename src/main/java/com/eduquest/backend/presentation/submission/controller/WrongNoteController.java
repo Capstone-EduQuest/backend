@@ -1,5 +1,7 @@
 package com.eduquest.backend.presentation.submission.controller;
 
+import com.eduquest.backend.application.submission.dto.WrongNoteDto;
+import com.eduquest.backend.application.submission.dto.WrongNoteListDto;
 import com.eduquest.backend.application.submission.service.WrongNoteService;
 import com.eduquest.backend.presentation.submission.dto.request.WrongNoteListRequest;
 import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +30,11 @@ public class WrongNoteController {
             @PathVariable UUID uuid,
             Authentication authentication
     ) {
-        WrongNoteResponse dto = wrongNoteService.findWrongNoteByUuid(uuid, authentication.getName());
-        return ResponseEntity.ok(dto);
+        WrongNoteDto dto = wrongNoteService.findWrongNoteByUuid(uuid, authentication.getName());
+        return ResponseEntity.ok(WrongNoteResponse.of(
+                dto.id(), dto.problemId(), dto.userUuid(), dto.wrongAnswer(), dto.feedback(),
+                dto.isReviewed(), dto.lastSubmittedAt(), dto.createdAt(), dto.updatedAt()
+        ));
     }
 
     @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
@@ -37,7 +43,7 @@ public class WrongNoteController {
             @PathVariable UUID uuid,
             @Valid @ModelAttribute WrongNoteListRequest request
     ) {
-        WrongNoteListResponse.WrongNoteList list = wrongNoteService.findWrongNotesByUserUuid(
+        WrongNoteListDto listDto = wrongNoteService.findWrongNotesByUserUuid(
                 uuid,
                 request.page(),
                 request.size(),
@@ -45,7 +51,17 @@ public class WrongNoteController {
                 request.isAsc()
         );
 
-        return ResponseEntity.ok(list);
+        List<WrongNoteResponse> wrongNoteResponseList = listDto.results().stream()
+                .map(dto -> WrongNoteResponse.of(
+                        dto.id(), dto.problemId(), dto.userUuid(), dto.wrongAnswer(), dto.feedback(),
+                        dto.isReviewed(), dto.lastSubmittedAt(), dto.createdAt(), dto.updatedAt()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(WrongNoteListResponse.WrongNoteList.of(
+                listDto.page(), listDto.size(), listDto.sort(), listDto.isAsc(),
+                listDto.total(), wrongNoteResponseList
+        ));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -53,10 +69,21 @@ public class WrongNoteController {
     public ResponseEntity<WrongNoteListResponse.WrongNoteList> listAll(
             @Valid @ModelAttribute WrongNoteListRequest request
     ) {
-        WrongNoteListResponse.WrongNoteList list = wrongNoteService.findWrongNotes(
+        WrongNoteListDto listDto = wrongNoteService.findWrongNotes(
                 request.page(), request.size(), request.sort(), request.isAsc()
         );
-        return ResponseEntity.ok(list);
+
+        List<WrongNoteResponse> wrongNoteResponseList = listDto.results().stream()
+                .map(dto -> WrongNoteResponse.of(
+                        dto.id(), dto.problemId(), dto.userUuid(), dto.wrongAnswer(), dto.feedback(),
+                        dto.isReviewed(), dto.lastSubmittedAt(), dto.createdAt(), dto.updatedAt()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(WrongNoteListResponse.WrongNoteList.of(
+                listDto.page(), listDto.size(), listDto.sort(), listDto.isAsc(),
+                listDto.total(), wrongNoteResponseList
+        ));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
