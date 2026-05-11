@@ -89,10 +89,6 @@ public class BookmarkQRepositoryImpl implements BookmarkQRepository {
     private java.util.List<OrderSpecifier<?>> buildOrderBy(QBookmarkEntity bookmark, QProblemEntity problem, String sortBy, boolean isAsc) {
         String dir = isAsc ? "asc" : "desc";
 
-        if (!"desc".equalsIgnoreCase(dir) && !"asc".equalsIgnoreCase(dir)) {
-            dir = "desc";
-        }
-
         if (dir.equals("asc")) {
             return switch (sortBy == null ? "created_at" : sortBy) {
                 case "problem_number" -> java.util.List.of(problem.number.asc());
