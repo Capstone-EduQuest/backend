@@ -62,20 +62,20 @@ public class BookmarkQRepositoryImpl implements BookmarkQRepository {
                 .fetchOne();
     }
 
-    private java.util.List<OrderSpecifier<?>> buildOrderBy(QBookmarkEntity bookmark, QProblemEntity problem, String sortBy, boolean isAsc) {
+    private List<OrderSpecifier<?>> buildOrderBy(QBookmarkEntity bookmark, QProblemEntity problem, String sortBy, boolean isAsc) {
         String dir = isAsc ? "asc" : "desc";
 
         if (dir.equals("asc")) {
             return switch (sortBy == null ? "created_at" : sortBy) {
-                case "problem_number" -> java.util.List.of(problem.number.asc());
-                case "created_at" -> java.util.List.of(bookmark.createdAt.asc());
-                default -> java.util.List.of(bookmark.createdAt.asc());
+                case "problem_number" -> List.of(problem.number.asc());
+                case "created_at" -> List.of(bookmark.createdAt.asc());
+                default -> List.of(bookmark.createdAt.asc());
             };
         } else {
             return switch (sortBy == null ? "created_at" : sortBy) {
-                case "problem_number" -> java.util.List.of(problem.number.desc());
-                case "created_at" -> java.util.List.of(bookmark.createdAt.desc());
-                default -> java.util.List.of(bookmark.createdAt.desc());
+                case "problem_number" -> List.of(problem.number.desc());
+                case "created_at" -> List.of(bookmark.createdAt.desc());
+                default -> List.of(bookmark.createdAt.desc());
             };
         }
     }
