@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,20 +43,25 @@ public class NoteService {
 
         NoteQuery.Detail detail = noteQueryService.findNoteById(savedId);
 
-        if (detail == null) {
-            throw new EduQuestException(NoteErrorCode.INVALID_REQUEST);
-        }
-
         return detail.uuid();
     }
 
     @Transactional(readOnly = true)
-    public NoteDto findNoteDtoByUuid(UUID uuid) {
-        NoteQuery.Detail detail = noteQueryService.findNoteByUuid(uuid);
-        if (detail == null) {
+    public NoteDto findNoteByUuid(UUID uuid, String userId) {
+        NoteQuery.Detail detail = null;
+
+        try {
+            detail = noteQueryService.findNoteByUuid(uuid);
+        } catch (EduQuestException e) {
             throw new EduQuestException(NoteErrorCode.NOT_FOUND);
         }
+
         Member member = memberQueryService.findMemberById(detail.userId());
+
+        if (!member.getUserId().equals(userId)) {
+            throw new EduQuestException(NoteErrorCode.FORBIDDEN);
+        }
+
         return NoteDto.of(detail.uuid(), detail.id(), member.getUuid(), detail.title(), detail.content(), detail.createdAt(), detail.updatedAt());
     }
 
@@ -64,10 +70,14 @@ public class NoteService {
         List<NoteQuery.Detail> details = noteQueryService.findNotes(page, size, sort, isAsc != null && isAsc, searchBy, keyword);
         long total = noteQueryService.countNotes();
 
-        List<NoteListResult.Item> items = details.stream().map(d -> {
-            Member member = memberQueryService.findMemberById(d.userId());
-            return NoteListResult.Item.of(d.uuid(), d.id(), member.getUuid(), d.title(), d.content(), d.createdAt(), d.updatedAt());
-        }).collect(Collectors.toList());
+        Map<Long, UUID> memberUuidMap = memberQueryService.findMemberUuidByUserIds(
+            details.stream()
+                .map(NoteQuery.Detail::userId)
+                .toList()
+        );
+
+        List<NoteListResult.Item> items = details.stream()
+                .map(d -> NoteListResult.Item.of(d.uuid(), d.id(), memberUuidMap.get(d.userId()), d.title(), d.content(), d.createdAt(), d.updatedAt())).collect(Collectors.toList());
 
         return NoteListResult.of(page, size, sort, isAsc, total, items);
     }

@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,36 +44,36 @@ public class NoteController {
             @PathVariable UUID uuid,
             Authentication authentication
     ) {
-        NoteDto dto = noteService.findNoteDtoByUuid(uuid);
+        NoteDto dto = noteService.findNoteByUuid(uuid, authentication.getName());
         NoteResponse response = NoteResponse.of(dto.uuid(), dto.title(), dto.content(), dto.authorUuid(), dto.createdAt(), dto.updatedAt());
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public ResponseEntity<NoteListResponse.NoteList> listNotes(
+    public ResponseEntity<NoteListResponse> listNotes(
             @Valid @ModelAttribute NoteListRequest request,
             Authentication authentication
     ) {
         NoteListResult result = noteService.findNotes(request.page(), request.size(), request.sort(), request.isAsc(), request.searchBy(), request.keyword());
 
-        var items = result.results().stream().map(i -> com.eduquest.backend.presentation.note.dto.response.NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
+        List<NoteResponse> items = result.results().stream().map(i -> NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
 
-        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() == null ? false : result.isAsc(), result.total(), items));
+        return ResponseEntity.ok(NoteListResponse.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
     @GetMapping("/users/{uuid}")
-    public ResponseEntity<NoteListResponse.NoteList> listByUser(
+    public ResponseEntity<NoteListResponse> listByUser(
             @PathVariable UUID uuid,
             @Valid @ModelAttribute NoteListRequest request,
             Authentication authentication
     ) {
         NoteListResult result = noteService.findNotesByUserUuid(uuid, request.page(), request.size(), request.sort(), request.isAsc(), request.searchBy(), request.keyword());
 
-        var items = result.results().stream().map(i -> com.eduquest.backend.presentation.note.dto.response.NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
+        List<NoteResponse> items = result.results().stream().map(i -> NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
 
-        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() == null ? false : result.isAsc(), result.total(), items));
+        return ResponseEntity.ok(NoteListResponse.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("isAuthenticated()")
