@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -65,10 +66,14 @@ public class NoteService {
         List<NoteQuery.Detail> details = noteQueryService.findNotes(page, size, sort, isAsc != null && isAsc, searchBy, keyword);
         long total = noteQueryService.countNotes();
 
-        List<NoteListResult.Item> items = details.stream().map(d -> {
-            Member member = memberQueryService.findMemberById(d.userId());
-            return NoteListResult.Item.of(d.uuid(), d.id(), member.getUuid(), d.title(), d.content(), d.createdAt(), d.updatedAt());
-        }).collect(Collectors.toList());
+        Map<Long, UUID> memberUuidMap = memberQueryService.findMemberUuidByUserIds(
+            details.stream()
+                .map(NoteQuery.Detail::userId)
+                .toList()
+        );
+
+        List<NoteListResult.Item> items = details.stream()
+                .map(d -> NoteListResult.Item.of(d.uuid(), d.id(), memberUuidMap.get(d.userId()), d.title(), d.content(), d.createdAt(), d.updatedAt())).collect(Collectors.toList());
 
         return NoteListResult.of(page, size, sort, isAsc, total, items);
     }
