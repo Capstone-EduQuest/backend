@@ -42,10 +42,6 @@ public class NoteService {
 
         NoteQuery.Detail detail = noteQueryService.findNoteById(savedId);
 
-        if (detail == null) {
-            throw new EduQuestException(NoteErrorCode.INVALID_REQUEST);
-        }
-
         return detail.uuid();
     }
 
