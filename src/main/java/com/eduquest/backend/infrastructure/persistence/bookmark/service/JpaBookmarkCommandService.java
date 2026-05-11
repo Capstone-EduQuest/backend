@@ -25,7 +25,7 @@ public class JpaBookmarkCommandService implements BookmarkCommandService {
 
         boolean exists = bookmarkJpaRepository.findByUserIdAndProblemId(userId, problemId).isPresent();
         if (exists) {
-            throw new EduQuestException(DataBaseErrorCode.ALREADY_EXIST_MEMBER);
+            throw new EduQuestException(DataBaseErrorCode.ALREADY_EXIST_BOOKMARK);
         }
 
         bookmarkJpaRepository.save(mapper.toEntity(problemId, userId));
