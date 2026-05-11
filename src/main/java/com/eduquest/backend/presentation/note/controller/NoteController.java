@@ -43,7 +43,7 @@ public class NoteController {
             @PathVariable UUID uuid,
             Authentication authentication
     ) {
-        NoteDto dto = noteService.findNoteDtoByUuid(uuid);
+        NoteDto dto = noteService.findNoteDtoByUuid(uuid, authentication.getName());
         NoteResponse response = NoteResponse.of(dto.uuid(), dto.title(), dto.content(), dto.authorUuid(), dto.createdAt(), dto.updatedAt());
         return ResponseEntity.ok(response);
     }
