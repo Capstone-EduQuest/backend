@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,9 +57,9 @@ public class NoteController {
     ) {
         NoteListResult result = noteService.findNotes(request.page(), request.size(), request.sort(), request.isAsc(), request.searchBy(), request.keyword());
 
-        var items = result.results().stream().map(i -> com.eduquest.backend.presentation.note.dto.response.NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
+        List<NoteResponse> items = result.results().stream().map(i -> NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
 
-        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() == null ? false : result.isAsc(), result.total(), items));
+        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
@@ -70,9 +71,9 @@ public class NoteController {
     ) {
         NoteListResult result = noteService.findNotesByUserUuid(uuid, request.page(), request.size(), request.sort(), request.isAsc(), request.searchBy(), request.keyword());
 
-        var items = result.results().stream().map(i -> com.eduquest.backend.presentation.note.dto.response.NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
+        List<NoteResponse> items = result.results().stream().map(i -> NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
 
-        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() == null ? false : result.isAsc(), result.total(), items));
+        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("isAuthenticated()")
