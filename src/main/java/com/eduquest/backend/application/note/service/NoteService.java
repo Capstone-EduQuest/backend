@@ -48,10 +48,14 @@ public class NoteService {
 
     @Transactional(readOnly = true)
     public NoteDto findNoteDtoByUuid(UUID uuid, String userId) {
-        NoteQuery.Detail detail = noteQueryService.findNoteByUuid(uuid);
-        if (detail == null) {
+        NoteQuery.Detail detail = null;
+
+        try {
+            detail = noteQueryService.findNoteByUuid(uuid);
+        } catch (EduQuestException e) {
             throw new EduQuestException(NoteErrorCode.NOT_FOUND);
         }
+
         Member member = memberQueryService.findMemberById(detail.userId());
 
         if (!member.getUserId().equals(userId)) {
