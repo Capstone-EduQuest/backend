@@ -47,7 +47,7 @@ public class NoteService {
     }
 
     @Transactional(readOnly = true)
-    public NoteDto findNoteDtoByUuid(UUID uuid, String userId) {
+    public NoteDto findNoteByUuid(UUID uuid, String userId) {
         NoteQuery.Detail detail = null;
 
         try {
