@@ -40,11 +40,7 @@ public class BookmarkService {
         }
         Long problemId = detail.id();
 
-        try {
-            bookmarkCommandService.createBookmark(memberId, problemId);
-        } catch (Exception ex) {
-            throw new EduQuestException(BookmarkErrorCode.CONFLICT);
-        }
+        bookmarkCommandService.createBookmark(memberId, problemId);
 
     }
 
