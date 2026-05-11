@@ -12,8 +12,6 @@ public interface BookmarkQRepository {
 
     List<BookmarkQuery.Summary> findByUserId(Long userId, int page, int size, String sortBy, boolean isAsc);
 
-    List<BookmarkQuery.Summary> findByPagination(int page, int size, String sortBy, boolean isAsc);
-
     Long countByUserId(Long userId);
 
 }

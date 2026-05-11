@@ -34,17 +34,12 @@ public class BookmarkService {
 
         Long memberId = memberQueryService.findMemberIdByUserId(username);
 
+
         ProblemQuery.Detail detail = problemQueryService.findProblemByUuid(problemUuid);
-        if (detail == null) {
-            throw new EduQuestException(BookmarkErrorCode.NOT_FOUND);
-        }
+
         Long problemId = detail.id();
 
-        try {
-            bookmarkCommandService.createBookmark(memberId, problemId);
-        } catch (Exception ex) {
-            throw new EduQuestException(BookmarkErrorCode.CONFLICT);
-        }
+        bookmarkCommandService.createBookmark(memberId, problemId);
 
     }
 
@@ -58,9 +53,6 @@ public class BookmarkService {
         Long memberId = memberQueryService.findMemberIdByUserId(username);
 
         ProblemQuery.Detail detail = problemQueryService.findProblemByUuid(problemUuid);
-        if (detail == null) {
-            throw new EduQuestException(BookmarkErrorCode.NOT_FOUND);
-        }
 
         Long problemId = detail.id();
 

@@ -68,9 +68,9 @@ public class BookmarkController {
                         resultDto.number(),
                         resultDto.problemUuid()
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
-        boolean isAscValue = result.isAsc() == null ? false : result.isAsc();
+        boolean isAscValue = result.isAsc() != null && result.isAsc();
 
         BookmarkListResponse response = BookmarkListResponse.of(
                 result.page(),

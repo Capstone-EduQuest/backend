@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum DataBaseErrorCode implements ErrorCode {
 
     ALREADY_EXIST_MEMBER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
+    ALREADY_EXIST_BOOKMARK(HttpStatus.CONFLICT, "이미 북마크한 문제입니다."),
     NOT_FOUND_DATA(HttpStatus.NOT_FOUND, "데이터를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
