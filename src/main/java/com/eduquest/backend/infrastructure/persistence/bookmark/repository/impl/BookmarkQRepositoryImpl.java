@@ -54,30 +54,6 @@ public class BookmarkQRepositoryImpl implements BookmarkQRepository {
     }
 
     @Override
-    public List<BookmarkQuery.Summary> findByPagination(int page, int size, String sortBy, boolean isAsc) {
-        QBookmarkEntity bookmark = QBookmarkEntity.bookmarkEntity;
-        QProblemEntity problem = QProblemEntity.problemEntity;
-        QStageEntity stage = QStageEntity.stageEntity;
-
-        return queryFactory.select(
-                        Projections.constructor(
-                                BookmarkQuery.Summary.class,
-                                stage.title,
-                                problem.type,
-                                problem.number,
-                                problem.uuid
-                        )
-                )
-                .from(bookmark)
-                .join(problem).on(bookmark.problemId.eq(problem.id))
-                .join(stage).on(problem.stageId.eq(stage.id))
-                .orderBy(buildOrderBy(bookmark, problem, sortBy, isAsc).toArray(new OrderSpecifier[0]))
-                .offset((long) Math.max(0, page) * Math.max(1, size))
-                .limit(Math.max(1, size))
-                .fetch();
-    }
-
-    @Override
     public Long countByUserId(Long userId) {
         QBookmarkEntity bookmark = QBookmarkEntity.bookmarkEntity;
         return queryFactory.select(bookmark.count())
