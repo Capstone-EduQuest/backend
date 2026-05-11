@@ -51,7 +51,7 @@ public class NoteController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
-    public ResponseEntity<NoteListResponse.NoteList> listNotes(
+    public ResponseEntity<NoteListResponse> listNotes(
             @Valid @ModelAttribute NoteListRequest request,
             Authentication authentication
     ) {
@@ -59,12 +59,12 @@ public class NoteController {
 
         List<NoteResponse> items = result.results().stream().map(i -> NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
 
-        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
+        return ResponseEntity.ok(NoteListResponse.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("@authz.isSelfByUuid(authentication, #uuid) or hasRole('ADMIN')")
     @GetMapping("/users/{uuid}")
-    public ResponseEntity<NoteListResponse.NoteList> listByUser(
+    public ResponseEntity<NoteListResponse> listByUser(
             @PathVariable UUID uuid,
             @Valid @ModelAttribute NoteListRequest request,
             Authentication authentication
@@ -73,7 +73,7 @@ public class NoteController {
 
         List<NoteResponse> items = result.results().stream().map(i -> NoteResponse.of(i.uuid(), i.title(), i.content(), i.authorUuid(), i.createdAt(), i.updatedAt())).toList();
 
-        return ResponseEntity.ok(NoteListResponse.NoteList.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
+        return ResponseEntity.ok(NoteListResponse.of(result.page(), result.size(), result.sort(), result.isAsc() != null && result.isAsc(), result.total(), items));
     }
 
     @PreAuthorize("isAuthenticated()")
