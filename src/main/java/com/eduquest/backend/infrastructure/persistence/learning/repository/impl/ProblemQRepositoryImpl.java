@@ -2,19 +2,19 @@ package com.eduquest.backend.infrastructure.persistence.learning.repository.impl
 
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.HintEntity;
+import com.eduquest.backend.infrastructure.persistence.learning.entity.ProblemEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.QProblemEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.QStageEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.HintJpaRepository;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -151,13 +151,92 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
         }).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Map<Integer, List<ProblemQuery.Detail>> findDetailsByStageNumbers(List<Integer> stageNumbers) {
+
+        if (stageNumbers == null || stageNumbers.isEmpty()) {
+            return Map.of();
+        }
+
+        QProblemEntity problemEntity = QProblemEntity.problemEntity;
+        QStageEntity stageEntity = QStageEntity.stageEntity;
+
+        List<ProblemQuery.Detail> problemDetailList = queryFactory.select(
+                        Projections.constructor(
+                                ProblemQuery.Detail.class,
+                                problemEntity.id,
+                                problemEntity.uuid,
+                                stageEntity.uuid,
+                                stageEntity.title,
+                                stageEntity.number,
+                                problemEntity.type,
+                                problemEntity.number,
+                                problemEntity.summary,
+                                problemEntity.example,
+                                problemEntity.expectedOutput,
+                                problemEntity.block,
+                                Expressions.constant(List.of())
+                        )
+                )
+                .from(problemEntity)
+                .join(stageEntity).on(problemEntity.stageId.eq(stageEntity.id))
+                .where(stageEntity.number.in(stageNumbers))
+                .fetch();
+
+        if (problemDetailList == null || problemDetailList.isEmpty()) {
+            return Map.of();
+        }
+
+        List<Long> problemIdList = problemDetailList.stream()
+                .map(ProblemQuery.Detail::id)
+                .toList();
+
+        List<HintEntity> hintEntityList = hintJpaRepository.findAllByProblemIdIn(problemIdList);
+
+        Map<Long, List<HintEntity>> hintsByProblemId = hintEntityList.stream()
+                .collect(Collectors.groupingBy(HintEntity::getProblemId));
+
+        List<ProblemQuery.Detail> enrichedProblemDetailList = problemDetailList.stream()
+                .map(problemDetail -> {
+                    List<HintEntity> hintEntitiesForProblem = hintsByProblemId.getOrDefault(problemDetail.id(), List.of());
+                    List<ProblemQuery.Hint> hintList = hintEntitiesForProblem.stream()
+                            .map(hintEntity -> ProblemQuery.Hint.of(hintEntity.getLevel(), hintEntity.getPoint(), hintEntity.getContent()))
+                            .collect(Collectors.toList());
+
+                    return ProblemQuery.Detail.of(
+                            problemDetail.id(),
+                            problemDetail.uuid(),
+                            problemDetail.stageUuid(),
+                            problemDetail.stageTitle(),
+                            problemDetail.stageNumber(),
+                            problemDetail.type(),
+                            problemDetail.number(),
+                            problemDetail.summary(),
+                            problemDetail.example(),
+                            problemDetail.expectedOutput(),
+                            problemDetail.block(),
+                            hintList
+                    );
+                })
+                .toList();
+
+        return enrichedProblemDetailList.stream()
+                .collect(Collectors.groupingBy(
+                        ProblemQuery.Detail::stageNumber,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+
+    }
+
     @Override
     public List<ProblemQuery.Detail> findDetailsByPagination(int page, int size, String sort, Boolean isAsc) {
 
         QProblemEntity problemEntity = QProblemEntity.problemEntity;
         QStageEntity stageEntity = QStageEntity.stageEntity;
 
-        com.querydsl.core.types.OrderSpecifier<?> order;
+        OrderSpecifier<?> order;
 
         boolean ascending = isAsc != null && isAsc;
 

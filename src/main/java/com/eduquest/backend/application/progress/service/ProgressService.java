@@ -60,9 +60,15 @@ public class ProgressService {
 
         List<ProgressDto.ProgressItem> results = new ArrayList<>();
 
+        Map<Integer, List<ProblemQuery.Detail>> problemsByStageNumbers = problemQueryService.findAllDetailsByStageNumbers(
+                stages.stream()
+                        .map(ProgressQuery.Detail::stageNumber)
+                        .toList()
+        );
+
         for (ProgressQuery.Detail stage : stages) {
             Integer stageNumber = stage.stageNumber();
-            List<ProblemQuery.Detail> problems = problemQueryService.findAllDetailsByStageNumber(stageNumber);
+            List<ProblemQuery.Detail> problems = problemsByStageNumbers.get(stageNumber);
 
             List<Integer> clearedNumbers = problems.stream()
                     .filter(p -> clearedProblemIds.contains(p.id()))
