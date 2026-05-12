@@ -46,7 +46,7 @@ public class ProgressController {
 
         List<ProgressResponse> results = progressItems.stream()
                 .map(item -> ProgressResponse.of(item.stage(), item.totalQuestionCount(), item.clear()))
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(ProgressListResponse.of(results));
     }
