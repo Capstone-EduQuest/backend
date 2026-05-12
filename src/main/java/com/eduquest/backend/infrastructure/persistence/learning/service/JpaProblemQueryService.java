@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -49,6 +50,11 @@ public class JpaProblemQueryService implements ProblemQueryService {
 	@Override
 	public List<ProblemQuery.Detail> findAllDetailsByStageNumber(Integer stageNumber) {
 		return problemQueryRepository.findDetailsByStageNumber(stageNumber);
+	}
+
+	@Override
+	public Map<Integer, List<ProblemQuery.Detail>> findAllDetailsByStageNumbers(List<Integer> stageNumbers) {
+		return problemQueryRepository.findDetailsByStageNumbers(stageNumbers);
 	}
 
 	@Override
