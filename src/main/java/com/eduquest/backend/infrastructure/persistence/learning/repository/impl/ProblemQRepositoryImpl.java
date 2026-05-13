@@ -100,7 +100,6 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
 
     @Override
     public List<ProblemQuery.Detail> findDetailsByStageNumber(Integer stageNumber) {
-
         QProblemEntity problemEntity = QProblemEntity.problemEntity;
         QStageEntity stageEntity = QStageEntity.stageEntity;
 
@@ -117,36 +116,34 @@ public class ProblemQRepositoryImpl implements ProblemQRepository {
                                 problemEntity.summary,
                                 problemEntity.example,
                                 problemEntity.expectedOutput,
-                                problemEntity.block,
-                                Expressions.constant(List.of())
+                                problemEntity.block
                         )
                 )
                 .from(problemEntity)
                 .join(stageEntity).on(problemEntity.stageId.eq(stageEntity.id))
                 .where(stageEntity.number.eq(stageNumber))
+                .orderBy(problemEntity.number.asc())
                 .fetch();
 
-        if (problems == null || problems.isEmpty()) {
+        if (problems.isEmpty()) {
             return List.of();
         }
 
-        List<Long> problemIds = queryFactory.select(problemEntity.id)
-                .from(problemEntity)
-                .join(stageEntity).on(problemEntity.stageId.eq(stageEntity.id))
-                .where(stageEntity.number.eq(stageNumber))
-                .fetch();
+        List<Long> problemIds = problems.stream()
+                .map(ProblemQuery.Detail::id)
+                .collect(Collectors.toList());
 
         List<HintEntity> hintEntities = hintJpaRepository.findAllByProblemIdIn(problemIds);
-
-        Map<Long, List<HintEntity>> hintsByProblem = hintEntities.stream().collect(Collectors.groupingBy(HintEntity::getProblemId));
+        Map<Long, List<HintEntity>> hintsByProblem = hintEntities.stream()
+                .collect(Collectors.groupingBy(HintEntity::getProblemId));
 
         return problems.stream().map(pq -> {
             List<ProblemQuery.Hint> hs = hintsByProblem.getOrDefault(pq.id(), List.of()).stream()
-                    .map(h -> ProblemQuery.Hint.of(h.getLevel(), h.getPoint(), h.getContent()))
+                    .map(hint -> ProblemQuery.Hint.of(hint.getLevel(), hint.getPoint(), hint.getContent()))
                     .collect(Collectors.toList());
-
             return ProblemQuery.Detail.of(
-                    pq.id(), pq.uuid(), pq.stageUuid(), pq.stageTitle(), pq.stageNumber(), pq.type(), pq.number(), pq.summary(), pq.example(), pq.expectedOutput(), pq.block(), hs
+                    pq.id(), pq.uuid(), pq.stageUuid(), pq.stageTitle(), pq.stageNumber(),
+                    pq.type(), pq.number(), pq.summary(), pq.example(), pq.expectedOutput(), pq.block(), hs
             );
         }).collect(Collectors.toList());
     }
