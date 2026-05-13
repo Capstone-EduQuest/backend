@@ -26,6 +26,9 @@ spring:
   profiles:
     active:
       - dev
+  servlet:
+    encoding:
+      charset: UTF-8
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
@@ -45,4 +48,3 @@ app:
     base-url: ${BACKEND_URL:http://localhost:8080}
   mail:
     token-expiration-millis: ${MAIL_TOKEN_EXPIRATION_MILLIS:600000}
-
