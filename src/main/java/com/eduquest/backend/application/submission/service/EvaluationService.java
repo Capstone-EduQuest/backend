@@ -28,7 +28,7 @@ public class EvaluationService {
         Submission submission = submissionQueryService.findSubmissionByUuid(submissionUuid);
 
         if (!submission.getUserId().equals(memberId)) {
-            throw new EduQuestException(SubMissionErrorCode.FORBIDDEN);
+            throw new EduQuestException(SubMissionErrorCode.FORBIDDEN_SUBMISSION_ACCESS);
         }
 
         try {

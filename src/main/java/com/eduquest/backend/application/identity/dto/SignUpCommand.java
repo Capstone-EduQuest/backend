@@ -1,7 +1,5 @@
 package com.eduquest.backend.application.identity.dto;
 
-import com.eduquest.backend.application.identity.exception.IdentityErrorCode;
-import com.eduquest.backend.common.exception.EduQuestException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;

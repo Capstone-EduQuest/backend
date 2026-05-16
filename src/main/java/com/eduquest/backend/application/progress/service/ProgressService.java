@@ -34,7 +34,7 @@ public class ProgressService {
         Member member = memberQueryService.findMemberByUuid(userUuid);
 
         if (!requesterUserId.equals(member.getUserId()) || requesterUserId.isBlank()) {
-            throw new EduQuestException(ProgressErrorCode.FORBIDDEN);
+            throw new EduQuestException(ProgressErrorCode.FORBIDDEN_PROGRESS_ACCESS);
         }
 
         Long userId = member.getId();

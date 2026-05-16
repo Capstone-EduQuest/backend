@@ -61,14 +61,14 @@ public class WrongNoteService {
     public WrongNoteDto findWrongNoteByUuid(UUID wrongNoteUuid, String userId) {
         WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongDetailNoteByUuid(wrongNoteUuid);
         if (detail == null) {
-            throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(WrongNoteErrorCode.WRONG_NOTE_NOT_FOUND);
         }
 
         // memberQueryService를 사용해 userId -> userUuid 변환
         Member member = memberQueryService.findMemberById(detail.userId());
 
         if (!userId.equals(member.getUserId())) {
-            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN_WRONG_NOTE_ACCESS);
         }
 
         UUID userUuid = member.getUuid();
@@ -126,7 +126,7 @@ public class WrongNoteService {
     public void requestAiFeedback(UUID wrongNoteUuid, String userId) {
 
         if (!memberQueryService.isExistByUserId(userId)) {
-            throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(WrongNoteErrorCode.WRONG_NOTE_NOT_FOUND);
         }
 
         // wrong note 존재 확인
@@ -135,7 +135,7 @@ public class WrongNoteService {
         Problem problem = problemQueryService.findProblemById(detail.problemId());
 
         if (!detail.userId().equals(memberId)) {
-            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN_WRONG_NOTE_ACCESS);
         }
 
         // 이벤트 발행

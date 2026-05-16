@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ProgressErrorCode implements ErrorCode {
 
-    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+    FORBIDDEN_PROGRESS_ACCESS(HttpStatus.FORBIDDEN, "권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

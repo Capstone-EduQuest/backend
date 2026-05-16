@@ -14,7 +14,6 @@ import com.eduquest.backend.domain.community.service.AnswerCommandService;
 import com.eduquest.backend.domain.community.service.AnswerQueryService;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
-import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

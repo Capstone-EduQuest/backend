@@ -1,7 +1,5 @@
 package com.eduquest.backend.presentation.identity.dto.request;
 
-import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.application.identity.exception.IdentityErrorCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
