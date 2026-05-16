@@ -1,10 +1,8 @@
 package com.eduquest.backend.presentation.submission.controller;
 
 import com.eduquest.backend.application.submission.service.SubmissionService;
-import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.presentation.submission.dto.request.SubmissionRequest;
 import com.eduquest.backend.presentation.submission.dto.response.ValuationResponse;
-import com.eduquest.backend.presentation.submission.exception.SubmissionApiErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.UUID;
 
 @RestController
