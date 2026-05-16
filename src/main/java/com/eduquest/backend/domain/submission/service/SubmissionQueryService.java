@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface SubmissionQueryService {
 
-    Submission findById(Long id);
+    Submission findSubmissionById(Long id);
 
-    Submission findByUuid(java.util.UUID uuid);
+    Submission findSubmissionByUuid(java.util.UUID uuid);
 
-    List<Submission> findByProblemId(Long problemId);
+    List<Submission> findSubmissionsByProblemId(Long problemId);
 
-    List<Submission> findByUserId(Long userId);
+    List<Submission> findSubmissionsByUserId(Long userId);
 
 }
 

@@ -41,7 +41,7 @@ public class ProgressService {
 
         List<ProgressQuery.Detail> stages = stageQueryService.findAllStageSummaries();
 
-        List<Submission> submissions = submissionQueryService.findByUserId(userId);
+        List<Submission> submissions = submissionQueryService.findSubmissionsByUserId(userId);
 
         Map<Long, Long> submissionToProblemMap = submissions.stream()
                 .filter(s -> s.getId() != null)

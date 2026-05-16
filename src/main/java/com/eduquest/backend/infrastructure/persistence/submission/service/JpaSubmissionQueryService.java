@@ -19,24 +19,24 @@ public class JpaSubmissionQueryService implements SubmissionQueryService {
 	private final SubmissionEntityMapper mapper;
 
 	@Override
-	public Submission findById(Long id) {
+	public Submission findSubmissionById(Long id) {
 		return submissionQueryRepository.findById(id)
 				.map(mapper::toDomain)
 				.orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));
 	}
 
 	@Override
-	public List<Submission> findByProblemId(Long problemId) {
+	public List<Submission> findSubmissionsByProblemId(Long problemId) {
 		return mapper.toDomainList(submissionQueryRepository.findByProblemId(problemId));
 	}
 
 	@Override
-	public List<Submission> findByUserId(Long userId) {
+	public List<Submission> findSubmissionsByUserId(Long userId) {
 		return mapper.toDomainList(submissionQueryRepository.findByUserId(userId));
 	}
 
 	@Override
-	public Submission findByUuid(java.util.UUID uuid) {
+	public Submission findSubmissionByUuid(java.util.UUID uuid) {
 		return submissionQueryRepository.findByUuid(uuid)
 				.map(mapper::toDomain)
 				.orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));

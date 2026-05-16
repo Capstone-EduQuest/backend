@@ -25,7 +25,7 @@ public class EvaluationService {
         // userId -> memberId
         Long memberId = memberQueryService.findMemberIdByUserId(userId);
 
-        Submission submission = submissionQueryService.findByUuid(submissionUuid);
+        Submission submission = submissionQueryService.findSubmissionByUuid(submissionUuid);
 
         if (!submission.getUserId().equals(memberId)) {
             throw new EduQuestException(SubMissionErrorCode.FORBIDDEN);

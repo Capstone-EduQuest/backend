@@ -42,7 +42,7 @@ public class SubmissionService {
 		Long submissionId = submissionCommandService.saveSubmission(submissionDomain);
 
 		// 저장된 Submission을 조회하여 UUID를 획득
-		Submission savedSubmission = submissionQueryService.findById(submissionId);
+		Submission savedSubmission = submissionQueryService.findSubmissionById(submissionId);
 		UUID submissionUuid = savedSubmission.getUuid();
 
 		// 평가 요청 이벤트 발행 (ApplicationEventPublisher 사용)
