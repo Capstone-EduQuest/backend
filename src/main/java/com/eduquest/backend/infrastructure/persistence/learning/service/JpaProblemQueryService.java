@@ -4,7 +4,7 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.model.Problem;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.learning.exception.LearningDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.learning.mapper.ProblemEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.HintQueryRepository;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.ProblemQueryRepository;
@@ -26,25 +26,25 @@ public class JpaProblemQueryService implements ProblemQueryService {
 	@Override
 	public Problem findProblemById(Long id) {
 		return problemEntityMapper.toDomain(problemQueryRepository.findById(id)
-				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA)));
+				.orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.PROBLEM_NOT_FOUND)));
 	}
 
 	@Override
 	public ProblemQuery.Detail findProblemByUuid(UUID uuid) {
 		return problemQueryRepository.findByUuid(uuid)
-				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+				.orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.PROBLEM_NOT_FOUND));
 	}
 
 	@Override
 	public ProblemQuery.HintDetail findHintByProblemUuidAndLevel(UUID uuid, Integer level) {
 		return hintQueryRepository.findHintDetailByProblemUuidAndLevel(uuid, level)
-				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+				.orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.HINT_NOT_FOUND));
 	}
 
 	@Override
 	public Long findHintIdByProblemUuidAndLevel(UUID problemUuid, int level) {
 		return hintQueryRepository.findIdByProblemUuidAndLevel(problemUuid, level)
-				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+				.orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.HINT_NOT_FOUND));
 	}
 
 	@Override

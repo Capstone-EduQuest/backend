@@ -1,7 +1,7 @@
 package com.eduquest.backend.infrastructure.security.handler;
 
 import com.eduquest.backend.common.exception.EduQuestException;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.identity.exception.IdentityDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;
 import com.eduquest.backend.infrastructure.security.dto.JwtToken;
 import com.eduquest.backend.infrastructure.security.repository.JwtRepository;
@@ -47,7 +47,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // uuid를 조회
         UUID uuid = memberQueryRepository.findUuidByUserId(username)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND));
 
         String accessToken = jwtUtils.generateAccessToken(username, role, uuid);
         String refreshToken = jwtUtils.generateRefreshToken(username, role);

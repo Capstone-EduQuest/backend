@@ -1,7 +1,7 @@
 package com.eduquest.backend.application.progress.service;
 
 import com.eduquest.backend.application.progress.dto.ProgressDto;
-import com.eduquest.backend.application.progress.extension.ProgressErrorCode;
+import com.eduquest.backend.application.progress.exception.ProgressErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
@@ -33,15 +33,15 @@ public class ProgressService {
 
         Member member = memberQueryService.findMemberByUuid(userUuid);
 
-        if (!requesterUserId.equals(member.getUserId())) {
-            throw new EduQuestException(ProgressErrorCode.FORBIDDEN);
+        if (!requesterUserId.equals(member.getUserId()) || requesterUserId.isBlank()) {
+            throw new EduQuestException(ProgressErrorCode.FORBIDDEN_PROGRESS_ACCESS);
         }
 
         Long userId = member.getId();
 
         List<ProgressQuery.Detail> stages = stageQueryService.findAllStageSummaries();
 
-        List<Submission> submissions = submissionQueryService.findByUserId(userId);
+        List<Submission> submissions = submissionQueryService.findSubmissionsByUserId(userId);
 
         Map<Long, Long> submissionToProblemMap = submissions.stream()
                 .filter(s -> s.getId() != null)

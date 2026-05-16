@@ -11,7 +11,6 @@ import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
-import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

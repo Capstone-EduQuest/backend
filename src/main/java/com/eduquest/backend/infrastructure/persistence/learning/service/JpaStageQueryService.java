@@ -5,8 +5,8 @@ import com.eduquest.backend.domain.learning.dto.StageQuery;
 import com.eduquest.backend.domain.learning.model.Stage;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
 import com.eduquest.backend.domain.progress.dto.ProgressQuery;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.StageEntity;
+import com.eduquest.backend.infrastructure.persistence.learning.exception.LearningDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.learning.mapper.StageEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.StageQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,21 +26,21 @@ public class JpaStageQueryService implements StageQueryService {
     public Long findIdByUuid(UUID uuid) {
         return stageQueryRepository.findByUuid(uuid)
                 .map(StageEntity::getId)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.STAGE_NOT_FOUND));
     }
 
     @Override
     public Long findRewardById(Long stageId) {
         return stageQueryRepository.findById(stageId)
                 .map(StageEntity::getReward)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.STAGE_NOT_FOUND));
     }
 
     @Override
     public Stage findStageByUuid(UUID uuid) {
         return stageQueryRepository.findByUuid(uuid)
                 .map(stageEntityMapper::toDomain)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(LearningDatabaseErrorCode.STAGE_NOT_FOUND));
     }
 
     @Override

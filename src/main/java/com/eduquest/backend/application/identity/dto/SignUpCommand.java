@@ -8,8 +8,11 @@ public record SignUpCommand(
         String id,
         String email,
         String password,
+        String passwordValid,
         LocalDate birth,
         String nickname,
         MultipartFile profileImage
 ) {
+
+
 }

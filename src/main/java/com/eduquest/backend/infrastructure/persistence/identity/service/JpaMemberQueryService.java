@@ -4,7 +4,7 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.dto.MemberQuery;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.identity.exception.IdentityDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.mapper.MemberMapper;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberQueryRepository;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.RoleQueryRepository;
@@ -42,31 +42,25 @@ public class JpaMemberQueryService implements MemberQueryService {
     @Override
     public Member findMemberById(Long id) {
         return memberMapper.toDomain(memberQueryRepository.findById(id)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA)));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND)));
     }
 
     @Override
     public Member findMemberByUuid(UUID uuid) {
         return memberMapper.toDomain(memberQueryRepository.findByUuid(uuid)
-        .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
-                        new HashMap<>() {{
-                            put("uuid", "유저를 찾을 수 없습니다.");
-                        }})));
+        .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND)));
     }
 
     @Override
     public Member findMemberByEmail(String email) {
         return memberMapper.toDomain(memberQueryRepository.findByEmail(email)
-        .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
-                        new HashMap<>() {{
-                            put("email", "이메일을 찾을 수 없습니다.");
-                        }})));
+        .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND)));
     }
 
     @Override
     public MemberQuery.EmailAndUserId findEmailAndUserIdByEmail(String email) {
         return memberQueryRepository.findEmailAndUserIdByEmail(email)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND,
                         new HashMap<>() {{
                             put("email", "이메일을 찾을 수 없습니다.");
                         }}));
@@ -75,7 +69,7 @@ public class JpaMemberQueryService implements MemberQueryService {
     @Override
     public UUID findMemberUuidByUserId(String userId) {
         return memberQueryRepository.findUuidByUserId(userId)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND,
                         new HashMap<>() {{
                             put("userId", "유저 아이디를 찾을 수 없습니다.");
                         }}));
@@ -89,16 +83,13 @@ public class JpaMemberQueryService implements MemberQueryService {
     @Override
     public Long findMemberIdByUuid(UUID uuid) {
         return memberQueryRepository.findIdByUuid(uuid)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
-                        new HashMap<>() {{
-                            put("uuid", "유저를 찾을 수 없습니다.");
-                        }}));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND));
     }
 
     @Override
     public Long findMemberIdByUserId(String userId) {
         return memberQueryRepository.findIdByUserId(userId)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND,
                         new HashMap<>() {{
                             put("userId", "유저 아이디를 찾을 수 없습니다.");
                         }}));
@@ -107,19 +98,13 @@ public class JpaMemberQueryService implements MemberQueryService {
     @Override
     public Long findRoleIdByUuid(UUID uuid) {
         return roleQueryRepository.findIdByUuid(uuid)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
-                        new HashMap<>() {{
-                            put("uuid", "유저를 찾을 수 없습니다.");
-                        }}));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND));
     }
 
     @Override
     public MemberQuery.UserProfile findUserProfileByUuid(UUID uuid) {
         return memberQueryRepository.findUserProfileByUuid(uuid)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA,
-                        new HashMap<>() {{
-                            put("uuid", "유저를 찾을 수 없습니다.");
-                        }}));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND));
     }
 
     @Override

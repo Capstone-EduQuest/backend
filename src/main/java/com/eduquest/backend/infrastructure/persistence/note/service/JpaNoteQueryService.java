@@ -3,10 +3,9 @@ package com.eduquest.backend.infrastructure.persistence.note.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.note.dto.NoteQuery;
 import com.eduquest.backend.domain.note.service.NoteQueryService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.note.exception.NoteDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.note.repository.NoteQueryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +20,13 @@ public class JpaNoteQueryService implements NoteQueryService {
     @Override
     public NoteQuery.Detail findNoteByUuid(UUID uuid) {
         return noteQueryRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(NoteDatabaseErrorCode.NOTE_NOT_FOUND));
     }
 
     @Override
     public NoteQuery.Detail findNoteById(Long id) {
         return noteQueryRepository.findDetailById(id)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(NoteDatabaseErrorCode.NOTE_NOT_FOUND));
     }
 
     @Override

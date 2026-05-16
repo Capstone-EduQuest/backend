@@ -1,4 +1,4 @@
-package com.eduquest.backend.presentation.submission.exception;
+package com.eduquest.backend.application.progress.exception;
 
 import com.eduquest.backend.common.exception.ErrorCode;
 import lombok.Getter;
@@ -7,12 +7,11 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum SubmissionApiErrorCode implements ErrorCode {
+public enum ProgressErrorCode implements ErrorCode {
 
-    SUBMISSION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "제출 권한이 없습니다.");
+    FORBIDDEN_PROGRESS_ACCESS(HttpStatus.FORBIDDEN, "권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
 
 }
-

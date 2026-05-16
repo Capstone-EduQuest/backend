@@ -67,7 +67,7 @@ public class EvaluationReadyEventListener {
             // 2) 큐에서 꺼내 처리
             UUID uuidToProcess = evaluationQueueRepository.take();
 
-            Submission submission = submissionQueryService.findByUuid(uuidToProcess);
+            Submission submission = submissionQueryService.findSubmissionByUuid(uuidToProcess);
 
             Long submissionId = submission.getId();
 

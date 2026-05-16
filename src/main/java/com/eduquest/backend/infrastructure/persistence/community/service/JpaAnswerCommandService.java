@@ -3,8 +3,8 @@ package com.eduquest.backend.infrastructure.persistence.community.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.community.model.Answer;
 import com.eduquest.backend.domain.community.service.AnswerCommandService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityAnswerEntity;
+import com.eduquest.backend.infrastructure.persistence.community.exception.CommunityDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.mapper.CommunityAnswerEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.community.repository.CommunityAnswerJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +32,8 @@ public class JpaAnswerCommandService implements AnswerCommandService {
     @Transactional
     @Override
     public void deleteAnswerByUuid(UUID uuid) {
-        answerJpaRepository.findByUuid(uuid).ifPresentOrElse(e -> answerJpaRepository.delete(e),
-                () -> { throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA); });
+        answerJpaRepository.findByUuid(uuid).ifPresentOrElse(answerJpaRepository::delete,
+                () -> { throw new EduQuestException(CommunityDatabaseErrorCode.ANSWER_NOT_FOUND); });
     }
 
     @Transactional
@@ -41,7 +41,7 @@ public class JpaAnswerCommandService implements AnswerCommandService {
     public void adoptAnswerByUuid(UUID answerUuid) {
         Optional<CommunityAnswerEntity> maybe = answerJpaRepository.findByUuid(answerUuid);
         if (maybe.isEmpty()) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(CommunityDatabaseErrorCode.ANSWER_NOT_FOUND);
         }
 
         CommunityAnswerEntity answer = maybe.get();

@@ -1,4 +1,4 @@
-package com.eduquest.backend.presentation.progress.exception;
+package com.eduquest.backend.application.identity.exception;
 
 import com.eduquest.backend.common.exception.ErrorCode;
 import lombok.Getter;
@@ -7,12 +7,10 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ProgressApiErrorCode implements ErrorCode {
+public enum IdentityErrorCode implements ErrorCode {
 
-    PROGRESS_NOT_ALLOWED(HttpStatus.FORBIDDEN, "진행 정보를 조회할 권한이 없습니다.");
+    PASSWORD_VALID_NOT_SAME(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
-
 }
-

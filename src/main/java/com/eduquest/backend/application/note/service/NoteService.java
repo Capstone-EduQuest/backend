@@ -53,13 +53,13 @@ public class NoteService {
         try {
             detail = noteQueryService.findNoteByUuid(uuid);
         } catch (EduQuestException e) {
-            throw new EduQuestException(NoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(NoteErrorCode.NOTE_NOT_FOUND);
         }
 
         Member member = memberQueryService.findMemberById(detail.userId());
 
         if (!member.getUserId().equals(userId)) {
-            throw new EduQuestException(NoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(NoteErrorCode.FORBIDDEN_NOTE_ACCESS);
         }
 
         return NoteDto.of(detail.uuid(), detail.id(), member.getUuid(), detail.title(), detail.content(), detail.createdAt(), detail.updatedAt());
@@ -106,11 +106,11 @@ public class NoteService {
         Long memberId = memberQueryService.findMemberIdByUserId(userId);
         NoteQuery.Detail detail = noteQueryService.findNoteByUuid(uuid);
         if (detail == null) {
-            throw new EduQuestException(NoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(NoteErrorCode.NOTE_NOT_FOUND);
         }
 
         if (!detail.userId().equals(memberId)) {
-            throw new EduQuestException(NoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(NoteErrorCode.FORBIDDEN_NOTE_ACCESS);
         }
 
         noteCommandService.updateNoteByUuid(uuid, command.title(), command.content());
@@ -126,11 +126,11 @@ public class NoteService {
         Long memberId = memberQueryService.findMemberIdByUserId(userId);
         NoteQuery.Detail detail = noteQueryService.findNoteByUuid(uuid);
         if (detail == null) {
-            throw new EduQuestException(NoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(NoteErrorCode.NOTE_NOT_FOUND);
         }
 
         if (!detail.userId().equals(memberId)) {
-            throw new EduQuestException(NoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(NoteErrorCode.FORBIDDEN_NOTE_ACCESS);
         }
 
         noteCommandService.deleteByUuid(uuid);
