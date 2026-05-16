@@ -16,10 +16,5 @@ public record SignUpCommand(
         MultipartFile profileImage
 ) {
 
-    public SignUpCommand {
-        if (password.isBlank() || !password.equals(passwordValid)) {
-            throw new EduQuestException(IdentityErrorCode.PASSWORD_VALID_NOT_SAME);
-        }
-    }
 
 }
