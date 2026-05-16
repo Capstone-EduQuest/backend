@@ -3,7 +3,7 @@ package com.eduquest.backend.infrastructure.persistence.submission.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.submission.model.Submission;
 import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.submission.exception.SubmissionDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.SubmissionEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class JpaSubmissionQueryService implements SubmissionQueryService {
 	public Submission findById(Long id) {
 		return submissionQueryRepository.findById(id)
 				.map(mapper::toDomain)
-				.orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+				.orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class JpaSubmissionQueryService implements SubmissionQueryService {
 	public Submission findByUuid(java.util.UUID uuid) {
 		return submissionQueryRepository.findByUuid(uuid)
 				.map(mapper::toDomain)
-				.orElseThrow(() -> new com.eduquest.backend.common.exception.EduQuestException(com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode.NOT_FOUND_DATA));
+				.orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));
 	}
 
 }

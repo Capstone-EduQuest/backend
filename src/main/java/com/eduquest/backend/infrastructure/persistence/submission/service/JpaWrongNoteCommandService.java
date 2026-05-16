@@ -3,8 +3,8 @@ package com.eduquest.backend.infrastructure.persistence.submission.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.submission.model.WrongNote;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.entity.WrongNoteEntity;
+import com.eduquest.backend.infrastructure.persistence.submission.exception.SubmissionDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.WrongNoteEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.WrongNoteJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +63,7 @@ public class JpaWrongNoteCommandService implements WrongNoteCommandService {
     public Long updateWrongNote(WrongNote wrongNote) {
 
         if (!wrongNoteJpaRepository.existsById(wrongNote.getId())) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(SubmissionDatabaseErrorCode.WRONG_NOTE_NOT_FOUND);
         }
 
         WrongNoteEntity wrongNoteEntity = mapper.toEntity(wrongNote);

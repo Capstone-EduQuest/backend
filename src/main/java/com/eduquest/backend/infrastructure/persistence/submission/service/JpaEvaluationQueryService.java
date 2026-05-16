@@ -3,10 +3,9 @@ package com.eduquest.backend.infrastructure.persistence.submission.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.submission.model.Evaluation;
 import com.eduquest.backend.domain.submission.service.EvaluationQueryService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.entity.EvaluationEntity;
+import com.eduquest.backend.infrastructure.persistence.submission.exception.SubmissionDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.EvaluationEntityMapper;
-import com.eduquest.backend.infrastructure.persistence.submission.repository.EvaluationJpaRepository;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.EvaluationQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class JpaEvaluationQueryService implements EvaluationQueryService {
     public Evaluation findBySubmissionId(Long submissionId) {
 
         EvaluationEntity evaluationEntity = evaluationQueryRepository.findBySubmissionId(submissionId)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));
 
         return evaluationEntityMapper.toDomain(evaluationEntity);
 

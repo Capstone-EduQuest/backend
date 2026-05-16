@@ -2,7 +2,6 @@ package com.eduquest.backend.infrastructure.persistence.learning.repository.impl
 
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.HintEntity;
-import com.eduquest.backend.infrastructure.persistence.learning.entity.ProblemEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.QProblemEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.QStageEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.HintJpaRepository;

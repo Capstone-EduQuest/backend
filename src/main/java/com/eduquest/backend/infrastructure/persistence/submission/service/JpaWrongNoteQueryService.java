@@ -4,7 +4,7 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
 import com.eduquest.backend.domain.submission.model.WrongNote;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
+import com.eduquest.backend.infrastructure.persistence.submission.exception.SubmissionDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.WrongNoteEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.WrongNoteQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class JpaWrongNoteQueryService implements WrongNoteQueryService {
     @Override
     public WrongNoteQuery.Detail findWrongDetailNoteByUserIdAndProblemId(Long userId, Long problemId) {
         return wrongNoteQueryRepository.findByUserIdAndProblemId(userId, problemId)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.WRONG_NOTE_NOT_FOUND));
     }
 
     @Override
@@ -40,13 +40,13 @@ public class JpaWrongNoteQueryService implements WrongNoteQueryService {
     @Override
     public WrongNoteQuery.Detail findWrongDetailNoteByUuid(UUID wrongNoteUuid) {
         return wrongNoteQueryRepository.findDetailByUuid(wrongNoteUuid)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.WRONG_NOTE_NOT_FOUND));
     }
 
     @Override
     public WrongNote findWrongNoteByUuid(UUID wrongNoteUuid) {
         return mapper.toDomain(wrongNoteQueryRepository.findByUuid(wrongNoteUuid)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA)));
+                .orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.WRONG_NOTE_NOT_FOUND)));
     }
 
     @Override
