@@ -1,4 +1,4 @@
-package com.eduquest.backend.application.progress.extension;
+package com.eduquest.backend.application.progress.exception;
 
 import com.eduquest.backend.common.exception.ErrorCode;
 import lombok.Getter;

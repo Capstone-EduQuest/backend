@@ -1,7 +1,7 @@
 package com.eduquest.backend.application.progress.service;
 
 import com.eduquest.backend.application.progress.dto.ProgressDto;
-import com.eduquest.backend.application.progress.extension.ProgressErrorCode;
+import com.eduquest.backend.application.progress.exception.ProgressErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
