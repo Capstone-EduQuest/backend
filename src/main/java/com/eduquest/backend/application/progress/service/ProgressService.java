@@ -33,7 +33,7 @@ public class ProgressService {
 
         Member member = memberQueryService.findMemberByUuid(userUuid);
 
-        if (!requesterUserId.equals(member.getUserId())) {
+        if (!requesterUserId.equals(member.getUserId()) || requesterUserId.isBlank()) {
             throw new EduQuestException(ProgressErrorCode.FORBIDDEN);
         }
 
