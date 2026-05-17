@@ -10,8 +10,10 @@ import com.eduquest.backend.domain.submission.service.CodeRunnerService;
 import com.eduquest.backend.domain.submission.service.EvaluationCommandService;
 import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
 import com.eduquest.backend.infrastructure.coderunner.repository.EvaluationQueueRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +79,7 @@ public class EvaluationReadyEventListener {
             boolean isCorrect;
             if ("basic".equalsIgnoreCase(Objects.toString(problem.getType(), ""))) {
                 // 기본 문제는 정답 문자열 비교
-                isCorrect = compareAnswers(problem.getExpectedOutput(), submission.getAnswer());
+                isCorrect = compareAnswers(extractBasicProblemAnswer(problem.getBlock()), submission.getAnswer());
             } else {
                 // 코드 문제: CodeRunnerService 사용
                 String source = submission.getAnswer();
@@ -131,6 +133,19 @@ public class EvaluationReadyEventListener {
         } catch (Exception e) {
             return expNorm.equals(ansNorm);
         }
+    }
+
+    private String extractBasicProblemAnswer(String block) {
+
+        try {
+            JsonNode blockJson = objectMapper.readTree(block);
+
+            return String.valueOf(blockJson.get("answer"));
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("블록 JSON 파싱 실패", e);
+        }
+
     }
 
     private String normalizeNewlines(String s) {
