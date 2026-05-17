@@ -1,0 +1,2 @@
+ALTER TABLE problem
+ADD COLUMN updated_at DATETIME NULL;
