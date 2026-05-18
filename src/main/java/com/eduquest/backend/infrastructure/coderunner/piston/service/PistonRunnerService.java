@@ -60,11 +60,11 @@ public class PistonRunnerService implements CodeRunnerService {
                     .body(pistonRequest)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                        log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
+                        log.error("Client error when calling Piston API: " + request.getURI() + " - " + response.getStatusText());
                         throw new EduQuestException(CodeRunnerErrorCode.CODE_RUNNER_CLIENT_ERROR);
                     })
                     .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
-                        log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
+                        log.error("Client error when calling Piston API: " + request.getURI() + " - " + response.getStatusText());
                         throw new EduQuestException(CodeRunnerErrorCode.CODE_RUNNER_SERVER_ERROR);
                     }).toEntity(String.class);
 
