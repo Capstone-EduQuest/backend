@@ -1,10 +1,12 @@
 package com.eduquest.backend.infrastructure.coderunner.piston.service;
 
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.model.Problem;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
 import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
+import com.eduquest.backend.domain.submission.event.SubmissionEvaluatedEvent;
 import com.eduquest.backend.domain.submission.model.Submission;
 import com.eduquest.backend.domain.submission.model.enums.SubmissionStatus;
 import com.eduquest.backend.domain.submission.service.*;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -48,6 +51,7 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
     private final ProblemQueryService problemQueryService;
     private final SubmissionCommandService submissionCommandService;
     private final ObjectMapper objectMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public void processSingle() {
@@ -75,6 +79,9 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
             // 3) 결과 저장
             evaluationCommandService.saveEvaluation(isCorrect, submissionId);
             submissionCommandService.updateStatus(submissionId, SubmissionStatus.SUCCEEDED);
+
+            publishEvaluatedEvent(submission, problem, isCorrect, submissionId);
+
         } catch (EduQuestException e) {
 
             if (e.getErrorCode() == CodeRunnerErrorCode.CODE_RUNNER_CLIENT_ERROR) {
@@ -108,6 +115,8 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
                 boolean isCorrect = processEvaluation(problem, submission);
                 evaluationCommandService.saveEvaluation(isCorrect, submissionId);
                 submissionCommandService.updateStatus(submissionId, SubmissionStatus.SUCCEEDED);
+
+                publishEvaluatedEvent(submission, problem, isCorrect, submissionId);
                 return;
 
             } catch (EduQuestException exception) {
@@ -128,6 +137,13 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
             }
         }
 
+    }
+
+    private void publishEvaluatedEvent(Submission submission, Problem problem, boolean isCorrect, Long submissionId) {
+        ProblemQuery.Detail detail = problemQueryService.findProblemByUuid(problem.getUuid());
+        eventPublisher.publishEvent(
+                SubmissionEvaluatedEvent.of(submissionId, submission.getUserId(), isCorrect, detail.stageUuid(), detail.type())
+        );
     }
 
     private boolean processEvaluation(Problem problem, Submission submission) {
