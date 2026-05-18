@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -50,7 +49,6 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
     private final SubmissionCommandService submissionCommandService;
     private final ObjectMapper objectMapper;
 
-    @Transactional
     @Override
     public void processSingle() {
 
@@ -58,8 +56,11 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
         Long submissionId = null;
 
         try {
-            // 1) 큐에서 꺼내 처리
-            uuidToProcess = evaluationQueueRepository.take();
+            // 1) 큐에서 꺼내 처리 (비어있으면 즉시 반환)
+            uuidToProcess = evaluationQueueRepository.poll();
+            if (uuidToProcess == null) {
+                return;
+            }
 
             Submission submission = submissionQueryService.findSubmissionByUuid(uuidToProcess);
             submissionCommandService.updateStatus(submission.getId(), SubmissionStatus.PROCESSING);
@@ -83,8 +84,6 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
                 submissionCommandService.updateStatus(submissionId, SubmissionStatus.RETRYING);
                 processWithRetry(uuidToProcess);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
     }

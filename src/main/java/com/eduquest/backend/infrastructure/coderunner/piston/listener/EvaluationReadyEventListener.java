@@ -1,28 +1,14 @@
 package com.eduquest.backend.infrastructure.coderunner.piston.listener;
 
-import com.eduquest.backend.domain.learning.model.Problem;
-import com.eduquest.backend.domain.learning.service.ProblemQueryService;
-import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
-import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
 import com.eduquest.backend.domain.submission.event.EvaluationReadyEvent;
-import com.eduquest.backend.domain.submission.model.Submission;
-import com.eduquest.backend.domain.submission.service.CodeRunnerService;
-import com.eduquest.backend.domain.submission.service.EvaluationCommandService;
-import com.eduquest.backend.domain.submission.service.SubmissionQueryService;
 import com.eduquest.backend.infrastructure.coderunner.repository.EvaluationQueueRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Component
