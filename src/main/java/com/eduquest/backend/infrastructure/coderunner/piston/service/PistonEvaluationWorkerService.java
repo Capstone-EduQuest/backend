@@ -74,6 +74,7 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
 
             // 3) 결과 저장
             evaluationCommandService.saveEvaluation(isCorrect, submissionId);
+            submissionCommandService.updateStatus(submissionId, SubmissionStatus.SUCCEEDED);
         } catch (EduQuestException e) {
 
             if (e.getErrorCode() == CodeRunnerErrorCode.CODE_RUNNER_CLIENT_ERROR) {
