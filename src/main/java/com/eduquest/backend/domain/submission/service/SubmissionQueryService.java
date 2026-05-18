@@ -14,6 +14,8 @@ public interface SubmissionQueryService {
 
     SubmissionStatus findSubmissionStatusBySubmissionId(Long submissionId);
 
+    SubmissionStatus findSubmissionStatusBySubmissionUuid(UUID uuid);
+
     List<Submission> findSubmissionsByProblemId(Long problemId);
 
     List<Submission> findSubmissionsByUserId(Long userId);

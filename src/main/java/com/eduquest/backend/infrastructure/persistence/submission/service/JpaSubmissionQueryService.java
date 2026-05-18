@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +53,13 @@ public class JpaSubmissionQueryService implements SubmissionQueryService {
 				.orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));
 
 		return submissionStatusEntity.getStatus();
+	}
+
+	@Override
+	public SubmissionStatus findSubmissionStatusBySubmissionUuid(UUID uuid) {
+		return submissionStatusQueryRepository.findBySubmissionUuid(uuid)
+				.map(SubmissionStatusEntity::getStatus)
+				.orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_NOT_FOUND));
 	}
 
 }
