@@ -30,30 +30,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EvaluationReadyEventListener {
 
-    @Value("${coderunner.config.language.python.version}")
-    private String languageVersion;
-    @Value("${coderunner.config.language.python.file}")
-    private String fileName;
-    @Value("${coderunner.config.limit.compilation.time}")
-    private String compileTimeLimitMs;
-    @Value("${coderunner.config.limit.compilation.memory}")
-    private String compileTimeMemoryLimitKb;
-    @Value("${coderunner.config.limit.runtime.time}")
-    private String runTimeLimitMs;
-    @Value("${coderunner.config.limit.runtime.memory}")
-    private String runtTimeMemoryLimitKb;
-
-    private static final String DEFAULT_LANGUAGE = "python";
-    private static final int LOG_TRUNCATE_MAX = 2000;
-
     private final EvaluationQueueRepository evaluationQueueRepository;
-    private final CodeRunnerService codeRunnerService;
-    private final EvaluationCommandService evaluationCommandService;
-    private final SubmissionQueryService submissionQueryService;
-    private final ProblemQueryService problemQueryService;
-    private final ObjectMapper objectMapper;
 
     @Async("coderunnerTaskExecutor")
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
+        UUID submissionUuid = event.submissionUuid();
+
+        boolean offered = evaluationQueueRepository.offer(submissionUuid);
+
+        if (!offered) {
+            log.warn("Evaluation queue offer failed for submissionUuid={}", submissionUuid);
+
+
+        }
+    }
+
+    /*@Async("coderunnerTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
 
@@ -114,42 +107,8 @@ public class EvaluationReadyEventListener {
             log.error("Failed to evaluate submissionUuid={}", submissionUuid, ex);
             evaluationQueueRepository.offer(submissionUuid);
         }
-    }
+    }*/
 
-    private boolean compareAnswers(String expected, String answer) {
 
-        if (expected == null)
-            return false;
-        if (answer == null)
-            return false;
-
-        String expNorm = normalizeNewlines(expected).trim();
-        String ansNorm = normalizeNewlines(answer).trim();
-
-        try {
-            JsonNode expectedNode = objectMapper.readTree(expNorm);
-            JsonNode answerNode = objectMapper.readTree(ansNorm);
-            return expectedNode.equals(answerNode);
-        } catch (Exception e) {
-            return expNorm.equals(ansNorm);
-        }
-    }
-
-    private String extractBasicProblemAnswer(String block) {
-
-        try {
-            JsonNode blockJson = objectMapper.readTree(block);
-
-            return String.valueOf(blockJson.get("answer"));
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("블록 JSON 파싱 실패", e);
-        }
-
-    }
-
-    private String normalizeNewlines(String s) {
-        return s == null ? null : s.replace("\r\n", "\n");
-    }
 }
 
