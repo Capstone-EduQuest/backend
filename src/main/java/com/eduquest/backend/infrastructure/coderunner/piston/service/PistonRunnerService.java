@@ -1,8 +1,10 @@
 package com.eduquest.backend.infrastructure.coderunner.piston.service;
 
+import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.submission.dto.request.CodeEvaluateRequest;
 import com.eduquest.backend.domain.submission.dto.response.CodeEvaluateResponse;
 import com.eduquest.backend.domain.submission.service.CodeRunnerService;
+import com.eduquest.backend.infrastructure.coderunner.exception.CodeRunnerErrorCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,9 +61,11 @@ public class PistonRunnerService implements CodeRunnerService {
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                         log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
+                        throw new EduQuestException(CodeRunnerErrorCode.CODE_RUNNER_CLIENT_ERROR);
                     })
                     .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
                         log.error("Client error when calling Piston API: " + request.getURI().toString() + " - " + response.getStatusText());
+                        throw new EduQuestException(CodeRunnerErrorCode.CODE_RUNNER_SERVER_ERROR);
                     }).toEntity(String.class);
 
             log.info(results.getBody());
