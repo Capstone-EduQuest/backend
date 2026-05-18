@@ -1,10 +1,12 @@
 package com.eduquest.backend.infrastructure.persistence.submission.service;
 
+import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.submission.model.Submission;
 import com.eduquest.backend.domain.submission.model.enums.SubmissionStatus;
 import com.eduquest.backend.domain.submission.service.SubmissionCommandService;
 import com.eduquest.backend.infrastructure.persistence.submission.entity.SubmissionEntity;
 import com.eduquest.backend.infrastructure.persistence.submission.entity.SubmissionStatusEntity;
+import com.eduquest.backend.infrastructure.persistence.submission.exception.SubmissionDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.submission.mapper.SubmissionEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionJpaRepository;
 import com.eduquest.backend.infrastructure.persistence.submission.repository.SubmissionStatusJpaRepository;
@@ -31,6 +33,30 @@ public class JpaSubmissionCommandService implements SubmissionCommandService {
         submissionStatusJpaRepository.save(statusEntity);
 
         return submissionId;
+    }
+
+    @Transactional
+    @Override
+    public void updateStatus(Long submissionId, SubmissionStatus status) {
+
+        SubmissionStatusEntity statusEntity = submissionStatusJpaRepository.findBySubmissionId(submissionId)
+                .orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_STATUS_NOT_FOUND));
+
+        statusEntity.changeStatus(status);
+        submissionStatusJpaRepository.save(statusEntity);
+
+    }
+
+    @Transactional
+    @Override
+    public void updateRetryCount(Long submissionId) {
+
+        SubmissionStatusEntity statusEntity = submissionStatusJpaRepository.findBySubmissionId(submissionId)
+                .orElseThrow(() -> new EduQuestException(SubmissionDatabaseErrorCode.SUBMISSION_STATUS_NOT_FOUND));
+
+        statusEntity.increaseTryCount();
+        submissionStatusJpaRepository.save(statusEntity);
+
     }
 
 }
