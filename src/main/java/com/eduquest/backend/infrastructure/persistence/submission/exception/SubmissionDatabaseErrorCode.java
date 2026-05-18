@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum SubmissionDatabaseErrorCode implements ErrorCode {
 
     SUBMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "Submission not found"),
+    SUBMISSION_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "Submission status not found"),
     WRONG_NOTE_NOT_FOUND(HttpStatus.NOT_FOUND, "Wrong note not found");
 
     private final HttpStatus httpStatus;
