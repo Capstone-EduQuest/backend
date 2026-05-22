@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum LearningDatabaseErrorCode implements ErrorCode {
 
+    ALREADY_EXISTS_STAGE(HttpStatus.BAD_REQUEST, "이미 존재하는 스테이지입니다."),
     PROBLEM_NOT_FOUND(HttpStatus.NOT_FOUND, "문제를 찾을 수 없습니다."),
     HINT_NOT_FOUND(HttpStatus.NOT_FOUND, "힌트를 찾을 수 없습니다."),
     STAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "스테이지를 찾을 수 없습니다.");

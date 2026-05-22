@@ -1,8 +1,10 @@
 package com.eduquest.backend.infrastructure.persistence.learning.service;
 
+import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.learning.model.Stage;
 import com.eduquest.backend.domain.learning.service.StageCommandService;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.StageEntity;
+import com.eduquest.backend.infrastructure.persistence.learning.exception.LearningDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.learning.mapper.StageEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.StageJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,10 @@ public class JpaStageCommandService implements StageCommandService {
 
     @Override
     public Long saveStage(Stage stage) {
+
+        if (stageJpaRepository.isExistsByNumber(stage.getNumber())) {
+            throw new EduQuestException(LearningDatabaseErrorCode.ALREADY_EXISTS_STAGE);
+        }
 
         StageEntity entity = stageEntityMapper.toEntity(stage);
         entity = stageJpaRepository.save(entity);
