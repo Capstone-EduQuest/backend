@@ -17,7 +17,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 public class EvaluationEventListener {
 
-    @Async("evaluationTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSubmissionEvaluatedEvent(SubmissionEvaluatedEvent event) {
         log.info("SubmissionEvaluatedEvent received: submissionId={}, isCorrect={}", event.submissionId(), event.isCorrect());

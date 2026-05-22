@@ -21,7 +21,7 @@ public class FileEventListener {
     private final FileQueryService fileQueryService;
 
     // DB 파일 정보 삭제 이벤트를 처리하는 리스너 메서드. 실제로는 DB에서 파일 정보를 삭제하는 로직이 들어감
-    @Async("fileEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @TransactionalEventListener
     public void handleFileDataDeleteEvent(FileDataDeleteEvent event) {
         Long fileId = event.fileId();
@@ -31,7 +31,7 @@ public class FileEventListener {
     }
 
     // S3 파일 삭제 이벤트를 처리하는 리스너 메서드. 실제로는 S3에서 파일을 삭제하는 로직이 들어감
-    @Async("fileEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @TransactionalEventListener
     public void handleS3FileDeleteEvent(S3FileDeleteEvent event) {
 

@@ -23,7 +23,7 @@ public class WrongNoteAiFeedBackListener {
     private final WrongNoteQueryService wrongNoteQueryService;
     private final WrongNoteCommandService wrongNoteCommandService;
 
-    @Async("evaluationTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @TransactionalEventListener
     public void handleWrongNoteAiFeedBackEvent(WrongNoteAiFeedBackEvent event) {
 
