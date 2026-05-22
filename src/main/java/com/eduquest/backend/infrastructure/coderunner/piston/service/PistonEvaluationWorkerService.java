@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -205,11 +207,22 @@ public class PistonEvaluationWorkerService implements EvaluationWorkerService {
 
         try {
             JsonNode blockJson = objectMapper.readTree(block);
+            JsonNode answerNode = blockJson.get("answer");
 
-            return String.valueOf(blockJson.get("answer"));
+            if (answerNode == null || answerNode.isNull()) {
+                return null;
+            }
 
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("블록 JSON 파싱 실패", e);
+            if (answerNode.isArray()) {
+                List<String> elementList = new ArrayList<>();
+                answerNode.forEach(element -> elementList.add(element.asText()));
+                return String.join(",", elementList);
+            }
+
+            return answerNode.asText();
+
+        } catch (JsonProcessingException exception) {
+            throw new RuntimeException("블록 JSON 파싱 실패", exception);
         }
 
     }
