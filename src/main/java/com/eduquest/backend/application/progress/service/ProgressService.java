@@ -1,10 +1,13 @@
 package com.eduquest.backend.application.progress.service;
 
 import com.eduquest.backend.application.progress.dto.ProgressDto;
+import com.eduquest.backend.application.progress.exception.ProgressErrorCode;
+import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.identity.model.Member;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
-import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.progress.dto.ProgressQuery;
 import com.eduquest.backend.domain.submission.model.Evaluation;
 import com.eduquest.backend.domain.submission.model.Submission;
@@ -28,11 +31,17 @@ public class ProgressService {
 
     public List<ProgressDto.ProgressItem> findByUserUuid(UUID userUuid, String requesterUserId) {
 
-        Long userId = memberQueryService.findMemberIdByUuid(userUuid);
+        Member member = memberQueryService.findMemberByUuid(userUuid);
+
+        if (!requesterUserId.equals(member.getUserId()) || requesterUserId.isBlank()) {
+            throw new EduQuestException(ProgressErrorCode.FORBIDDEN_PROGRESS_ACCESS);
+        }
+
+        Long userId = member.getId();
 
         List<ProgressQuery.Detail> stages = stageQueryService.findAllStageSummaries();
 
-        List<Submission> submissions = submissionQueryService.findByUserId(userId);
+        List<Submission> submissions = submissionQueryService.findSubmissionsByUserId(userId);
 
         Map<Long, Long> submissionToProblemMap = submissions.stream()
                 .filter(s -> s.getId() != null)
@@ -51,9 +60,15 @@ public class ProgressService {
 
         List<ProgressDto.ProgressItem> results = new ArrayList<>();
 
+        Map<Integer, List<ProblemQuery.Detail>> problemsByStageNumbers = problemQueryService.findAllDetailsByStageNumbers(
+                stages.stream()
+                        .map(ProgressQuery.Detail::stageNumber)
+                        .toList()
+        );
+
         for (ProgressQuery.Detail stage : stages) {
             Integer stageNumber = stage.stageNumber();
-            List<ProblemQuery.Detail> problems = problemQueryService.findAllDetailsByStageNumber(stageNumber);
+            List<ProblemQuery.Detail> problems = problemsByStageNumbers.get(stageNumber);
 
             List<Integer> clearedNumbers = problems.stream()
                     .filter(p -> clearedProblemIds.contains(p.id()))

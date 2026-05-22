@@ -21,5 +21,33 @@ public class QuestionQuery {
         }
     }
 
+    public record Detail(
+            UUID uuid,
+            String title,
+            UUID userUuid,
+            String userNickname,
+            LocalDateTime createdAt,
+            String content,
+            boolean isAdopted,
+            UUID adoptedAnswerUuid
+    ) {
+
+        public static Detail of(
+                UUID uuid,
+                String title,
+                UUID userUuid,
+                String userNickname,
+                LocalDateTime createdAt,
+                String content,
+                boolean isAdopted,
+                UUID adoptedAnswerUuid
+        ) {
+
+            return new Detail(uuid, title, userUuid, userNickname, createdAt, content, isAdopted, adoptedAnswerUuid);
+
+        }
+
+    }
+
 }
 

@@ -90,6 +90,7 @@ public class AnswerController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/answers/{answerUuid}/adopt")
     public ResponseEntity<Void> adoptAnswer(@PathVariable UUID answerUuid, Authentication authentication) {
         answerService.adoptAnswer(answerUuid, authentication == null ? null : authentication.getName());

@@ -4,6 +4,7 @@ import com.eduquest.backend.domain.identity.dto.MemberQuery;
 import com.eduquest.backend.domain.identity.model.Member;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface MemberQueryService {
@@ -23,6 +24,8 @@ public interface MemberQueryService {
     MemberQuery.EmailAndUserId findEmailAndUserIdByEmail(String email);
 
     UUID findMemberUuidByUserId(String userId);
+
+    Map<Long, UUID> findMemberUuidByUserIds(List<Long> userIds);
 
     Long findMemberIdByUuid(UUID uuid);
 

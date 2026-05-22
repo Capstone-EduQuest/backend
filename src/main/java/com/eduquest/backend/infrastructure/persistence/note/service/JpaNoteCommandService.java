@@ -3,8 +3,8 @@ package com.eduquest.backend.infrastructure.persistence.note.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.note.model.Note;
 import com.eduquest.backend.domain.note.service.NoteCommandService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.note.entity.NoteEntity;
+import com.eduquest.backend.infrastructure.persistence.note.exception.NoteDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.note.mapper.NoteEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.note.repository.NoteJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class JpaNoteCommandService implements NoteCommandService {
             entity.update(title, content);
             noteJpaRepository.save(entity);
         } else {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(NoteDatabaseErrorCode.NOTE_NOT_FOUND);
         }
 
     }
@@ -54,7 +54,7 @@ public class JpaNoteCommandService implements NoteCommandService {
         if (existing.isPresent()) {
             noteJpaRepository.delete(existing.get());
         } else {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(NoteDatabaseErrorCode.NOTE_NOT_FOUND);
         }
 
 

@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface EvaluationQueryService {
 
+    Evaluation findBySubmissionId(Long submissionId);
+
     List<Evaluation> findBySubmissionIds(List<Long> submissionIds);
 
 }

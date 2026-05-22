@@ -40,9 +40,9 @@ class AuthMailServiceRealSmtpTest {
 
     @TestConfiguration
     static class TestConfig {
-        @Bean(name = "mailEventTaskExecutor")
-        public TaskExecutor mailEventTaskExecutor() {
-            // @Async("mailEventTaskExecutor")를 동기 실행으로 대체하여 테스트에서 즉시 수행되게 함
+        @Bean(name = "virtualThreadTaskExecutor")
+        public TaskExecutor virtualThreadTaskExecutor() {
+            // @Async("virtualThreadTaskExecutor")를 동기 실행으로 대체하여 테스트에서 즉시 수행되게 함
             return new SyncTaskExecutor();
         }
     }

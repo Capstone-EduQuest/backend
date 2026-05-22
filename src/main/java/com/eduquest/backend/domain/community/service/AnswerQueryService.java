@@ -1,5 +1,6 @@
 package com.eduquest.backend.domain.community.service;
 
+import com.eduquest.backend.domain.community.dto.AnswerQuery;
 import com.eduquest.backend.domain.community.model.Answer;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface AnswerQueryService {
     Answer findAnswerById(Long id);
 
     Answer findAnswerByUuid(UUID uuid);
+
+    List<AnswerQuery.Summary> findAnswerSummariesByQuestionUuid(UUID questionUuid, int page, int size, Boolean isAsc);
 
     List<Answer> findAnswersByQuestionId(Long questionId);
 

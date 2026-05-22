@@ -1,5 +1,7 @@
 package com.eduquest.backend.application.submission.service;
 
+import com.eduquest.backend.application.submission.dto.WrongNoteDto;
+import com.eduquest.backend.application.submission.dto.WrongNoteListDto;
 import com.eduquest.backend.application.submission.exception.WrongNoteErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.model.Member;
@@ -10,14 +12,13 @@ import com.eduquest.backend.domain.submission.dto.WrongNoteQuery;
 import com.eduquest.backend.domain.submission.event.WrongNoteAiFeedBackEvent;
 import com.eduquest.backend.domain.submission.service.WrongNoteCommandService;
 import com.eduquest.backend.domain.submission.service.WrongNoteQueryService;
-import com.eduquest.backend.presentation.submission.dto.response.WrongNoteListResponse;
-import com.eduquest.backend.presentation.submission.dto.response.WrongNoteResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,15 +33,15 @@ public class WrongNoteService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
-    public WrongNoteListResponse.WrongNoteList findWrongNotesByUserUuid(UUID userUuid, int page, int size, String sortBy, boolean isAsc) {
+    public WrongNoteListDto findWrongNotesByUserUuid(UUID userUuid, int page, int size, String sortBy, boolean isAsc) {
         Long userId = memberQueryService.findMemberIdByUuid(userUuid);
 
         String sort = sortBy == null ? "updatedAt" : sortBy;
         List<WrongNoteQuery.Detail> details = wrongNoteQueryService.findWrongDetailNotesByUserId(userId, page, size, sort, isAsc);
         long total = wrongNoteQueryService.countWrongNotesByUserId(userId);
 
-        List<WrongNoteResponse> results = details.stream()
-                .map(detail -> WrongNoteResponse.of(
+        List<WrongNoteDto> results = details.stream()
+                .map(detail -> WrongNoteDto.of(
                         detail.id(),
                         detail.problemId(),
                         userUuid,
@@ -53,21 +54,26 @@ public class WrongNoteService {
                 ))
                 .collect(Collectors.toList());
 
-        return WrongNoteListResponse.WrongNoteList.of(page, size, sort, isAsc, total, results);
+        return WrongNoteListDto.of(page, size, sort, isAsc, total, results);
     }
 
     @Transactional(readOnly = true)
-    public WrongNoteResponse findWrongNoteByUuid(UUID wrongNoteUuid) {
+    public WrongNoteDto findWrongNoteByUuid(UUID wrongNoteUuid, String userId) {
         WrongNoteQuery.Detail detail = wrongNoteQueryService.findWrongDetailNoteByUuid(wrongNoteUuid);
         if (detail == null) {
-            throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(WrongNoteErrorCode.WRONG_NOTE_NOT_FOUND);
         }
 
         // memberQueryService를 사용해 userId -> userUuid 변환
         Member member = memberQueryService.findMemberById(detail.userId());
-        java.util.UUID userUuid = member.getUuid();
 
-        return WrongNoteResponse.of(
+        if (!userId.equals(member.getUserId())) {
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN_WRONG_NOTE_ACCESS);
+        }
+
+        UUID userUuid = member.getUuid();
+
+        return WrongNoteDto.of(
                 detail.id(),
                 detail.problemId(),
                 userUuid,
@@ -81,19 +87,23 @@ public class WrongNoteService {
     }
 
     @Transactional(readOnly = true)
-    public WrongNoteListResponse.WrongNoteList findWrongNotes(int page, int size, String sortBy, boolean isAsc) {
+    public WrongNoteListDto findWrongNotes(int page, int size, String sortBy, boolean isAsc) {
         String sort = sortBy == null ? "updatedAt" : sortBy;
         List<WrongNoteQuery.Detail> details = wrongNoteQueryService.findWrongNotes(page, size, sort, isAsc);
         long total = wrongNoteQueryService.countWrongNotes();
 
-        List<WrongNoteResponse> results = details.stream()
+        Map<Long, UUID> userUuidMap = memberQueryService.findMemberUuidByUserIds(
+                details.stream()
+                        .map(WrongNoteQuery.Detail::userId)
+                        .toList()
+        );
+
+        List<WrongNoteDto> results = details.stream()
                 .map(detail -> {
-                    com.eduquest.backend.domain.identity.model.Member member = memberQueryService.findMemberById(detail.userId());
-                    java.util.UUID userUuid = member.getUuid();
-                    return WrongNoteResponse.of(
+                    return WrongNoteDto.of(
                             detail.id(),
                             detail.problemId(),
-                            userUuid,
+                            userUuidMap.get(detail.userId()),
                             detail.wrongAnswer(),
                             detail.aiExplanation(),
                             detail.isReviewed(),
@@ -104,7 +114,7 @@ public class WrongNoteService {
                 })
                 .collect(Collectors.toList());
 
-        return WrongNoteListResponse.WrongNoteList.of(page, size, sort, isAsc, total, results);
+        return WrongNoteListDto.of(page, size, sort, isAsc, total, results);
     }
 
     @Transactional
@@ -116,7 +126,7 @@ public class WrongNoteService {
     public void requestAiFeedback(UUID wrongNoteUuid, String userId) {
 
         if (!memberQueryService.isExistByUserId(userId)) {
-            throw new EduQuestException(WrongNoteErrorCode.NOT_FOUND);
+            throw new EduQuestException(WrongNoteErrorCode.WRONG_NOTE_NOT_FOUND);
         }
 
         // wrong note 존재 확인
@@ -125,7 +135,7 @@ public class WrongNoteService {
         Problem problem = problemQueryService.findProblemById(detail.problemId());
 
         if (!detail.userId().equals(memberId)) {
-            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN);
+            throw new EduQuestException(WrongNoteErrorCode.FORBIDDEN_WRONG_NOTE_ACCESS);
         }
 
         // 이벤트 발행

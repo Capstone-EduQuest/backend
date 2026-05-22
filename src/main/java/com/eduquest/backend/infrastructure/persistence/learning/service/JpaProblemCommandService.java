@@ -4,9 +4,9 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.learning.model.Hint;
 import com.eduquest.backend.domain.learning.model.Problem;
 import com.eduquest.backend.domain.learning.service.ProblemCommandService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.HintEntity;
 import com.eduquest.backend.infrastructure.persistence.learning.entity.ProblemEntity;
+import com.eduquest.backend.infrastructure.persistence.learning.exception.LearningDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.learning.mapper.ProblemEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.HintJpaRepository;
 import com.eduquest.backend.infrastructure.persistence.learning.repository.ProblemJpaRepository;
@@ -52,7 +52,7 @@ public class JpaProblemCommandService implements ProblemCommandService {
     public Long updateProblem(Problem problem) {
 
         if (problem.getId() == null || !problemJpaRepository.existsById(problem.getId())) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(LearningDatabaseErrorCode.PROBLEM_NOT_FOUND);
         }
 
         Long problemId = problem.getId();

@@ -3,8 +3,8 @@ package com.eduquest.backend.infrastructure.persistence.community.service;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityPostEntity;
+import com.eduquest.backend.infrastructure.persistence.community.exception.CommunityDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.community.mapper.CommunityPostEntityMapper;
 import com.eduquest.backend.infrastructure.persistence.community.repository.CommunityPostJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +32,8 @@ public class JpaQuestionCommandService implements QuestionCommandService {
     @Transactional
     @Override
     public void deleteQuestionByUuid(UUID uuid) {
-        postJpaRepository.findByUuid(uuid).ifPresentOrElse(e -> postJpaRepository.delete(e),
-                () -> { throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA); });
+        postJpaRepository.findByUuid(uuid).ifPresentOrElse(postJpaRepository::delete,
+                () -> { throw new EduQuestException(CommunityDatabaseErrorCode.QUESTION_NOT_FOUND); });
     }
 
     @Transactional
@@ -41,7 +41,7 @@ public class JpaQuestionCommandService implements QuestionCommandService {
     public void markAdoptedByUuid(UUID questionUuid, UUID answerUuid) {
         Optional<CommunityPostEntity> maybe = postJpaRepository.findByUuid(questionUuid);
         if (maybe.isEmpty()) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(CommunityDatabaseErrorCode.QUESTION_NOT_FOUND);
         }
 
         CommunityPostEntity post = maybe.get();

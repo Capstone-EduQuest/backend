@@ -21,15 +21,12 @@ public class JpaRewardCommandService implements RewardCommandService {
     @Transactional
     public void grantRewardIfNotExists(Long userId, Long stageId, Long amount, UUID stageUuid) {
 
-        // idempotency check
         if (rewardHistoryRepository.existsByUserIdAndStageId(userId, stageId)) {
             return;
         }
 
-        // Delegate wallet change & history persistence to WalletCommandService
         walletCommandService.changeBalance(userId, amount, "REWARD:" + stageUuid);
 
-        // Persist reward history
         RewardHistoryEntity rh = RewardHistoryEntity.of(userId, stageId, amount);
         rewardHistoryRepository.save(rh);
     }

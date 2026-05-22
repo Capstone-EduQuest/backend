@@ -11,7 +11,7 @@ public record NoteListRequest(
         String sort,
         @JsonProperty("is_asc") @NotNull(message = "isAsc는 필수입니다.") Boolean isAsc,
         String searchBy,
-        @JsonProperty("keyword") String keyword
+        String keyword
 ) {
 
     public static NoteListRequest of(int page, int size, String sort, Boolean isAsc, String searchBy, String keyword) {

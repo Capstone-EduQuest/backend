@@ -11,7 +11,6 @@ import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.domain.community.model.Question;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
-import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,13 +37,7 @@ public class QuestionService {
 
         Question question = Question.of(command.title(), command.content(), memberId);
 
-        Long savedId = questionCommandService.saveQuestion(question);
-
-        Question saved = questionQueryService.findQuestionById(savedId);
-
-        if (saved == null || saved.getUuid() == null) {
-            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
-        }
+        questionCommandService.saveQuestion(question);
 
     }
 
@@ -76,24 +69,24 @@ public class QuestionService {
     }
 
     public QuestionDetailResponse findQuestionByUuid(UUID questionUuid) {
-        Question question = questionQueryService.findQuestionByUuid(questionUuid);
 
-        if (question == null) {
+        QuestionQuery.Detail detail = questionQueryService.findQuestionDetailByUuid(questionUuid);
+
+        if (detail == null) {
             throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
         }
 
-        Member member = memberQueryService.findMemberById(question.getUserId());
-
         return QuestionDetailResponse.of(
-                question.getUuid(),
-                question.getTitle(),
-                member.getUuid(),
-                member.getNickname(),
-                question.getCreatedAt(),
-                question.getContent(),
-                question.getIsAdopted(),
-                null
+                detail.uuid(),
+                detail.title(),
+                detail.userUuid(),
+                detail.userNickname(),
+                detail.createdAt(),
+                detail.content(),
+                detail.isAdopted(),
+                detail.adoptedAnswerUuid()
         );
+
     }
 
 }

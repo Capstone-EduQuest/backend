@@ -4,6 +4,7 @@ import com.eduquest.backend.domain.identity.dto.MemberQuery;
 import com.eduquest.backend.domain.identity.dto.UserDetailsData;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +19,8 @@ public interface MemberQRepository {
     Optional<UUID> findUuidByUserId(String userId);
 
     Optional<Long> findIdByUuid(UUID uuid);
+
+    Map<Long, UUID> findUuidByUserIds(List<Long> userIds);
 
     Optional<Long> findIdByUserId(String userId);
 

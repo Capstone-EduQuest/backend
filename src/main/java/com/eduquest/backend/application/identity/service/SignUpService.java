@@ -3,6 +3,7 @@ package com.eduquest.backend.application.identity.service;
 import com.eduquest.backend.application.identity.component.ProfileImageFilter;
 import com.eduquest.backend.application.identity.dto.SignUpCommand;
 import com.eduquest.backend.application.identity.exception.AuthErrorCode;
+import com.eduquest.backend.application.identity.exception.IdentityErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.file.dto.S3FileDto;
 import com.eduquest.backend.domain.file.event.FileDataDeleteEvent;
@@ -12,12 +13,12 @@ import com.eduquest.backend.domain.file.model.StorageType;
 import com.eduquest.backend.domain.file.service.FileCommandService;
 import com.eduquest.backend.domain.file.service.FileQueryService;
 import com.eduquest.backend.domain.identity.component.CustomPasswordEncoder;
+import com.eduquest.backend.domain.identity.event.SignUpMailEvent;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.model.enums.RoleType;
 import com.eduquest.backend.domain.identity.service.MemberCommandService;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
-import com.eduquest.backend.domain.identity.event.SignUpMailEvent;
 import com.eduquest.backend.domain.reward.service.WalletCommandService;
 import com.eduquest.backend.infrastructure.s3.client.EduQuestS3Client;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,10 @@ public class SignUpService {
     // 회원 가입 처리
     @Transactional
     public void signUp(SignUpCommand command) {
+
+        if (!command.password().equals(command.passwordValid())) {
+            throw new EduQuestException(IdentityErrorCode.PASSWORD_VALID_NOT_SAME);
+        }
 
         Long fileId = command.profileImage() != null ? handleProfileImage(command) : 0L;
 

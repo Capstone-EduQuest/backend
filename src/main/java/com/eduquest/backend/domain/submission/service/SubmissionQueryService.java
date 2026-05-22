@@ -1,16 +1,24 @@
 package com.eduquest.backend.domain.submission.service;
 
 import com.eduquest.backend.domain.submission.model.Submission;
+import com.eduquest.backend.domain.submission.model.enums.SubmissionStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface SubmissionQueryService {
 
-    Submission findById(Long id);
+    Submission findSubmissionById(Long id);
 
-    List<Submission> findByProblemId(Long problemId);
+    Submission findSubmissionByUuid(UUID uuid);
 
-    List<Submission> findByUserId(Long userId);
+    SubmissionStatus findSubmissionStatusBySubmissionId(Long submissionId);
+
+    SubmissionStatus findSubmissionStatusBySubmissionUuid(UUID uuid);
+
+    List<Submission> findSubmissionsByProblemId(Long problemId);
+
+    List<Submission> findSubmissionsByUserId(Long userId);
 
 }
 

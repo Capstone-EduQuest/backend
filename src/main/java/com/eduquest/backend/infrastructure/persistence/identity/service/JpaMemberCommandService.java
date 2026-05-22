@@ -4,10 +4,10 @@ import com.eduquest.backend.common.exception.EduQuestException;
 import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.model.Role;
 import com.eduquest.backend.domain.identity.service.MemberCommandService;
-import com.eduquest.backend.infrastructure.persistence.common.exception.DataBaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.MemberEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.RoleEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.UserRoleEntity;
+import com.eduquest.backend.infrastructure.persistence.identity.exception.IdentityDatabaseErrorCode;
 import com.eduquest.backend.infrastructure.persistence.identity.mapper.MemberMapper;
 import com.eduquest.backend.infrastructure.persistence.identity.mapper.RoleMapper;
 import com.eduquest.backend.infrastructure.persistence.identity.repository.MemberJpaRepository;
@@ -34,7 +34,7 @@ public class JpaMemberCommandService implements MemberCommandService {
     public Long saveMember(Member member, String role) {
 
         if (memberJpaRepository.existsByEmail(member.getEmail()) || memberJpaRepository.existsByUserId(member.getUserId())) {
-            throw new EduQuestException(DataBaseErrorCode.ALREADY_EXIST_MEMBER);
+            throw new EduQuestException(IdentityDatabaseErrorCode.ALREADY_EXIST_MEMBER);
         }
 
         MemberEntity memberEntity = memberMapper.toEntity(member);
@@ -42,7 +42,7 @@ public class JpaMemberCommandService implements MemberCommandService {
         memberEntity = memberJpaRepository.save(memberEntity);
 
         RoleEntity roleEntity = roleJpaRepository.findByName(role)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND));
 
         UserRoleEntity userRoleEntity = UserRoleEntity.of(memberEntity, roleEntity);
 
@@ -62,7 +62,7 @@ public class JpaMemberCommandService implements MemberCommandService {
     public Long updateMember(Member member) {
 
         if (!memberJpaRepository.existsById(member.getId())) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND);
         }
 
         MemberEntity memberEntity = memberMapper.toEntity(member);
@@ -76,14 +76,14 @@ public class JpaMemberCommandService implements MemberCommandService {
     public Long updateUserRole(Long id, Long roleId) {
 
         if (!roleJpaRepository.existsById(roleId)) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(IdentityDatabaseErrorCode.ROLE_NOT_FOUND);
         }
 
         UserRoleEntity userRoleEntity = userRoleRepository.findByMemberId(id)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND));
 
         RoleEntity roleEntity = roleJpaRepository.findById(roleId)
-                .orElseThrow(() -> new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EduQuestException(IdentityDatabaseErrorCode.ROLE_NOT_FOUND));
 
         userRoleEntity.updateRole(roleEntity);
 
@@ -95,7 +95,7 @@ public class JpaMemberCommandService implements MemberCommandService {
     public void deleteMember(UUID uuid) {
 
         if (!memberJpaRepository.existsByUuid(uuid)) {
-            throw new EduQuestException(DataBaseErrorCode.NOT_FOUND_DATA);
+            throw new EduQuestException(IdentityDatabaseErrorCode.MEMBER_NOT_FOUND);
         }
 
         memberJpaRepository.deleteByUuid(uuid);

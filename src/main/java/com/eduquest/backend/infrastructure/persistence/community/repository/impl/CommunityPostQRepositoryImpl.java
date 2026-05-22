@@ -2,6 +2,7 @@ package com.eduquest.backend.infrastructure.persistence.community.repository.imp
 
 import com.eduquest.backend.domain.community.dto.QuestionQuery;
 import com.eduquest.backend.infrastructure.persistence.community.entity.CommunityPostEntity;
+import com.eduquest.backend.infrastructure.persistence.community.entity.QCommunityAnswerEntity;
 import com.eduquest.backend.infrastructure.persistence.community.entity.QCommunityPostEntity;
 import com.eduquest.backend.infrastructure.persistence.identity.entity.QMemberEntity;
 import com.querydsl.core.types.OrderSpecifier;
@@ -25,7 +26,7 @@ public class CommunityPostQRepositoryImpl implements CommunityPostQRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<CommunityPostEntity> findAllBy(Pageable pageable) {
+    public Page<CommunityPostEntity> findAllByPagination(Pageable pageable) {
         QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
 
         List<CommunityPostEntity> content = queryFactory
@@ -42,7 +43,7 @@ public class CommunityPostQRepositoryImpl implements CommunityPostQRepository {
     }
 
     @Override
-    public Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable) {
+    public Page<QuestionQuery.Summary> findSummaryByPagination(Pageable pageable) {
         QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
         QMemberEntity member = QMemberEntity.memberEntity;
 
@@ -71,7 +72,7 @@ public class CommunityPostQRepositoryImpl implements CommunityPostQRepository {
     }
 
     @Override
-    public Page<QuestionQuery.Summary> findSummaryBy(Pageable pageable, String searchBy, String keyword, String sortBy, boolean isAsc) {
+    public Page<QuestionQuery.Summary> findSummaryByPagination(Pageable pageable, String searchBy, String keyword, String sortBy, boolean isAsc) {
         QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
         QMemberEntity member = QMemberEntity.memberEntity;
 
@@ -141,6 +142,35 @@ public class CommunityPostQRepositoryImpl implements CommunityPostQRepository {
         QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
         CommunityPostEntity entity = queryFactory.selectFrom(post).where(post.uuid.eq(uuid)).fetchOne();
         return Optional.ofNullable(entity);
+    }
+
+    @Override
+    public Optional<QuestionQuery.Detail> findDetailByUuid(UUID uuid) {
+        QCommunityPostEntity post = QCommunityPostEntity.communityPostEntity;
+        QMemberEntity member = QMemberEntity.memberEntity;
+        QCommunityAnswerEntity answer = QCommunityAnswerEntity.communityAnswerEntity;
+
+        QuestionQuery.Detail detail = queryFactory
+                .select(
+                        Projections.constructor(
+                                QuestionQuery.Detail.class,
+                                post.uuid,
+                                post.title,
+                                member.uuid,
+                                member.nickname,
+                                post.createdAt,
+                                post.content,
+                                post.isAdopted,
+                                answer.uuid
+                        )
+                )
+                .from(post)
+                .leftJoin(member).on(member.id.eq(post.userId))
+                .leftJoin(answer).on(answer.communityPostId.eq(post.id).and(answer.isAdopted.eq(true)))
+                .where(post.uuid.eq(uuid))
+                .fetchOne();
+
+        return Optional.ofNullable(detail);
     }
 }
 

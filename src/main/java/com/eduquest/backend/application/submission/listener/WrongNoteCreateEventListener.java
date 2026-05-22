@@ -13,7 +13,7 @@ public class WrongNoteCreateEventListener {
 
 	private final WrongNoteCommandService wrongNoteCommandService;
 
-	@Async("evaluationTaskExecutor")
+	@Async("virtualThreadTaskExecutor")
 	@TransactionalEventListener
 	public void handleWrongNoteCreateRequested(WrongNoteCreateRequestedEvent event) {
 		wrongNoteCommandService.createWrongNote(event.wrongAnswer(), event.memberId(), event.problemId());

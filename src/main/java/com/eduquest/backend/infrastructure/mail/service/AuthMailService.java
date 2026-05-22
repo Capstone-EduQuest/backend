@@ -1,10 +1,10 @@
 package com.eduquest.backend.infrastructure.mail.service;
 
+import com.eduquest.backend.common.config.MailConstants;
 import com.eduquest.backend.domain.identity.service.MailService;
 import com.eduquest.backend.infrastructure.mail.repository.EmailTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.eduquest.backend.common.config.MailConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,7 +28,7 @@ public class AuthMailService implements MailService {
 
     // 인증 url 메일 전송
     @Override
-    @Async("mailEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     public void sendSignUpMail(String recipientEmail) {
 
         if (emailTokenRepository.existsByEmail(recipientEmail)) {
@@ -54,9 +54,8 @@ public class AuthMailService implements MailService {
 
     }
 
-    @Async("mailEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     public void sendFindIdEmail(String recipientEmail) {
-
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(recipientEmail);
         mailMessage.setSubject("[EduQuest] 아이디 찾기");
@@ -66,7 +65,7 @@ public class AuthMailService implements MailService {
 
     }
 
-    @Async("mailEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     public void sendResetPasswordEmail(String recipientEmail) {
 
         if (emailTokenRepository.existsByEmail(recipientEmail)) {

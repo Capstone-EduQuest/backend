@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,9 +67,9 @@ public class BookmarkController {
                         resultDto.number(),
                         resultDto.problemUuid()
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
-        boolean isAscValue = result.isAsc() == null ? false : result.isAsc();
+        boolean isAscValue = result.isAsc() != null && result.isAsc();
 
         BookmarkListResponse response = BookmarkListResponse.of(
                 result.page(),

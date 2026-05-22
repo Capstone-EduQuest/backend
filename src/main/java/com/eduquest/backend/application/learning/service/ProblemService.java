@@ -6,6 +6,7 @@ import com.eduquest.backend.application.learning.dto.ProblemDto;
 import com.eduquest.backend.application.learning.dto.ProblemListDto;
 import com.eduquest.backend.application.learning.exception.LearningErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.learning.dto.ProblemQuery;
 import com.eduquest.backend.domain.learning.event.UseHintEvent;
 import com.eduquest.backend.domain.learning.model.Hint;
@@ -14,7 +15,6 @@ import com.eduquest.backend.domain.learning.service.HintHistoryQueryService;
 import com.eduquest.backend.domain.learning.service.ProblemCommandService;
 import com.eduquest.backend.domain.learning.service.ProblemQueryService;
 import com.eduquest.backend.domain.learning.service.StageQueryService;
-import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import com.eduquest.backend.domain.reward.event.GrantPointEvent;
 import com.eduquest.backend.domain.reward.service.WalletQueryService;
 import lombok.RequiredArgsConstructor;
@@ -124,7 +124,33 @@ public class ProblemService {
     }
 
     public ProblemListDto listProblems(int page, int size, String sort, Boolean isAsc) {
-        return ProblemListDto.of(page, size, sort, isAsc, List.of());
+        List<ProblemQuery.Detail> details = problemQueryService.findDetailsByPagination(page, size, sort, isAsc);
+
+        if (details == null || details.isEmpty()) {
+            return ProblemListDto.of(page, size, sort, isAsc, List.of());
+        }
+
+        List<ProblemDto> results = details.stream().map(detail -> {
+            List<HintDto> hintList = detail.hints() == null ? List.of() : detail.hints().stream()
+                    .map(h -> HintDto.of(h.level(), h.point(), h.content()))
+                    .collect(Collectors.toList());
+
+            return ProblemDto.of(
+                    detail.uuid(),
+                    detail.stageUuid(),
+                    detail.stageTitle(),
+                    detail.stageNumber(),
+                    detail.type(),
+                    detail.number(),
+                    detail.summary(),
+                    detail.example(),
+                    detail.expectedOutput(),
+                    detail.block(),
+                    hintList
+            );
+        }).collect(Collectors.toList());
+
+        return ProblemListDto.of(page, size, sort, isAsc, results);
     }
 
     @Transactional(readOnly = true)

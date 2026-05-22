@@ -6,6 +6,7 @@ import com.eduquest.backend.application.community.dto.AnswerListResult;
 import com.eduquest.backend.application.community.dto.CreateAnswerCommand;
 import com.eduquest.backend.application.community.exception.CommunityErrorCode;
 import com.eduquest.backend.common.exception.EduQuestException;
+import com.eduquest.backend.domain.community.dto.AnswerQuery;
 import com.eduquest.backend.domain.community.event.AnswerAdoptedEvent;
 import com.eduquest.backend.domain.community.model.Answer;
 import com.eduquest.backend.domain.community.model.Question;
@@ -13,7 +14,6 @@ import com.eduquest.backend.domain.community.service.AnswerCommandService;
 import com.eduquest.backend.domain.community.service.AnswerQueryService;
 import com.eduquest.backend.domain.community.service.QuestionCommandService;
 import com.eduquest.backend.domain.community.service.QuestionQueryService;
-import com.eduquest.backend.domain.identity.model.Member;
 import com.eduquest.backend.domain.identity.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -51,23 +51,15 @@ public class AnswerService {
 
         Answer answer = Answer.of(command.content(), memberId, question.getId());
 
-        Long savedId = answerCommandService.saveAnswer(answer);
-
-        Answer saved = answerQueryService.findAnswerById(savedId);
-
-        if (saved == null || saved.getUuid() == null) {
-            throw new EduQuestException(CommunityErrorCode.INVALID_REQUEST);
-        }
+        answerCommandService.saveAnswer(answer);
 
     }
 
     public AnswerListResult findAnswersByQuestionUuid(UUID questionUuid, AnswerListQuery query) {
-        List<Answer> answers = answerQueryService.findAnswersByQuestionUuid(questionUuid);
+        List<AnswerQuery.Summary> answers = answerQueryService.findAnswerSummariesByQuestionUuid(questionUuid, query.page(), query.size(), query.isAsc());
 
         List<AnswerListResult.Item> items = answers.stream().map(a -> {
-            Member member = memberQueryService.findMemberById(a.getUserId());
-
-            return AnswerListResult.Item.of(a.getUuid(), a.getContent(), member.getUuid(), member.getNickname(), a.getIsAdopted(), a.getCreatedAt());
+            return AnswerListResult.Item.of(a.uuid(), a.content(), a.userUuid(), a.userNickname(), a.isAdopt(), a.createdAt());
         }).collect(Collectors.toList());
 
         return AnswerListResult.of(query.page(), query.size(), null, query.isAsc(), items);
@@ -92,6 +84,10 @@ public class AnswerService {
         Question question = questionQueryService.findQuestionById(answer.getCommunityPostId());
         if (question == null) {
             throw new EduQuestException(CommunityErrorCode.QUESTION_NOT_FOUND);
+        }
+
+        if (question.getIsAdopted()) {
+            throw new EduQuestException(CommunityErrorCode.QUESTION_ALREADY_ADOPTED);
         }
 
         Long requesterMemberId = memberQueryService.findMemberIdByUserId(requesterUserId);

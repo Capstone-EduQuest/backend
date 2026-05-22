@@ -51,6 +51,7 @@ public class UserController {
                         profileRequest.id(),
                         profileRequest.email(),
                         profileRequest.password(),
+                        profileRequest.passwordValid(),
                         profileRequest.birth(),
                         profileRequest.nickname(),
                         profileImage
