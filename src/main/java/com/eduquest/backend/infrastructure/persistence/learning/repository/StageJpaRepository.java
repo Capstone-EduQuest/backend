@@ -10,7 +10,7 @@ public interface StageJpaRepository extends JpaRepository<StageEntity, Long> {
 
     Optional<StageEntity> findByUuid(UUID uuid);
 
-    boolean isExistsByNumber(Integer number);
+    boolean existsByNumber(Integer number);
 
     void deleteByUuid(UUID uuid);
 
