@@ -23,7 +23,7 @@ public class JpaStageCommandService implements StageCommandService {
     @Override
     public Long saveStage(Stage stage) {
 
-        if (stageJpaRepository.isexistsByNumber(stage.getNumber())) {
+        if (stageJpaRepository.existsByNumber(stage.getNumber())) {
             throw new EduQuestException(LearningDatabaseErrorCode.ALREADY_EXISTS_STAGE);
         }
 
