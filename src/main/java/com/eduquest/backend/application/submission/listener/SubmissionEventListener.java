@@ -21,7 +21,7 @@ public class SubmissionEventListener {
     private final StageQueryService stageQueryService;
     private final MemberQueryService memberQueryService;
 
-    @Async("evaluationTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @TransactionalEventListener
     public void handleSubmissionEvaluatedEvent(SubmissionEvaluatedEvent event) {
 

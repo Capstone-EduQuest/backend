@@ -18,7 +18,7 @@ public class EvaluationReadyEventListener {
 
     private final EvaluationQueueRepository evaluationQueueRepository;
 
-    @Async("coderunnerTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleEvaluationReadyEvent(EvaluationReadyEvent event) {
         UUID submissionUuid = event.submissionUuid();

@@ -17,7 +17,7 @@ public class MailEventListener {
 
     private final MailService mailService;
 
-    @Async("mailEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @EventListener
     public void handleFindIdMailEvent(FindIdMailEvent event) {
 
@@ -26,7 +26,7 @@ public class MailEventListener {
 
     }
 
-    @Async("mailEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @EventListener
     public void handleResetPasswordMailEvent(ResetPasswordMailEvent event) {
 
@@ -35,7 +35,7 @@ public class MailEventListener {
 
     }
 
-    @Async("mailEventTaskExecutor")
+    @Async("virtualThreadTaskExecutor")
     @EventListener
     public void handleSignUpMailEvent(SignUpMailEvent event) {
 
