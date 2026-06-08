@@ -58,6 +58,8 @@ EduQuest 게임은 WebGL로 개발되어 웹 브라우저에서 실행됩니다.
 
 ## DB 설계
 
+<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/0b11846b-b899-4f12-b76f-42b4632e3c53" />
+
 ERD 다이어그램은 다음과 같습니다.
 
 ## API 명세
