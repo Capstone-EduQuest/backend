@@ -64,7 +64,9 @@ ERD 다이어그램은 다음과 같습니다.
 
 ## API 명세
 
-Postman으로 작성한 API 명세는 다음 이미지와 같습니다.
+[https://eduquest-3917.postman.co/workspace/EduQuest~1f10a21e-7e77-42ec-96a0-114f84b924de/collection/21595824-c7afe148-e820-473a-82d3-cf33516df401?action=share&source=copy-link&creator=21595824](url)
+
+Postman으로 작성한 API 명세는 다음ㄱㅘ 같습니다.
 
 ## 트러블 슈팅
 
